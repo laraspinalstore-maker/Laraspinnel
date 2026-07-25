@@ -62,14 +62,12 @@ function CardDecoration({ colorHex }: { colorHex: string }) {
 export default function FooterBanner() {
   const { settings } = useSettings();
   const tabletImageUrl = settings.home_footer_banner_image;
-  // Falls back to the tablet image (cropped) until a dedicated mobile image is uploaded.
-  const mobileImageUrl = settings.home_footer_banner_mobile_image || tabletImageUrl;
   const link = settings.home_footer_banner_link;
   const decorationColor = getThemeAccentHex(settings.home_footer_banner_decoration_color || "brown");
   // Image-only opacity — the card decoration (corner accents/sparkles) always stays fully visible.
   const imageOpacity = Number(settings.home_footer_banner_image_opacity ?? 100) / 100;
 
-  if (!tabletImageUrl && !mobileImageUrl) return null;
+  if (!tabletImageUrl) return null;
 
   const content = (
     <motion.div 
@@ -98,41 +96,24 @@ export default function FooterBanner() {
         <FloatingPaper colorHex={decorationColor} />
         <Sprinkles colorHex={decorationColor} />
         
-        {/* Mobile — 3:4, separately uploaded image */}
-      {mobileImageUrl && (
-        <div className={`sm:hidden aspect-[3/4] ${CARD_CLASSES}`}>
-          <Image
-            src={mobileImageUrl}
-            alt="Promotional banner"
-            fill
-            sizes="100vw"
-            className="object-cover"
-            style={{ opacity: imageOpacity }}
-          />
-          <CardDecoration colorHex={decorationColor} />
-        </div>
-      )}
-
-      {/* Tablet — 4:3, separately uploaded image */}
-      {tabletImageUrl && (
-        <div className={`hidden sm:block aspect-[4/3] ${CARD_CLASSES}`}>
-          <Image
-            src={tabletImageUrl}
-            alt="Promotional banner"
-            fill
-            sizes="1200px"
-            className="object-cover"
-            style={{ opacity: imageOpacity }}
-          />
-          <CardDecoration colorHex={decorationColor} />
-        </div>
-      )}
+        {/* Tablet — 4:3, admin-uploaded image (mobile shows TrackOrderCard instead) */}
+      <div className={`aspect-[4/3] ${CARD_CLASSES}`}>
+        <Image
+          src={tabletImageUrl}
+          alt="Promotional banner"
+          fill
+          sizes="1200px"
+          className="object-cover"
+          style={{ opacity: imageOpacity }}
+        />
+        <CardDecoration colorHex={decorationColor} />
+      </div>
       </motion.div>
     </motion.div>
   );
 
   return (
-    <section className="relative overflow-hidden py-12 md:py-16 bg-white lg:hidden">
+    <section className="relative overflow-hidden py-12 md:py-16 bg-white hidden sm:block lg:hidden">
       <div className="relative max-w-7xl mx-auto px-4 md:px-6">
         {link ? (
           <Link href={link} className="block group">

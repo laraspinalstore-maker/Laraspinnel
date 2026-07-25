@@ -175,7 +175,8 @@ export const DEFAULT_FOOTER_QUICKLINKS: LinkItem[] = [
   { label: "Shop Catalog", href: "/shop" },
   { label: "Categories", href: "/categories" },
   { label: "About Us", href: "/about" },
-  { label: "Contact Us", href: "/contact" },
+  { label: "Enquiry", href: "/contact" },
+  { label: "Track Order", href: "/track-order" },
   { label: "Shopping Cart", href: "/cart" },
 ];
 
@@ -247,8 +248,10 @@ export const CONTENT_PLACEHOLDERS: Record<string, string> = {
   home_shop_title: "Handmade Gifts Crafted with Love",
   home_shop_subtitle:
     "Browse our collection of hand-knitted crochet bouquets, customized frames, hampers, and accessories.",
-  home_testimonials_title: "What Our Customers Say",
-  home_testimonials_subtitle: "Stories of satisfaction from gift-givers, families, and loyal customers.",
+  home_testimonials_eyebrow: "Customer Love",
+  home_testimonials_title: "Kind Words From Happy Customers",
+  home_testimonials_subtitle:
+    "Real messages from customers who made their special moments a little more memorable with Lara's Pinnal.",
   home_stat_1: "500+ Happy Customers",
   home_stat_2: "Ships Across India",
   home_stat_3: "Handmade Quality Guaranteed",

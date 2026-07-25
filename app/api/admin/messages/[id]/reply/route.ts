@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
 import ContactMessage from "@/models/ContactMessage";
 import { sendEmail } from "@/lib/email/sendEmail";
+import { getCustomerReplyEmail } from "@/lib/email/customerReply";
 
 export async function POST(
   request: Request,
@@ -32,27 +33,20 @@ export async function POST(
       return NextResponse.json({ error: "Client has no email address" }, { status: 400 });
     }
 
-    // Send email using sendEmail helper
-    const emailHtml = `
-      <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto;">
-        <h2>Reply from Lara's Pinnal</h2>
-        <p>Dear ${message.name},</p>
-        <div style="padding: 16px; background-color: #f7f7f7; border-radius: 8px; margin: 16px 0; white-space: pre-wrap;">${replyText}</div>
-        <br />
-        <p><em>In response to your message:</em></p>
-        <blockquote style="border-left: 4px solid #ccc; padding-left: 16px; color: #666;">
-          <strong>${message.subject}</strong><br />
-          ${message.message}
-        </blockquote>
-        <br />
-        <p>Best regards,<br/>Lara's Pinnal Team</p>
-      </div>
-    `;
+    const { subject, html } = getCustomerReplyEmail(
+      {
+        customerName: message.name,
+        replyText,
+        originalSubject: message.subject,
+        originalMessage: message.message,
+      },
+      "Laraspinnel"
+    );
 
     const emailRes = await sendEmail({
       to: message.email,
-      subject: `Re: ${message.subject} - Lara's Pinnal`,
-      html: emailHtml
+      subject,
+      html,
     });
 
     if (!emailRes.success) {

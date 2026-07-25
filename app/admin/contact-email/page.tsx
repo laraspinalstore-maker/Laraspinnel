@@ -21,7 +21,7 @@ export default function AdminContactEmailSettingsPage() {
   const [subjectTemplate, setSubjectTemplate] = useState("");
   const [introTemplate, setIntroTemplate] = useState("");
   const [footerTemplate, setFooterTemplate] = useState("");
-  const [shopName, setShopName] = useState("Lara's Pinnal");
+  const [shopName, setShopName] = useState("Laraspinnel");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
@@ -36,7 +36,7 @@ export default function AdminContactEmailSettingsPage() {
           setSubjectTemplate(data.email_contact_subject || DEFAULT_CONTACT_CONFIRMATION_SUBJECT_TEMPLATE);
           setIntroTemplate(data.email_contact_intro || DEFAULT_CONTACT_CONFIRMATION_INTRO_TEMPLATE);
           setFooterTemplate(data.email_contact_footer || DEFAULT_CONTACT_CONFIRMATION_FOOTER_TEMPLATE);
-          setShopName(data.farm_name || "Lara's Pinnal");
+          setShopName(data.farm_name || "Laraspinnel");
         } else {
           setError("Failed to load settings.");
         }

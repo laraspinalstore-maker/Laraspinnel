@@ -39,6 +39,11 @@ const FooterBanner = dynamic(() => import("@/components/home/FooterBanner"), {
   loading: () => null,
 });
 
+const TrackOrderCard = dynamic(() => import("@/components/home/TrackOrderCard"), {
+  ssr: false,
+  loading: () => null,
+});
+
 export default function BelowFoldSections() {
   const { settings } = useSettings();
   const marqueeItems = parseList<string>(settings.home_marquee, DEFAULT_MARQUEE_ITEMS);
@@ -60,8 +65,9 @@ export default function BelowFoldSections() {
       {/* Customer Testimonials — WhatsApp-style chat cards */}
       <CustomerLove />
 
-      {/* 16:9 promotional banner */}
+      {/* Promotional banner — tablet only; phones get the order-tracking card instead */}
       <FooterBanner />
+      <TrackOrderCard />
 
       {/* Gift Categories / Marketing Marquee — last section before the footer */}
       <TextMarquee

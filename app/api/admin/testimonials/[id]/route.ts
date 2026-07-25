@@ -18,17 +18,20 @@ export async function PUT(
     await connectToDatabase();
     const body = await req.json();
 
-    const { name, location, goal, outcome, rating, refId, isActive } = body;
+    const { name, location, goal, outcome, rating, refId, avatarUrl, imageUrl, orderImageUrl, isActive } = body;
 
     const initial = name ? name.charAt(0).toUpperCase() : undefined;
 
     const updateData: any = {
       ...(name && { name, initial }),
-      ...(location && { location }),
-      ...(goal && { goal }),
-      ...(outcome && { outcome }),
+      ...(location !== undefined && { location }),
+      ...(goal !== undefined && { goal }),
+      ...(outcome !== undefined && { outcome }),
       ...(rating && { rating: Number(rating) }),
       ...(refId && { refId }),
+      ...(avatarUrl !== undefined && { avatarUrl }),
+      ...(imageUrl !== undefined && { imageUrl }),
+      ...(orderImageUrl !== undefined && { orderImageUrl }),
       ...(isActive !== undefined && { isActive }),
     };
 
@@ -47,6 +50,7 @@ export async function PUT(
 
     const { revalidatePath } = require("next/cache");
     revalidatePath("/");
+    revalidatePath("/about");
 
     return NextResponse.json(updatedTestimonial);
   } catch (error: any) {
@@ -82,6 +86,7 @@ export async function DELETE(
 
     const { revalidatePath } = require("next/cache");
     revalidatePath("/");
+    revalidatePath("/about");
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

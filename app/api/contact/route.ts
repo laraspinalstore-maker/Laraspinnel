@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       acc[s.key] = s.value;
       return acc;
     }, {});
-    const shopName = settingsMap.farm_name || "Lara's Pinnal";
+    const shopName = settingsMap.farm_name || "Laraspinnel";
 
     // Notify the shop owner — best-effort, never blocks the response.
     if (settingsMap.contact_email) {

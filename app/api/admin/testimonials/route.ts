@@ -9,12 +9,8 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     await connectToDatabase();
-    
-    // Allow public access to GET testimonials if they want to fetch it on frontend
-    // Parse query params
     const url = new URL(req.url);
     const activeOnly = url.searchParams.get("activeOnly") === "true";
-    
     const query = activeOnly ? { isActive: true } : {};
 
     const testimonials = await Testimonial.find(query).sort({ createdAt: -1 }).lean();
@@ -39,31 +35,34 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
     const body = await req.json();
 
-    const { name, location, goal, outcome, rating, refId, isActive } = body;
+    const { name, location, goal, outcome, rating, refId, avatarUrl, imageUrl, orderImageUrl, isActive } = body;
 
-    if (!name || !location || !goal || !outcome) {
+    if (!name && !imageUrl) {
       return NextResponse.json(
-        { error: "Name, location, goal, and outcome are required" },
+        { error: "Review name or image upload is required" },
         { status: 400 }
       );
     }
 
-    // Auto-generate initial
-    const initial = name.charAt(0).toUpperCase();
+    const initial = (name || "C").charAt(0).toUpperCase();
 
     const newTestimonial = await Testimonial.create({
-      name,
-      location,
-      goal,
-      outcome,
+      name: name || "Customer Review",
+      location: location || "",
+      goal: goal || "",
+      outcome: outcome || "",
       initial,
       rating: Number(rating) || 5,
       refId: refId || "ADMIN-CREATED",
+      avatarUrl: avatarUrl || "",
+      imageUrl: imageUrl || "",
+      orderImageUrl: orderImageUrl || "",
       isActive: isActive !== undefined ? isActive : true,
     });
 
     const { revalidatePath } = require("next/cache");
     revalidatePath("/");
+    revalidatePath("/about");
 
     return NextResponse.json(newTestimonial, { status: 201 });
   } catch (error: any) {

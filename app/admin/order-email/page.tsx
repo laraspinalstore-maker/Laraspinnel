@@ -33,7 +33,7 @@ type Tab = "confirmation" | "status";
 
 export default function AdminOrderEmailSettingsPage() {
   const [activeTab, setActiveTab] = useState<Tab>("confirmation");
-  const [shopName, setShopName] = useState("Lara's Pinnal");
+  const [shopName, setShopName] = useState("Laraspinnel");
 
   // Order confirmation template state
   const [confSubject, setConfSubject] = useState("");
@@ -56,7 +56,7 @@ export default function AdminOrderEmailSettingsPage() {
         const res = await fetch("/api/admin/settings");
         if (res.ok) {
           const data = await res.json();
-          setShopName(data.farm_name || "Lara's Pinnal");
+          setShopName(data.farm_name || "Laraspinnel");
 
           setConfSubject(data.email_order_subject || DEFAULT_EMAIL_SUBJECT_TEMPLATE);
           setConfIntro(data.email_order_intro || DEFAULT_EMAIL_INTRO_TEMPLATE);

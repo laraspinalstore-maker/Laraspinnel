@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     await connectToDatabase();
     const body = await req.json();
-    const { name, location, goal, outcome, rating, refId, avatarUrl } = body;
+    const { name, location, goal, outcome, rating, refId, avatarUrl, orderImageUrl } = body;
 
     if (!name || !location || !goal || !outcome || !refId) {
       return NextResponse.json(
@@ -31,10 +31,14 @@ export async function POST(req: NextRequest) {
 
     const clean = (value: unknown, max: number) => String(value).trim().slice(0, max);
 
-    // Avatar is optional and must be one of our own ImageKit uploads
+    // Avatar and order photo are optional and must be our own ImageKit uploads
     const safeAvatar =
       typeof avatarUrl === "string" && avatarUrl.startsWith("https://ik.imagekit.io/")
         ? avatarUrl
+        : "";
+    const safeOrderImage =
+      typeof orderImageUrl === "string" && orderImageUrl.startsWith("https://ik.imagekit.io/")
+        ? orderImageUrl
         : "";
 
     const cleanName = clean(name, 80);
@@ -48,6 +52,7 @@ export async function POST(req: NextRequest) {
       rating: Math.min(5, Math.max(1, Number(rating) || 5)),
       refId: clean(refId, 40).toUpperCase(),
       avatarUrl: safeAvatar,
+      orderImageUrl: safeOrderImage,
       isActive: false,
     });
 

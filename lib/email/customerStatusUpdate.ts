@@ -4,6 +4,12 @@ import {
   DEFAULT_STATUS_EMAIL_FOOTER_TEMPLATE,
   renderEmailText,
 } from "@/lib/emailTemplate";
+import {
+  renderEmailShell,
+  stitchCard,
+  EMAIL_COLORS,
+  EMAIL_FONTS,
+} from "@/lib/email/layout";
 
 type OrderStatus = "pending" | "confirmed" | "preparing" | "ready" | "delivered" | "cancelled";
 
@@ -16,13 +22,15 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   cancelled: "Cancelled",
 };
 
+// Brand-mapped status colors: gold = waiting, sage = good news,
+// terracotta = actively crafting, brown = journey complete.
 const STATUS_COLORS: Record<OrderStatus, string> = {
-  pending: "#eab308",
-  confirmed: "#8FA88A",
-  preparing: "#3b82f6",
-  ready: "#8FA88A",
-  delivered: "#111111",
-  cancelled: "#ef4444",
+  pending: EMAIL_COLORS.gold,
+  confirmed: EMAIL_COLORS.sage,
+  preparing: EMAIL_COLORS.terracotta,
+  ready: EMAIL_COLORS.sage,
+  delivered: EMAIL_COLORS.brownText,
+  cancelled: "#B4443C",
 };
 
 interface StatusUpdateOrder {
@@ -45,7 +53,7 @@ export function getOrderStatusUpdateEmail(
   { shopName, subjectTemplate, introTemplate, footerTemplate }: GetStatusUpdateEmailOptions
 ): { subject: string; html: string } {
   const statusLabel = STATUS_LABELS[order.status] || order.status;
-  const statusColor = STATUS_COLORS[order.status] || "#111111";
+  const statusColor = STATUS_COLORS[order.status] || EMAIL_COLORS.ink;
 
   const data = {
     customerName: order.customerName,
@@ -59,41 +67,29 @@ export function getOrderStatusUpdateEmail(
   const intro = renderEmailText(introTemplate || DEFAULT_STATUS_EMAIL_INTRO_TEMPLATE, data);
   const footer = renderEmailText(footerTemplate || DEFAULT_STATUS_EMAIL_FOOTER_TEMPLATE, data);
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${subject}</title>
-    </head>
-    <body style="font-family: sans-serif; color: #111111; line-height: 1.5; margin: 0; padding: 0; background-color: #f7f7f7;">
-      <div style="max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; border-top: 4px solid ${statusColor};">
-        <div style="background-color: #111111; color: #ffffff; padding: 24px; text-align: center;">
-          <h1 style="margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px;">Order Status Update</h1>
-        </div>
-        <div style="padding: 24px;">
-          <p style="white-space: pre-line;">${intro}</p>
+  const bodyHtml = `
+    <p style="white-space: pre-line; margin: 0 0 4px; font-size: 14px;">${intro}</p>
 
-          <div style="background-color: #F7F7F7; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; text-align: center; margin: 20px 0;">
-            <span style="font-size: 10px; text-transform: uppercase; color: #6b7280; font-weight: bold;">Order Reference</span>
-            <span style="font-family: monospace; font-size: 18px; font-weight: bold; color: #111111; margin-top: 4px; display: block;">
-              #${order.orderNumber}
-            </span>
-            <span style="display: inline-block; margin-top: 12px; padding: 4px 12px; background-color: ${statusColor}; color: #ffffff; border-radius: 4px; font-weight: bold; font-size: 12px; text-transform: uppercase;">
-              ${statusLabel}
-            </span>
-          </div>
+    ${stitchCard(`
+      <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: ${EMAIL_COLORS.goldText}; font-weight: bold;">Order Reference</span>
+      <span style="font-family: ${EMAIL_FONTS.mono}; font-size: 20px; font-weight: bold; color: ${EMAIL_COLORS.ink}; margin-top: 4px; display: block;">
+        #${order.orderNumber}
+      </span>
+      <span style="display: inline-block; margin-top: 12px; padding: 5px 16px; background-color: ${statusColor}; color: #ffffff; border-radius: 9999px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+        ${statusLabel}
+      </span>
+    `)}
 
-          <p style="white-space: pre-line; font-size: 13px; color: #374151; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb;">${footer}</p>
-        </div>
-        <div style="background-color: #111111; color: #9ca3af; text-align: center; padding: 16px; font-size: 11px;">
-          <p style="margin: 0;">${shopName} &copy; ${new Date().getFullYear()}</p>
-        </div>
-      </div>
-    </body>
-    </html>
+    <p style="white-space: pre-line; font-size: 13px; color: ${EMAIL_COLORS.brownText}; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid ${EMAIL_COLORS.border};">${footer}</p>
   `;
+
+  const html = renderEmailShell({
+    title: subject,
+    bannerText: "Order Status Update",
+    bannerColor: statusColor,
+    shopName,
+    bodyHtml,
+  });
 
   return { subject, html };
 }

@@ -112,11 +112,13 @@ const fieldClass =
   "w-full bg-transparent text-[13px] text-[#211A16] placeholder-[#9A9188] outline-none py-1.5 border-b border-[#E8DED0] focus:border-[#147A52] transition-colors";
 
 const AddReviewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const [formData, setFormData] = useState({ name: "", location: "", goal: "", outcome: "", rating: 5, refId: "", avatarUrl: "" });
+  const [formData, setFormData] = useState({ name: "", location: "", goal: "", outcome: "", rating: 5, refId: "", avatarUrl: "", orderImageUrl: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [orderPhotoUploading, setOrderPhotoUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const orderPhotoInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
 
@@ -156,9 +158,40 @@ const AddReviewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     }
   };
 
+  /* Same upload flow as the avatar, but for the customer's photo of their order */
+  const handleOrderPhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage("Photo too large — maximum size is 5 MB.");
+      setStatus("error");
+      return;
+    }
+    setOrderPhotoUploading(true);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/customer-upload", { method: "POST", body });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+      if (formData.orderImageUrl) removeAvatar(formData.orderImageUrl);
+      setFormData((prev) => ({ ...prev, orderImageUrl: data.url }));
+      if (status === "error") setStatus("idle");
+    } catch (err: any) {
+      setErrorMessage(err.message || "Failed to upload photo. Please try again.");
+      setStatus("error");
+    } finally {
+      setOrderPhotoUploading(false);
+    }
+  };
+
   const handleClose = () => {
-    // Don't leave an orphaned avatar behind if the review was never sent
-    if (status !== "success" && formData.avatarUrl) removeAvatar(formData.avatarUrl);
+    // Don't leave orphaned uploads behind if the review was never sent
+    if (status !== "success") {
+      if (formData.avatarUrl) removeAvatar(formData.avatarUrl);
+      if (formData.orderImageUrl) removeAvatar(formData.orderImageUrl);
+    }
     onClose();
   };
 
@@ -352,6 +385,58 @@ const AddReviewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                 />
               </AnswerBubble>
 
+              <AskBubble>Got a photo of your order? We&apos;d love to see it! 📸 (optional)</AskBubble>
+              <AnswerBubble>
+                {formData.orderImageUrl ? (
+                  <div className="relative rounded-xl overflow-hidden">
+                    <div className="relative aspect-4/3">
+                      <Image
+                        src={formData.orderImageUrl}
+                        alt="Your order photo"
+                        fill
+                        sizes="320px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        removeAvatar(formData.orderImageUrl);
+                        setFormData((prev) => ({ ...prev, orderImageUrl: "" }));
+                      }}
+                      aria-label="Remove order photo"
+                      className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-[#211A16]/80 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => orderPhotoInputRef.current?.click()}
+                    disabled={orderPhotoUploading}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-[#147A52]/40 text-[#147A52] text-xs font-semibold hover:bg-[#E8F4D8]/50 transition-colors disabled:opacity-60"
+                  >
+                    {orderPhotoUploading ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" /> Uploading…
+                      </>
+                    ) : (
+                      <>
+                        <Camera size={14} /> Add a photo of your order
+                      </>
+                    )}
+                  </button>
+                )}
+                <input
+                  ref={orderPhotoInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/avif"
+                  onChange={handleOrderPhotoChange}
+                  className="hidden"
+                />
+              </AnswerBubble>
+
               {status === "error" && (
                 <p className="text-red-600 text-xs font-medium text-center bg-red-50 border border-red-100 p-2 rounded-xl">
                   {errorMessage}
@@ -363,7 +448,7 @@ const AddReviewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             <div className="px-4 py-3 bg-[#FFFDF9] border-t border-[#E8DED0]/60 shrink-0">
               <button
                 type="submit"
-                disabled={status === "loading"}
+                disabled={status === "loading" || orderPhotoUploading || avatarUploading}
                 className="w-full h-12 bg-[#147A52] text-white font-bold uppercase tracking-wider text-xs rounded-full hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center justify-center gap-2"
               >
                 {status === "loading" ? (
@@ -487,22 +572,32 @@ const ChatCard = ({ rev }: { rev: ChatReview }) => (
 
 export default function CustomerLove() {
   const { data: testimonials } = useSWR("/api/admin/testimonials?activeOnly=true", fetcher);
+  /* Section heading is admin-editable under Admin → Content → Customer Reviews */
+  const { data: settings = {} } = useSWR("/api/settings", fetcher);
 
   /* Real reviews: goal + outcome are the customer's own words (kept verbatim);
-     only the shop's reply in between is authored by us. */
+     only the shop's reply in between is authored by us.
+     Image-only reviews (screenshot uploads) belong to the About page section, not here. */
   const real: ChatReview[] = Array.isArray(testimonials)
-    ? testimonials.map((t: any, i: number) => ({
+    ? testimonials
+        .filter((t: any) => t.goal || t.outcome)
+        .map((t: any, i: number) => ({
         id: String(t._id ?? `${t.name}-${i}`),
         name: displayName(t.name),
         location: t.location || "",
         rating: t.rating || 5,
-        bubbles: [
-          { kind: "in" as const, text: t.goal, time: timeAt(t.createdAt, 0) },
-          { kind: "out" as const, text: SHOP_REPLIES[i % SHOP_REPLIES.length], time: timeAt(t.createdAt, 3) },
-          { kind: "in" as const, text: t.outcome, time: timeAt(t.createdAt, 6) },
-        ].filter((b) => b.text),
+        bubbles: (
+          [
+            { kind: "in" as const, text: t.goal, time: timeAt(t.createdAt, 0) },
+            { kind: "out" as const, text: SHOP_REPLIES[i % SHOP_REPLIES.length], time: timeAt(t.createdAt, 3) },
+            ...(typeof t.orderImageUrl === "string" && t.orderImageUrl
+              ? [{ kind: "photo" as const, src: t.orderImageUrl, alt: `${t.name}'s order photo`, time: timeAt(t.createdAt, 5) }]
+              : []),
+            { kind: "in" as const, text: t.outcome, time: timeAt(t.createdAt, 6) },
+          ] as Bubble[]
+        ).filter((b) => b.kind === "photo" || b.text),
         avatarUrl: typeof t.avatarUrl === "string" ? t.avatarUrl : "",
-      }))
+        }))
     : [];
 
   const isDemo = real.length === 0;
@@ -532,7 +627,9 @@ export default function CustomerLove() {
       // clientWidth is 0 when the carousel is display:none (md and up)
       if (!el.clientWidth || Date.now() < pausedUntil.current) return;
       const max = el.scrollWidth - el.clientWidth;
-      const step = el.clientWidth * 0.87;
+      // Advance one card at a time — measure the real card width (it varies by breakpoint)
+      const firstCard = el.firstElementChild as HTMLElement | null;
+      const step = firstCard ? firstCard.offsetWidth + 16 : el.clientWidth * 0.87;
       const next = el.scrollLeft + step > max - 8 ? 0 : el.scrollLeft + step;
       el.scrollTo({ left: next, behavior: "smooth" });
     }, 4500);
@@ -551,13 +648,14 @@ export default function CustomerLove() {
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center space-y-3">
           <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
-            Customer Love
+            {settings.home_testimonials_eyebrow || "Customer Love"}
           </p>
           <h2 className="font-display text-3xl md:text-4xl text-brand-black tracking-wide uppercase">
-            Kind Words From Happy Customers
+            {settings.home_testimonials_title || "Kind Words From Happy Customers"}
           </h2>
           <p className="text-sm font-medium text-brand-gray">
-            Real messages from customers who made their special moments a little more memorable with Lara&apos;s Pinnal.
+            {settings.home_testimonials_subtitle ||
+              "Real messages from customers who made their special moments a little more memorable with Lara's Pinnal."}
           </p>
           {isDemo && (
             <p className="text-[10px] text-brand-gray/70">
@@ -566,20 +664,20 @@ export default function CustomerLove() {
           )}
         </div>
 
-        {/* Desktop / tablet grid */}
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        {/* Desktop grid */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-6 items-stretch">
           {visible.map((rev) => (
             <ChatCard key={rev.id} rev={rev} />
           ))}
         </div>
 
-        {/* Mobile swipe carousel — next card peeks in to invite a swipe */}
+        {/* Mobile & tablet swipe carousel — next card peeks in to invite a swipe */}
         <div
           ref={trackRef}
-          className="md:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory -mx-4 px-4 scroll-px-4 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none"
+          className="lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory -mx-4 px-4 scroll-px-4 md:-mx-6 md:px-6 md:scroll-px-6 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none"
         >
           {visible.map((rev) => (
-            <div key={rev.id} className="w-[87%] shrink-0 snap-center">
+            <div key={rev.id} className="w-[87%] sm:w-[58%] md:w-[46%] shrink-0 snap-center md:snap-start">
               <ChatCard rev={rev} />
             </div>
           ))}

@@ -13,7 +13,9 @@ import {
   ListFieldDef,
   PromoCardListEditor,
   GalleryItemListEditor,
+  ReelListEditor,
 } from "@/components/admin/ContentEditors";
+import type { AboutReel } from "@/components/about/ReelsSection";
 import {
   CONTENT_DEFAULTS,
   CONTENT_PLACEHOLDERS,
@@ -25,7 +27,6 @@ import {
   DEFAULT_PROMO_CARDS,
   DEFAULT_CUSTOM_POINTS,
   DEFAULT_CUSTOM_GALLERY,
-  PROMO_CARD_COLORS,
   parseList,
   WhyStep,
   LinkItem,
@@ -71,13 +72,12 @@ const SECTIONS: Record<TabId, string[]> = {
     "Shop by Category — heading",
     "Custom Order Banner",
     "Why Choose Us",
-    "Testimonials — heading & stats",
+    "Customer Reviews — section heading",
     "Promo Showcase — rotating cards below reviews",
     "Scrolling Marquee",
-    "Footer Banner — mobile & tablet images above the footer",
   ],
   footer: ["Quick Links column", "Popular Categories column", "Trust Badges", "Disclaimer & note"],
-  about: ["Intro", "Why Choose section", "Stats (4)"],
+  about: ["Intro", "Behind Every Stitch — reels videos", "Why Choose section", "Stats (4)"],
   contact: ["Contact details", "Social links"],
   policies: ["Privacy Policy", "Terms of Service", "Editorial Policy", "Refund Policy"],
 };
@@ -368,7 +368,8 @@ export default function AdminContentPage() {
                 <p className="text-[10px] text-brand-gray">Icons are assigned automatically in order.</p>
               </Section>
 
-              <Section activeSection={activeSection} title="Testimonials — heading & stats">
+              <Section activeSection={activeSection} title="Customer Reviews — section heading">
+                <TextField label="Eyebrow (small label above title)" value={val("home_testimonials_eyebrow")} onChange={(v) => setVal("home_testimonials_eyebrow", v)} placeholder={ph("home_testimonials_eyebrow")} hint="Blank = use site default." />
                 <TextField label="Section Title" value={val("home_testimonials_title")} onChange={(v) => setVal("home_testimonials_title", v)} placeholder={ph("home_testimonials_title")} hint="Blank = use site default." />
                 <TextAreaField label="Section Subtitle" value={val("home_testimonials_subtitle")} onChange={(v) => setVal("home_testimonials_subtitle", v)} placeholder={ph("home_testimonials_subtitle")} hint="Blank = use site default." />
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -399,77 +400,6 @@ export default function AdminContentPage() {
                   onChange={(arr) => setListVal("home_marquee", arr)}
                   addLabel="Add item"
                   hint="Short phrase"
-                />
-              </Section>
-
-              <Section activeSection={activeSection} title="Footer Banner — mobile & tablet images above the footer">
-                <ImageField
-                  label="Mobile Banner Image (3:4)"
-                  value={val("home_footer_banner_mobile_image")}
-                  onChange={(v) => setVal("home_footer_banner_mobile_image", v)}
-                  hint="Shown on phones at a 3:4 (portrait) ratio. Leave blank to reuse the tablet image below, cropped instead."
-                />
-                <ImageField
-                  label="Tablet Banner Image (4:3)"
-                  value={val("home_footer_banner_image")}
-                  onChange={(v) => setVal("home_footer_banner_image", v)}
-                  hint="Shown on tablets at a 4:3 ratio. This section is hidden on desktop. Leave both images blank to hide it entirely."
-                />
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-brand-black uppercase tracking-wider block">
-                    Decoration Color
-                  </label>
-                  <div className="flex items-center gap-2.5">
-                    {PROMO_CARD_COLORS.map((color) => (
-                      <button
-                        key={color.key}
-                        type="button"
-                        onClick={() => setVal("home_footer_banner_decoration_color", color.key)}
-                        aria-label={color.label}
-                        title={color.label}
-                        className={`w-8 h-8 rounded-full ${color.className} border-2 transition-all ${
-                          (val("home_footer_banner_decoration_color") || "brown") === color.key
-                            ? "border-brand-black scale-110"
-                            : "border-transparent"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-[10px] text-brand-gray">
-                    Color of the corner accents and sparkles overlaid on the banner image — pick one that stands out against your uploaded photo.
-                  </p>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline justify-between">
-                    <label className="text-xs font-bold text-brand-black uppercase tracking-wider block">
-                      Image Opacity
-                    </label>
-                    <span className="text-xs font-bold text-goat-primary">
-                      {val("home_footer_banner_image_opacity") || "100"}%
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={20}
-                    max={100}
-                    step={5}
-                    value={Number(val("home_footer_banner_image_opacity") || 100)}
-                    onChange={(e) => setVal("home_footer_banner_image_opacity", e.target.value)}
-                    className="w-full h-2 rounded-full bg-goat-tint accent-goat-primary cursor-pointer"
-                  />
-                  <p className="text-[10px] text-brand-gray">
-                    Fades only the banner photo — the corner decoration and sparkles always stay fully visible.
-                  </p>
-                </div>
-
-                <TextField
-                  label="Link (optional)"
-                  value={val("home_footer_banner_link")}
-                  onChange={(v) => setVal("home_footer_banner_link", v)}
-                  placeholder="/shop or https://..."
-                  hint="Blank = banner is not clickable."
                 />
               </Section>
 
@@ -532,6 +462,18 @@ export default function AdminContentPage() {
                 <ImageField label="Intro Image" value={val("about_intro_image")} onChange={(v) => setVal("about_intro_image", v)} hint="Blank = use site default." />
                 <TextAreaField label="Paragraph 1" value={val("about_intro_p1")} onChange={(v) => setVal("about_intro_p1", v)} placeholder={ph("about_intro_p1")} rows={4} hint="Blank = use site default." />
                 <TextAreaField label="Paragraph 2" value={val("about_intro_p2")} onChange={(v) => setVal("about_intro_p2", v)} placeholder={ph("about_intro_p2")} rows={4} hint="Blank = use site default." />
+              </Section>
+
+              <Section activeSection={activeSection} title="Behind Every Stitch — reels videos">
+                <ReelListEditor
+                  label="Reels"
+                  items={listVal<AboutReel>("about_reels", [])}
+                  onChange={(arr) => setListVal("about_reels", arr)}
+                />
+                <p className="text-[10px] text-brand-gray">
+                  These short videos auto-scroll in the &quot;Behind Every Stitch&quot; ticker on the About page.
+                  Leave the list empty to show the built-in placeholder cards.
+                </p>
               </Section>
 
               <Section activeSection={activeSection} title="Why Choose section">

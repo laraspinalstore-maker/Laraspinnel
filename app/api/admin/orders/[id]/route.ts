@@ -78,7 +78,7 @@ export async function PUT(
         const { subject, html } = getOrderStatusUpdateEmail(
           { orderNumber: order.orderNumber, customerName: order.customerName, status: order.status },
           {
-            shopName: settingsMap.farm_name || "Lara's Pinnal",
+            shopName: settingsMap.farm_name || "Laraspinnel",
             subjectTemplate: settingsMap.email_status_subject,
             introTemplate: settingsMap.email_status_intro,
             footerTemplate: settingsMap.email_status_footer,

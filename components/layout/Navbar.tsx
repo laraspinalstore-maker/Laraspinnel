@@ -16,7 +16,6 @@ export default function Navbar() {
   const { settings } = useSettings();
   const { cartCount } = useCart();
 
-  const phone = settings.contact_phone || "+91 9442379832";
   const whatsapp = settings.contact_whatsapp || "+91 9442379832";
   const whatsappFormatted = whatsapp.replace(/[^\d+]/g, "");
   const whatsappUrl = `https://wa.me/${whatsappFormatted}`;
@@ -26,7 +25,8 @@ export default function Navbar() {
     { name: "Shop", href: "/shop" },
     { name: "Categories", href: "/categories" },
     { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+    { name: "Enquiry", href: "/contact" },
+    { name: "Track Order", href: "/track-order" },
   ];
 
   const bottomLinks = [
@@ -34,7 +34,7 @@ export default function Navbar() {
     { name: "Shop", href: "/shop", icon: ShoppingBag },
     { name: "Categories", href: "/categories", icon: LayoutGrid },
     { name: "About", href: "/about", icon: Info },
-    { name: "Contact", href: "/contact", icon: Phone },
+    { name: "Enquiry", href: "/contact", icon: Phone },
   ];
 
   return (
@@ -100,16 +100,6 @@ export default function Navbar() {
             >
               <Search size={18} strokeWidth={1.8} />
             </Link>
-
-            {/* Phone */}
-            <a
-              href={`tel:${phone}`}
-              className="p-2 text-brand-black hover:text-goat-primary hover:bg-brand-light-gray rounded-full transition-all border border-transparent hover:border-brand-border"
-              title="Call Us"
-              aria-label="Call Us"
-            >
-              <Phone size={18} strokeWidth={1.8} />
-            </a>
 
             {/* WhatsApp */}
             <a

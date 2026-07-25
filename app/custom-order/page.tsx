@@ -5,6 +5,7 @@ import Image from "next/image";
 import useSWR from "swr";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import CustomSelect from "@/components/shared/CustomSelect";
 import { useSettings } from "@/hooks/useSettings";
 import { FaWhatsapp } from "react-icons/fa6";
 import {
@@ -113,6 +114,10 @@ export default function CustomOrderPage() {
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
       setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
+  /* For CustomSelect, which passes the value directly instead of an event */
+  const setValue = (key: keyof typeof form) => (value: string) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
+
   const selectedCategory = categories.find((c) => c.name === form.category);
 
   const toggleColor = (name: string) =>
@@ -162,6 +167,14 @@ export default function CustomOrderPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // CustomSelect has no native `required`, so validate the category here
+    if (!form.category) {
+      setErrorMessage("Please select a product / category for your custom order.");
+      setStatus("error");
+      return;
+    }
+
     setStatus("loading");
 
     try {
@@ -249,22 +262,24 @@ export default function CustomOrderPage() {
                         <label className={labelClass}>
                           Product / Category <span className="text-secondary">*</span>
                         </label>
-                        <select required value={form.category} onChange={set("category")} className={`${inputClass} cursor-pointer`}>
-                          <option value="">Select a category</option>
-                          {categories.map((c) => (
-                            <option key={c._id} value={c.name}>{c.name}</option>
-                          ))}
-                          <option value="Something else">Something else</option>
-                        </select>
+                        <CustomSelect
+                          value={form.category}
+                          onChange={setValue("category")}
+                          placeholder="Select a category"
+                          options={[
+                            ...categories.map((c) => ({ label: c.name, value: c.name })),
+                            { label: "Something else", value: "Something else" },
+                          ]}
+                        />
                       </div>
                       <div className="space-y-1.5">
                         <label className={labelClass}>Occasion</label>
-                        <select value={form.occasion} onChange={set("occasion")} className={`${inputClass} cursor-pointer`}>
-                          <option value="">Select occasion</option>
-                          {OCCASIONS.map((o) => (
-                            <option key={o} value={o}>{o}</option>
-                          ))}
-                        </select>
+                        <CustomSelect
+                          value={form.occasion}
+                          onChange={setValue("occasion")}
+                          placeholder="Select occasion"
+                          options={OCCASIONS.map((o) => ({ label: o, value: o }))}
+                        />
                       </div>
                     </div>
                   </Step>
@@ -307,20 +322,20 @@ export default function CustomOrderPage() {
                         </div>
                         <div className="space-y-1.5">
                           <label className={labelClass}>Size</label>
-                          <select value={form.size} onChange={set("size")} className={`${inputClass} cursor-pointer`}>
-                            <option value="">Select size</option>
-                            {SIZES.map((s) => (
-                              <option key={s} value={s}>{s}</option>
-                            ))}
-                          </select>
+                          <CustomSelect
+                            value={form.size}
+                            onChange={setValue("size")}
+                            placeholder="Select size"
+                            options={SIZES.map((s) => ({ label: s, value: s }))}
+                          />
                         </div>
                         <div className="space-y-1.5">
                           <label className={labelClass}>Quantity</label>
-                          <select value={form.quantity} onChange={set("quantity")} className={`${inputClass} cursor-pointer`}>
-                            {QUANTITIES.map((q) => (
-                              <option key={q} value={q}>{q}</option>
-                            ))}
-                          </select>
+                          <CustomSelect
+                            value={form.quantity}
+                            onChange={setValue("quantity")}
+                            options={QUANTITIES.map((q) => ({ label: q, value: q }))}
+                          />
                         </div>
                       </div>
 

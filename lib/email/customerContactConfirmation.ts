@@ -4,6 +4,7 @@ import {
   DEFAULT_CONTACT_CONFIRMATION_FOOTER_TEMPLATE,
   renderEmailText,
 } from "@/lib/emailTemplate";
+import { renderEmailShell, EMAIL_COLORS } from "@/lib/email/layout";
 
 interface ContactMessageInput {
   name: string;
@@ -35,36 +36,27 @@ export function getContactConfirmationEmail(
   const intro = renderEmailText(introTemplate || DEFAULT_CONTACT_CONFIRMATION_INTRO_TEMPLATE, data);
   const footer = renderEmailText(footerTemplate || DEFAULT_CONTACT_CONFIRMATION_FOOTER_TEMPLATE, data);
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${subject}</title>
-    </head>
-    <body style="font-family: sans-serif; color: #111111; line-height: 1.5; margin: 0; padding: 0; background-color: #f7f7f7;">
-      <div style="max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb;">
-        <div style="background-color: #8FA88A; color: #ffffff; padding: 24px; text-align: center;">
-          <h1 style="margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px;">Message Received</h1>
-        </div>
-        <div style="padding: 24px;">
-          <p style="white-space: pre-line;">${intro}</p>
+  const bodyHtml = `
+    <p style="white-space: pre-line; margin: 0 0 4px; font-size: 14px;">${intro}</p>
 
-          <div style="background-color: #F7F7F7; border-left: 4px solid #8FA88A; border-radius: 6px; padding: 14px 16px; margin: 20px 0;">
-            <p style="margin: 0 0 4px 0; font-size: 11px; text-transform: uppercase; color: #6b7280; font-weight: bold;">Your Message — ${contact.subject}</p>
-            <p style="margin: 0; font-size: 13px; color: #374151; white-space: pre-wrap;">${contact.message}</p>
-          </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0;">
+      <tr>
+        <td style="background-color: ${EMAIL_COLORS.sageTint}; border-left: 4px solid ${EMAIL_COLORS.sage}; border-radius: 6px; padding: 14px 16px;">
+          <p style="margin: 0 0 4px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: ${EMAIL_COLORS.sageText}; font-weight: bold;">Your Message &mdash; ${contact.subject}</p>
+          <p style="margin: 0; font-size: 13px; color: ${EMAIL_COLORS.ink}; white-space: pre-wrap;">${contact.message}</p>
+        </td>
+      </tr>
+    </table>
 
-          <p style="white-space: pre-line; font-size: 13px; color: #374151; margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb;">${footer}</p>
-        </div>
-        <div style="background-color: #111111; color: #9ca3af; text-align: center; padding: 16px; font-size: 11px;">
-          <p style="margin: 0;">${shopName} &copy; ${new Date().getFullYear()}</p>
-        </div>
-      </div>
-    </body>
-    </html>
+    <p style="white-space: pre-line; font-size: 13px; color: ${EMAIL_COLORS.brownText}; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid ${EMAIL_COLORS.border};">${footer}</p>
   `;
+
+  const html = renderEmailShell({
+    title: subject,
+    bannerText: "Message Received",
+    shopName,
+    bodyHtml,
+  });
 
   return { subject, html };
 }

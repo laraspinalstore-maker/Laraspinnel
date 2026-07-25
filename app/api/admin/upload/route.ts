@@ -19,18 +19,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // 2b. Validate file type and size
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
-    if (!ALLOWED_TYPES.includes(file.type)) {
+    // 2b. Validate file type and size (videos get a larger cap than images)
+    const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+    const VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"];
+    const isVideo = VIDEO_TYPES.includes(file.type);
+    if (!IMAGE_TYPES.includes(file.type) && !isVideo) {
       return NextResponse.json(
-        { error: "Unsupported file type. Allowed: JPEG, PNG, WebP, AVIF, GIF." },
+        { error: "Unsupported file type. Allowed: JPEG, PNG, WebP, AVIF, GIF, MP4, WebM, MOV." },
         { status: 415 }
       );
     }
+    const MAX_FILE_SIZE = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: "File too large. Maximum size is 5 MB." },
+        { error: `File too large. Maximum size is ${isVideo ? "50" : "5"} MB.` },
         { status: 413 }
       );
     }

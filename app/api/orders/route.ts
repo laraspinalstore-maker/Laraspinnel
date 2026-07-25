@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
         const { subject, html } = getOrderConfirmationEmail(
           { orderNumber, customerName, address, city, pincode, totalAmount, items: finalItems },
           {
-            shopName: settingsMap.farm_name || "Lara's Pinnal",
+            shopName: settingsMap.farm_name || "Laraspinnel",
             subjectTemplate: settingsMap.email_order_subject,
             introTemplate: settingsMap.email_order_intro,
             footerTemplate: settingsMap.email_order_footer,

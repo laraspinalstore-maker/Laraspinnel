@@ -147,7 +147,13 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+            <Link
+              href={`/track-order?order=${encodeURIComponent(placedOrder.orderNumber)}`}
+              className="inline-flex items-center gap-2 text-sm font-semibold text-goat-primary hover:underline"
+            >
+              Track This Order <ChevronRight size={16} />
+            </Link>
             <Link
               href="/shop"
               className="inline-flex items-center gap-2 text-sm font-semibold text-goat-primary hover:underline"
