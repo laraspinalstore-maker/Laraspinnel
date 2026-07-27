@@ -206,31 +206,6 @@ function ShopPageContent() {
               </div>
             </div>
 
-            {/* Sort */}
-            <div>
-              <h3 className="text-xs font-bold text-brand-black uppercase tracking-wider mb-3">
-                Sort By
-              </h3>
-              <div className="space-y-1">
-                {SORT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => {
-                      setSort(opt.value);
-                      updateUrlParams({ sort: opt.value });
-                    }}
-                    className={`w-full text-left px-3 py-2 min-h-11 flex items-center rounded-lg text-sm font-semibold transition-colors ${
-                      sort === opt.value
-                        ? "bg-goat-tint text-goat-primary"
-                        : "text-brand-gray hover:bg-brand-light-gray hover:text-brand-black"
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Clear filters */}
             {hasActiveFilters && (
               <button
@@ -309,12 +284,32 @@ function ShopPageContent() {
               </div>
             </div>
 
-            {/* Results count */}
-            {!isLoading && !error && (
-              <p className="text-xs font-semibold text-brand-gray uppercase tracking-wide">
-                {products.length} {products.length === 1 ? "product" : "products"} found
-              </p>
-            )}
+            {/* Toolbar — results count left, sort dropdown right (desktop; mobile has its own bar above) */}
+            <div className="flex items-center justify-between gap-4">
+              {!isLoading && !error ? (
+                <p className="text-xs font-semibold text-brand-gray uppercase tracking-wide">
+                  {products.length} {products.length === 1 ? "product" : "products"} found
+                </p>
+              ) : (
+                <span />
+              )}
+              <div className="hidden lg:flex items-center gap-2 shrink-0">
+                <span className="text-xs font-bold text-brand-black uppercase tracking-wider">
+                  Sort by
+                </span>
+                <div className="w-48">
+                  <CustomSelect
+                    options={SORT_OPTIONS}
+                    value={sort}
+                    onChange={(val) => {
+                      setSort(val);
+                      updateUrlParams({ sort: val });
+                    }}
+                    theme="goat"
+                  />
+                </div>
+              </div>
+            </div>
 
             {/* Products Grid */}
             {isLoading ? (

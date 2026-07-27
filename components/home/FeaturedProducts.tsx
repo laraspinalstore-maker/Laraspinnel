@@ -44,14 +44,14 @@ export default function FeaturedProducts() {
               }
             }
           `}</style>
-          <div className="space-y-1">
+          <div className="space-y-1 min-w-0">
             <h2 className="font-display text-2xl md:text-3xl text-brand-black tracking-wide uppercase">
               Featured Products
             </h2>
           </div>
           <Link
             href="/shop"
-            className="group inline-flex items-center gap-1 text-sm font-semibold text-goat-primary hover:text-goat-hover transition-colors"
+            className="group inline-flex items-center gap-1 text-sm font-semibold text-goat-primary hover:text-goat-hover transition-colors whitespace-nowrap shrink-0"
           >
             <span>View All</span>
             <ArrowRight size={14} className="animate-arrow-slide lg:transition-transform lg:group-hover:translate-x-1" />

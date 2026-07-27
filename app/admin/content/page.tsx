@@ -332,10 +332,16 @@ export default function AdminContentPage() {
                 </div>
 
                 <ImageField
-                  label="Background Image (Desktop & Tablet)"
+                  label="Background Image (Desktop)"
                   value={val("home_custom_bg_image")}
                   onChange={(v) => setVal("home_custom_bg_image", v)}
                   hint="Soft full-section background behind the banner. Blank = plain cream background."
+                />
+                <ImageField
+                  label="Background Image (Tablet)"
+                  value={val("home_custom_bg_image_tablet")}
+                  onChange={(v) => setVal("home_custom_bg_image_tablet", v)}
+                  hint="Shown on tablets instead of the desktop background. Blank = reuse the desktop image."
                 />
                 <ImageField
                   label="Background Image (Mobile)"

@@ -59,6 +59,7 @@ export default function CustomOrderBanner({
   const secondaryText = s("home_custom_secondary_text");
   const secondaryLink = settings["home_custom_secondary_link"]?.trim() || exploreLink;
   const bgImage = s("home_custom_bg_image");
+  const bgImageTablet = settings["home_custom_bg_image_tablet"]?.trim() || bgImage;
   const bgImageMobile = s("home_custom_bg_image_mobile") || bgImage;
   const galleryItems = parseList<CustomGalleryItem>(
     settings["home_custom_gallery"],
@@ -66,7 +67,7 @@ export default function CustomOrderBanner({
   );
 
   const Eyebrow = (
-    <p className="text-center text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+    <p className="text-center text-[11px] sm:text-xs md:max-lg:text-sm font-semibold uppercase tracking-[0.24em] text-goat-primary">
       {eyebrow}
     </p>
   );
@@ -94,7 +95,7 @@ export default function CustomOrderBanner({
   );
 
   const Description = (
-    <p className="text-base sm:text-lg text-brand-gray leading-relaxed max-w-md mx-auto text-center">
+    <p className="text-base sm:text-lg md:max-lg:text-xl text-brand-gray leading-relaxed max-w-md md:max-lg:max-w-xl mx-auto text-center">
       {description}
     </p>
   );
@@ -112,11 +113,11 @@ export default function CustomOrderBanner({
           >
             <span
               aria-hidden="true"
-              className="w-12 h-12 rounded-full bg-goat-tint border border-goat-primary/10 flex items-center justify-center text-goat-primary shrink-0"
+              className="w-12 h-12 md:max-lg:w-14 md:max-lg:h-14 rounded-full bg-goat-tint border border-goat-primary/10 flex items-center justify-center text-goat-primary shrink-0"
             >
               <Icon size={20} strokeWidth={1.5} />
             </span>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-brand-gray/80 leading-relaxed max-w-24">
+            <span className="text-[11px] md:max-lg:text-xs font-semibold uppercase tracking-wider text-brand-gray/80 md:max-lg:text-brand-black/70 leading-relaxed max-w-24 md:max-lg:max-w-28">
               {label}
             </span>
           </li>
@@ -149,10 +150,11 @@ export default function CustomOrderBanner({
   return (
     <section
       aria-labelledby="custom-order-heading"
-      className="bg-cream-bg bg-(image:--custom-bg-mobile) md:bg-(image:--custom-bg) bg-cover bg-center bg-no-repeat border-y border-brand-border overflow-hidden"
+      className="bg-cream-bg bg-(image:--custom-bg-mobile) md:bg-(image:--custom-bg-tablet) lg:bg-(image:--custom-bg) bg-cover bg-center bg-no-repeat border-y border-brand-border overflow-hidden"
       style={
         {
           "--custom-bg": bgImage ? `url(${bgImage})` : "none",
+          "--custom-bg-tablet": bgImageTablet ? `url(${bgImageTablet})` : "none",
           "--custom-bg-mobile": bgImageMobile ? `url(${bgImageMobile})` : "none",
         } as React.CSSProperties
       }
@@ -176,8 +178,9 @@ export default function CustomOrderBanner({
       </div>
 
       {/* ===== Tablet: content + horizontal showcase ===== */}
-      <div className="hidden md:block lg:hidden px-4 md:px-6 py-12 space-y-8">
-        <div className="max-w-lg mx-auto space-y-5 animate-in fade-in duration-700">
+      <div className="hidden md:block lg:hidden px-4 md:px-6 py-14 space-y-8">
+        {/* Soft cream panel keeps the copy readable over the background image */}
+        <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-700 rounded-3xl bg-cream-bg/85 backdrop-blur-sm px-8 py-10">
           {Eyebrow}
           <div className="space-y-3">
             {Headline}

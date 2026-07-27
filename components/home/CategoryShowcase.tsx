@@ -40,8 +40,8 @@ export default function CategoryShowcase({ title, categorySlug, eyebrow }: Categ
     <section className="relative overflow-hidden py-20 bg-white">
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 space-y-8">
         {/* Header row */}
-        <div className="flex flex-row items-center justify-between pb-4 gap-3 sm:gap-0">
-          <div className="space-y-1">
+        <div className="flex flex-row items-center justify-between pb-4 gap-3">
+          <div className="space-y-1 min-w-0">
             {eyebrow && (
               <div className="flex items-center gap-1.5 text-goat-primary">
                 <Gem size={16} className="animate-pulse text-gold-primary" />
@@ -56,7 +56,7 @@ export default function CategoryShowcase({ title, categorySlug, eyebrow }: Categ
           </div>
           <Link
             href={`/shop?category=${categorySlug}`}
-            className="group inline-flex items-center gap-1 text-sm font-semibold text-goat-primary hover:text-goat-hover transition-colors"
+            className="group inline-flex items-center gap-1 text-sm font-semibold text-goat-primary hover:text-goat-hover transition-colors whitespace-nowrap shrink-0"
           >
             <span>View All</span>
             <ArrowRight size={14} className="lg:transition-transform lg:group-hover:translate-x-1" />
