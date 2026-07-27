@@ -117,6 +117,13 @@ export const DEFAULT_CUSTOM_POINTS: string[] = [
   "Handmade to Order",
 ];
 
+/* ---- About: Our Story section craft chips ---- */
+export const DEFAULT_STORY_CHIPS: string[] = [
+  "Premium milk cotton",
+  "Handmade to order",
+  "Personalized details",
+];
+
 // Curated custom creations — Lara's Pinnal catalog photography (ImageKit CDN).
 export const DEFAULT_CUSTOM_GALLERY: CustomGalleryItem[] = [
   {
@@ -245,9 +252,9 @@ export const CONTENT_DEFAULTS: Record<string, string> = {
  * the built-in public default, so we never overwrite a good default.
  */
 export const CONTENT_PLACEHOLDERS: Record<string, string> = {
-  home_shop_title: "Handmade Gifts Crafted with Love",
+  home_shop_title: "Shop by Collection",
   home_shop_subtitle:
-    "Browse our collection of hand-knitted crochet bouquets, customized frames, hampers, and accessories.",
+    "Find something handmade for every moment, celebration, and someone special.",
   home_testimonials_eyebrow: "Customer Love",
   home_testimonials_title: "Kind Words From Happy Customers",
   home_testimonials_subtitle:
@@ -259,6 +266,12 @@ export const CONTENT_PLACEHOLDERS: Record<string, string> = {
   about_intro_subtitle: "Handcrafting crochet gifts and flowers with love in Villupuram, Tamil Nadu.",
   about_intro_p1: "Tell customers your story — how Lara's Pinnal began and what makes it special.",
   about_intro_p2: "Add a second paragraph about your craft, materials, or mission.",
+  about_intro_p3: "Optional third paragraph — leave blank to hide it.",
+  about_story_eyebrow: "Our Story",
+  about_story_title: "How It All Began",
+  about_story_est: "2019",
+  about_story_cta_text: "Our Craft",
+  about_story_signoff: "Thank you for being a part of our journey.",
   about_why_title: "Why Choose Lara's Pinnal?",
   about_why_subtitle: "What sets your handmade gifts apart.",
   about_why_1_title: "Handmade with Love",

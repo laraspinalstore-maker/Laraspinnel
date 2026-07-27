@@ -27,6 +27,7 @@ import {
   DEFAULT_PROMO_CARDS,
   DEFAULT_CUSTOM_POINTS,
   DEFAULT_CUSTOM_GALLERY,
+  DEFAULT_STORY_CHIPS,
   parseList,
   WhyStep,
   LinkItem,
@@ -77,7 +78,7 @@ const SECTIONS: Record<TabId, string[]> = {
     "Scrolling Marquee",
   ],
   footer: ["Quick Links column", "Popular Categories column", "Trust Badges", "Disclaimer & note"],
-  about: ["Intro", "Behind Every Stitch — reels videos", "Why Choose section", "Stats (4)"],
+  about: ["Hero (top of page)", "Our Story", "Behind Every Stitch — reels videos", "Why Choose section", "Stats (4)"],
   contact: ["Contact details", "Social links"],
   policies: ["Privacy Policy", "Terms of Service", "Editorial Policy", "Refund Policy"],
 };
@@ -244,7 +245,7 @@ export default function AdminContentPage() {
             <div className="space-y-8 animate-in fade-in duration-200">
               <Section activeSection={activeSection} title="Shop by Category — heading">
                 <TextField label="Section Title" value={val("home_shop_title")} onChange={(v) => setVal("home_shop_title", v)} placeholder={ph("home_shop_title")} hint="Blank = use site default." />
-                <TextAreaField label="Section Subtitle" value={val("home_shop_subtitle")} onChange={(v) => setVal("home_shop_subtitle", v)} placeholder={ph("home_shop_subtitle")} hint="Blank = use site default." />
+                <TextAreaField label="Section Subtitle" value={val("home_shop_subtitle")} onChange={(v) => setVal("home_shop_subtitle", v)} placeholder={ph("home_shop_subtitle")} hint="Blank = subtitle hidden." />
               </Section>
 
               <Section activeSection={activeSection} title="Custom Order Banner">
@@ -456,12 +457,33 @@ export default function AdminContentPage() {
 
           {activeTab === "about" && (
             <div className="space-y-8 animate-in fade-in duration-200">
-              <Section activeSection={activeSection} title="Intro">
+              <Section activeSection={activeSection} title="Hero (top of page)">
                 <TextField label="Title" value={val("about_intro_title")} onChange={(v) => setVal("about_intro_title", v)} placeholder={ph("about_intro_title")} hint="Blank = use site default." />
                 <TextAreaField label="Subtitle" value={val("about_intro_subtitle")} onChange={(v) => setVal("about_intro_subtitle", v)} placeholder={ph("about_intro_subtitle")} hint="Blank = use site default." />
-                <ImageField label="Intro Image" value={val("about_intro_image")} onChange={(v) => setVal("about_intro_image", v)} hint="Blank = use site default." />
+                <ImageField label="Hero Image" value={val("about_intro_image")} onChange={(v) => setVal("about_intro_image", v)} hint="Blank = use site default." />
+              </Section>
+
+              <Section activeSection={activeSection} title="Our Story">
+                <ImageField label="Maker Photo" value={val("about_story_image")} onChange={(v) => setVal("about_story_image", v)} hint="Photo of the maker at work. Blank = use site default." />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <TextField label="Eyebrow" value={val("about_story_eyebrow")} onChange={(v) => setVal("about_story_eyebrow", v)} placeholder={ph("about_story_eyebrow")} hint="Small uppercase label above the heading." />
+                  <TextField label="Heading" value={val("about_story_title")} onChange={(v) => setVal("about_story_title", v)} placeholder={ph("about_story_title")} hint="Last word is highlighted in italic." />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <TextField label="Established Year (badge)" value={val("about_story_est")} onChange={(v) => setVal("about_story_est", v)} placeholder={ph("about_story_est")} hint="Shown in the round Est. badge." />
+                  <TextField label="Button Text" value={val("about_story_cta_text")} onChange={(v) => setVal("about_story_cta_text", v)} placeholder={ph("about_story_cta_text")} hint="Scrolls to the craftsmanship section." />
+                </div>
                 <TextAreaField label="Paragraph 1" value={val("about_intro_p1")} onChange={(v) => setVal("about_intro_p1", v)} placeholder={ph("about_intro_p1")} rows={4} hint="Blank = use site default." />
                 <TextAreaField label="Paragraph 2" value={val("about_intro_p2")} onChange={(v) => setVal("about_intro_p2", v)} placeholder={ph("about_intro_p2")} rows={4} hint="Blank = use site default." />
+                <TextAreaField label="Paragraph 3 (optional)" value={val("about_intro_p3")} onChange={(v) => setVal("about_intro_p3", v)} placeholder={ph("about_intro_p3")} rows={3} hint="Blank = hidden." />
+                <ListEditor<string>
+                  label="Craft Chips"
+                  items={listVal<string>("about_story_chips", DEFAULT_STORY_CHIPS)}
+                  onChange={(arr) => setListVal("about_story_chips", arr)}
+                  addLabel="Add chip"
+                  hint="Short craft fact, e.g. Premium milk cotton"
+                />
+                <TextField label="Sign-off Line" value={val("about_story_signoff")} onChange={(v) => setVal("about_story_signoff", v)} placeholder={ph("about_story_signoff")} hint="Italic closing line under the Our Craft button." />
               </Section>
 
               <Section activeSection={activeSection} title="Behind Every Stitch — reels videos">

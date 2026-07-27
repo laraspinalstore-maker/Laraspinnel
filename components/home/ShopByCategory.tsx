@@ -17,11 +17,13 @@ export default function ShopByCategory({ settings }: { settings: any }) {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-4 gap-3 sm:gap-0">
           <div>
             <h2 className="font-display text-2xl md:text-4xl text-brand-black tracking-wide uppercase">
-              {settings.home_shop_title || "Shop by Collection"}
+              {settings.home_shop_title?.trim() || "Shop by Collection"}
             </h2>
-            <p className="text-sm font-medium text-brand-gray mt-1 text-justify md:text-left">
-              {settings.home_shop_subtitle || "Find something handmade for every moment, celebration, and someone special."}
-            </p>
+            {settings.home_shop_subtitle?.trim() && (
+              <p className="text-sm font-medium text-brand-gray mt-1 text-justify md:text-left">
+                {settings.home_shop_subtitle}
+              </p>
+            )}
           </div>
         </div>
 
@@ -30,7 +32,7 @@ export default function ShopByCategory({ settings }: { settings: any }) {
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6">
             {[...Array(6)].map((_, idx) => (
               <div key={idx} className="space-y-3">
-                <div className="w-full aspect-square rounded-2xl md:rounded-[2rem] bg-neutral-200 animate-pulse" />
+                <div className="w-full aspect-square rounded-2xl md:rounded-4xl bg-neutral-200 animate-pulse" />
                 <div className="h-4 bg-neutral-200 rounded animate-pulse w-3/4 mx-auto" />
               </div>
             ))}
@@ -49,7 +51,7 @@ export default function ShopByCategory({ settings }: { settings: any }) {
                 className="group flex flex-col items-center text-center gap-3 w-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-goat-primary focus-visible:ring-offset-2"
               >
                 {/* Rounded Square Card with Off-White Background */}
-                <div className="relative aspect-square w-full rounded-2xl md:rounded-[2rem] overflow-hidden bg-[#F3F4F6] border border-brand-border/40 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+                <div className="relative aspect-square w-full rounded-2xl md:rounded-4xl overflow-hidden bg-[#F3F4F6] border border-brand-border/40 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
                   <Image
                     src={category.image}
                     alt={category.name}

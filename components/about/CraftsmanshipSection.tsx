@@ -113,7 +113,7 @@ export default function CraftsmanshipSection() {
   const activePillar = PILLARS.find((p) => p.id === activeId) || PILLARS[0];
 
   return (
-    <section className="bg-cream-bg py-16 md:py-24 border-t border-brand-border/60 relative overflow-hidden">
+    <section id="our-craft" className="bg-cream-bg scroll-mt-20 py-16 md:py-24 border-t border-brand-border/60 relative overflow-hidden">
       {/* Decorative subtle background elements */}
       <div className="absolute top-10 right-10 w-72 h-72 rounded-full bg-goat-tint/40 blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-rose-tint/40 blur-3xl pointer-events-none" />
@@ -169,7 +169,7 @@ export default function CraftsmanshipSection() {
               >
                 {/* Visual Column - Polaroid Style */}
                 <div className="lg:col-span-5 flex justify-center">
-                  <div className="relative w-64 md:w-72 lg:w-80 rotate-[-2deg] rounded-3xl bg-white border border-brand-border shadow-hover p-4 pb-6 group transition-transform duration-500 hover:rotate-0">
+                  <div className="relative w-64 md:w-72 lg:w-80 -rotate-2 rounded-3xl bg-white border border-brand-border shadow-hover p-4 pb-6 group transition-transform duration-500 hover:rotate-0">
                     <div className={`relative aspect-square rounded-2xl ${activePillar.bgTintClass} overflow-hidden p-4`}>
                       <Image
                         src={activePillar.imageSrc}

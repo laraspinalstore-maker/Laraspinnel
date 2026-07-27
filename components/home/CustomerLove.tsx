@@ -521,15 +521,15 @@ const ChatCard = ({ rev }: { rev: ChatReview }) => (
       )}
       <div className="min-w-0">
         <h3 className="font-bold text-[#211A16] text-sm truncate">{rev.name}</h3>
-        <div className="flex items-center gap-1.5 mt-1">
-          <div className="flex gap-px">
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 mt-1">
+          <div className="flex gap-px shrink-0">
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={12} className={i < rev.rating ? "text-[#D99A27] fill-[#D99A27]" : "text-[#9A9188]/40"} />
             ))}
           </div>
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#147A52]">
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#147A52] whitespace-nowrap">
             Verified Customer
-            <BadgeCheck size={13} className="fill-[#147A52] text-white" />
+            <BadgeCheck size={13} className="fill-[#147A52] text-white shrink-0" />
           </span>
         </div>
       </div>
@@ -558,9 +558,9 @@ const ChatCard = ({ rev }: { rev: ChatReview }) => (
         <p className="text-sm font-bold text-[#211A16] truncate">
           {rev.product?.name || rev.location}
         </p>
-        <p className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#147A52]">
+        <p className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#147A52] whitespace-nowrap">
           Verified Purchase
-          <BadgeCheck size={13} className="fill-[#147A52] text-white" />
+          <BadgeCheck size={13} className="fill-[#147A52] text-white shrink-0" />
         </p>
       </div>
       <span className="ml-auto text-[10px] font-medium text-[#9A9188] shrink-0 pl-2">
@@ -643,7 +643,7 @@ export default function CustomerLove() {
   }, [visible.length]);
 
   return (
-    <section className="py-20 bg-[#FFF9F2]">
+    <section className="py-20 bg-cream-bg">
       <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12">
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center space-y-3">

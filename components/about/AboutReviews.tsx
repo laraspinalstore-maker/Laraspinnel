@@ -86,10 +86,6 @@ export default function AboutReviews() {
         ) : (
           <Reveal>
             <div className="relative overflow-hidden -mx-4 md:-mx-6">
-              {/* Edge fades blend the moving cards into the section background */}
-              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-6 sm:w-16 bg-linear-to-r from-[#FFF9F8] to-transparent" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-6 sm:w-16 bg-linear-to-l from-[#FFF9F8] to-transparent" />
-
               <div
                 className="flex w-max animate-gallery-x"
                 style={{ animationDuration: `${Math.max(25, track.length * 6)}s` }}
