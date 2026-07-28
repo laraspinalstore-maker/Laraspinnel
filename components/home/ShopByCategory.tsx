@@ -11,8 +11,8 @@ export default function ShopByCategory({ settings }: { settings: any }) {
   const { data: categories = [], isLoading } = useSWR("/api/categories", fetcher);
 
   return (
-    <section className="py-20 bg-brand-light-gray">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12">
+    <section className="pt-10 pb-16 md:py-20 bg-brand-light-gray">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-6 md:space-y-12">
         {/* Header row */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-4 gap-3 sm:gap-0">
           <div>
