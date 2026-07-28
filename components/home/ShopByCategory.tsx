@@ -12,7 +12,7 @@ export default function ShopByCategory({ settings }: { settings: any }) {
 
   return (
     <section className="pt-5 pb-16 md:py-20 bg-brand-light-gray">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-3 md:space-y-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-7 md:space-y-12">
         {/* Header row */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-0 md:pb-4 gap-3 sm:gap-0">
           <div>

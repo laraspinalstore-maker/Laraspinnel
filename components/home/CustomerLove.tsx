@@ -657,11 +657,6 @@ export default function CustomerLove() {
             {settings.home_testimonials_subtitle ||
               "Real messages from customers who made their special moments a little more memorable with Lara's Pinnal."}
           </p>
-          {isDemo && (
-            <p className="text-[10px] text-brand-gray/70">
-              Showing sample stories — approved customer reviews appear here automatically.
-            </p>
-          )}
         </div>
 
         {/* Desktop grid */}
