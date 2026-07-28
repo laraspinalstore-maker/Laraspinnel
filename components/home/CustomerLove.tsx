@@ -672,7 +672,7 @@ export default function CustomerLove() {
           className="lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory -mx-4 px-4 scroll-px-4 md:-mx-6 md:px-6 md:scroll-px-6 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none"
         >
           {visible.map((rev) => (
-            <div key={rev.id} className="w-[92%] sm:w-[58%] md:w-[46%] shrink-0 snap-center md:snap-start">
+            <div key={rev.id} className="w-[96%] sm:w-[58%] md:w-[46%] shrink-0 snap-center md:snap-start">
               <ChatCard rev={rev} />
             </div>
           ))}
