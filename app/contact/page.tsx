@@ -309,17 +309,6 @@ export default function ContactPage() {
                 <span>Chat on WhatsApp</span>
               </a>
             </div>
-
-            {/* Map Placeholders / Iframe */}
-            <div className="bg-brand-light-gray border border-brand-border rounded-2xl overflow-hidden h-full w-full">
-              <iframe
-                src={settings.contact_map_url || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125433.09848529045!2d76.92055610080645!3d10.66986518712613!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba836b28eb6ea85%3A0xaae3bbecafcc2061!2sVillupuram%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1709400000000!5m2!1sen!2sin"}
-                className="w-full h-full border-none grayscale"
-                allowFullScreen={false}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </div>
           </div>
         </div>
       </main>
