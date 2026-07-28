@@ -135,21 +135,19 @@ export default async function HomePage() {
         {/* Hero Banner Slider */}
         <HeroSlider initialBanners={initialBanners} />
 
-        {/* Desktop-only Marquee */}
-        <div className="hidden lg:block">
-          <TextMarquee
-            items={[
-              { label: "100% Handmade", icon: "hand" },
-              { label: "Custom Made", icon: "palette" },
-              { label: "Premium Yarn", icon: "gem" },
-              { label: "Baby-Friendly", icon: "baby" },
-              { label: "Secure Shipping", icon: "truck" },
-            ]}
-            bgColor="bg-brand-light-gray"
-            textColor="text-brand-black"
-            dividerColor="text-brand-black/20"
-          />
-        </div>
+        {/* Marquee — all viewports */}
+        <TextMarquee
+          items={[
+            { label: "100% Handmade", icon: "hand" },
+            { label: "Custom Made", icon: "palette" },
+            { label: "Premium Yarn", icon: "gem" },
+            { label: "Baby-Friendly", icon: "baby" },
+            { label: "Secure Shipping", icon: "truck" },
+          ]}
+          bgColor="bg-brand-light-gray"
+          textColor="text-brand-black"
+          dividerColor="text-brand-black/20"
+        />
 
         {/* Shop by Category cards */}
         <ShopByCategory settings={allSettings} />

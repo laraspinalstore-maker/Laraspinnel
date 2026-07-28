@@ -53,12 +53,12 @@ export default function TextMarquee({
               const Icon = iconKey ? ICON_MAP[iconKey] : undefined;
               return (
                 <div key={`${setIndex}-${idx}`} className="flex items-center">
-                  <span className={`inline-flex items-center gap-2.5 font-display text-2xl sm:text-2xl md:text-3xl tracking-widest uppercase mx-8 ${textColor}`}>
+                  <span className={`inline-flex items-center gap-2.5 font-display text-3xl md:text-3xl tracking-widest uppercase mx-8 ${textColor}`}>
                     {Icon && (
                       <Icon
                         aria-hidden="true"
                         strokeWidth={1.75}
-                        className="w-6 h-6 md:w-7 md:h-7 shrink-0"
+                        className="w-7 h-7 shrink-0"
                       />
                     )}
                     {label}

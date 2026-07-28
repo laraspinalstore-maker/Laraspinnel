@@ -10,7 +10,7 @@ import SkeletonCard from "@/components/shared/SkeletonCard";
 import CustomSelect from "@/components/shared/CustomSelect";
 import StickyBox from "@/components/shared/StickyBox";
 import { sortInStockFirst } from "@/lib/utils";
-import { Search, ShoppingBag, SlidersHorizontal, X } from "lucide-react";
+import { Search, ShoppingBag, SlidersHorizontal } from "lucide-react";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -103,14 +103,6 @@ function ShopPageContent() {
       }
     });
     router.push(`/shop?${params.toString()}`);
-  };
-
-  const hasActiveFilters = category !== "all" || searchTerm !== "" || sort !== "latest";
-  const clearFilters = () => {
-    setCategory("all");
-    setSearchTerm("");
-    setSort("latest");
-    router.push("/shop");
   };
 
   return (
@@ -206,15 +198,6 @@ function ShopPageContent() {
               </div>
             </div>
 
-            {/* Clear filters */}
-            {hasActiveFilters && (
-              <button
-                onClick={clearFilters}
-                className="flex items-center gap-1.5 min-h-11 py-2 text-xs font-bold text-red-600 hover:underline"
-              >
-                <X size={13} /> Clear all filters
-              </button>
-            )}
           </aside>
           </StickyBox>
 

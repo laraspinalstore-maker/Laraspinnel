@@ -67,7 +67,7 @@ export default function CustomOrderBanner({
   );
 
   const Eyebrow = (
-    <p className="text-center text-[11px] sm:text-xs md:max-lg:text-sm font-semibold uppercase tracking-[0.24em] text-goat-primary">
+    <p className="text-center text-[11px] sm:text-xs min-[744px]:max-lg:text-sm font-semibold uppercase tracking-[0.24em] text-goat-primary">
       {eyebrow}
     </p>
   );
@@ -95,7 +95,7 @@ export default function CustomOrderBanner({
   );
 
   const Description = (
-    <p className="text-base sm:text-lg md:max-lg:text-xl text-brand-gray leading-relaxed max-w-md md:max-lg:max-w-xl mx-auto text-center">
+    <p className="text-base sm:text-lg min-[744px]:max-lg:text-xl text-brand-gray leading-relaxed max-w-md min-[744px]:max-lg:max-w-xl mx-auto text-center">
       {description}
     </p>
   );
@@ -113,11 +113,11 @@ export default function CustomOrderBanner({
           >
             <span
               aria-hidden="true"
-              className="w-12 h-12 md:max-lg:w-14 md:max-lg:h-14 rounded-full bg-goat-tint border border-goat-primary/10 flex items-center justify-center text-goat-primary shrink-0"
+              className="w-12 h-12 min-[744px]:max-lg:w-14 min-[744px]:max-lg:h-14 rounded-full bg-goat-tint border border-goat-primary/10 flex items-center justify-center text-goat-primary shrink-0"
             >
               <Icon size={20} strokeWidth={1.5} />
             </span>
-            <span className="text-[11px] md:max-lg:text-xs font-semibold uppercase tracking-wider text-brand-gray/80 md:max-lg:text-brand-black/70 leading-relaxed max-w-24 md:max-lg:max-w-28">
+            <span className="text-[11px] min-[744px]:max-lg:text-xs font-semibold uppercase tracking-wider text-brand-gray/80 min-[744px]:max-lg:text-brand-black/70 leading-relaxed max-w-24 min-[744px]:max-lg:max-w-28">
               {label}
             </span>
           </li>
@@ -150,7 +150,7 @@ export default function CustomOrderBanner({
   return (
     <section
       aria-labelledby="custom-order-heading"
-      className="bg-cream-bg bg-(image:--custom-bg-mobile) md:bg-(image:--custom-bg-tablet) lg:bg-(image:--custom-bg) bg-cover bg-center bg-no-repeat border-y border-brand-border overflow-hidden"
+      className="bg-cream-bg bg-(image:--custom-bg-mobile) min-[744px]:bg-(image:--custom-bg-tablet) lg:bg-(image:--custom-bg) bg-cover bg-center bg-no-repeat border-y border-brand-border overflow-hidden"
       style={
         {
           "--custom-bg": bgImage ? `url(${bgImage})` : "none",
@@ -160,7 +160,7 @@ export default function CustomOrderBanner({
       }
     >
       {/* ===== Mobile: centered editorial stack + horizontal showcase (no benefit row) ===== */}
-      <div className="block md:hidden px-4 py-12 space-y-8">
+      <div className="block min-[744px]:hidden px-4 py-12 space-y-8">
         <div className="space-y-5 animate-in fade-in duration-700">
           {Eyebrow}
           <div className="space-y-3">
@@ -178,7 +178,7 @@ export default function CustomOrderBanner({
       </div>
 
       {/* ===== Tablet: content + horizontal showcase ===== */}
-      <div className="hidden md:block lg:hidden px-4 md:px-6 py-14 space-y-8">
+      <div className="hidden min-[744px]:block lg:hidden px-6 py-14 space-y-8">
         {/* Soft cream panel keeps the copy readable over the background image */}
         <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-700 rounded-3xl bg-cream-bg/85 backdrop-blur-sm px-8 py-10">
           {Eyebrow}
@@ -192,15 +192,18 @@ export default function CustomOrderBanner({
         </div>
 
         {/* Single slow infinite carousel of custom creations */}
-        <div className="-mx-4 md:-mx-6">
+        <div className="-mx-6">
           <CustomOrderGallery orientation="horizontal" items={galleryItems} />
         </div>
       </div>
 
       {/* ===== Desktop: 45/55 editorial split ===== */}
-      <div className="hidden lg:flex relative w-full h-120 xl:h-130 max-w-7xl mx-auto">
+      {/* min-height (not fixed height) so the editorial stack is never clipped on
+          smaller desktop / iPad-landscape widths; the gallery fills whatever
+          height the content defines via absolute positioning. */}
+      <div className="hidden lg:flex relative w-full min-h-120 xl:min-h-130 max-w-7xl mx-auto">
         {/* Left 45% — editorial content, vertically centered */}
-        <div className="w-[45%] h-full flex items-center justify-center px-8 xl:px-12 py-10">
+        <div className="w-[45%] flex items-center justify-center px-8 xl:px-12 py-10">
           <div className="max-w-xl mx-auto space-y-5 animate-in fade-in duration-700">
             {Eyebrow}
             <div className="space-y-3">
@@ -214,8 +217,10 @@ export default function CustomOrderBanner({
         </div>
 
         {/* Right 55% — staggered columns scrolling in alternating directions */}
-        <div className="relative w-[55%] h-full py-5 pr-6 xl:pr-8">
-          <CustomOrderGallery orientation="vertical" items={galleryItems} />
+        <div className="relative w-[55%] self-stretch">
+          <div className="absolute inset-0 py-5 pr-6 xl:pr-8">
+            <CustomOrderGallery orientation="vertical" items={galleryItems} />
+          </div>
         </div>
       </div>
     </section>
