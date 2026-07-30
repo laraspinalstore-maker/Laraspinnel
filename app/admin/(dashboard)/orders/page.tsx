@@ -7,7 +7,7 @@ import CustomSelect from "@/components/shared/CustomSelect";
 import StatusBadge, { OrderStatus } from "@/components/admin/StatusBadge";
 import TypeToConfirmDialog from "@/components/admin/TypeToConfirmDialog";
 import { useToast } from "@/components/admin/Toast";
-import { Search, FileText, Phone, CalendarDays, RefreshCw, X, Trash2 } from "lucide-react";
+import { Search, FileText, Phone, CalendarDays, RefreshCw, X, Trash2, Gem } from "lucide-react";
 
 // Selectable order statuses (shared by the filter and the bulk-update bar).
 const STATUS_CHOICES: { label: string; value: OrderStatus }[] = [
@@ -28,6 +28,12 @@ interface Order {
   status: OrderStatus;
   orderType?: "shop" | "custom";
   createdAt: string;
+  /**
+   * Set by GET /api/admin/orders. True when the order contains a product from the
+   * Bangles catalog category. Custom-order requests naming that category are not
+   * included — see lib/orderCategories.ts.
+   */
+  isBangles?: boolean;
   items: {
     quantity: number;
   }[];
@@ -97,6 +103,22 @@ export default function AdminOrdersPage() {
     setFilteredOrders(results);
   }, [searchTerm, statusFilter, dateFilter, orders]);
 
+  // Bangles orders get their own section at the top, so they're split out of the
+  // day-grouped list below. Both halves come from `filteredOrders`, so the search,
+  // status and date filters still apply to each.
+  const banglesOrders = useMemo(
+    () => filteredOrders.filter((o) => o.isBangles),
+    [filteredOrders]
+  );
+  const banglesTotal = useMemo(
+    () => banglesOrders.reduce((acc, o) => acc + o.totalAmount, 0),
+    [banglesOrders]
+  );
+  const nonBanglesOrders = useMemo(
+    () => filteredOrders.filter((o) => !o.isBangles),
+    [filteredOrders]
+  );
+
   // Group the visible orders by the day they were placed (newest day first).
   const groupedOrders = useMemo(() => {
     const dayKey = (d: Date) =>
@@ -122,7 +144,7 @@ export default function AdminOrdersPage() {
     const groups: { key: string; label: string; items: Order[]; total: number }[] = [];
     const map = new Map<string, { key: string; label: string; items: Order[]; total: number }>();
 
-    for (const order of filteredOrders) {
+    for (const order of nonBanglesOrders) {
       const d = new Date(order.createdAt);
       const key = dayKey(d);
       let group = map.get(key);
@@ -138,7 +160,7 @@ export default function AdminOrdersPage() {
     // Newest day at the top.
     groups.sort((a, b) => (a.key < b.key ? 1 : a.key > b.key ? -1 : 0));
     return groups;
-  }, [filteredOrders]);
+  }, [nonBanglesOrders]);
 
   // ---- Bulk selection ----
   const toggleOne = (id: string) => {
@@ -160,6 +182,97 @@ export default function AdminOrdersPage() {
       return next;
     });
   };
+
+  /**
+   * The orders table. Shared by the Bangles section and every day group, so the
+   * two lists can't drift apart in columns, selection behaviour or actions.
+   */
+  const ordersTable = (items: Order[]) => (
+    <div className="overflow-x-auto">
+      <table className="w-full text-left border-collapse">
+        <thead>
+          <tr className="text-brand-gray font-semibold text-xs border-b border-brand-border">
+            <th className="pl-4 md:pl-6 pr-1 py-2.5 w-8"></th>
+            <th className="px-4 md:px-6 py-2.5">Order Number</th>
+            <th className="px-4 md:px-6 py-2.5">Customer</th>
+            <th className="px-4 md:px-6 py-2.5">Items Qty</th>
+            <th className="px-4 md:px-6 py-2.5">Total Amount</th>
+            <th className="px-4 md:px-6 py-2.5">Time</th>
+            <th className="px-4 md:px-6 py-2.5">Status</th>
+            <th className="px-4 md:px-6 py-2.5 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-brand-border text-sm">
+          {items.map((order) => {
+            const totalQty = order.items.reduce((acc, item) => acc + item.quantity, 0);
+            return (
+              <tr
+                key={order._id}
+                className={`transition-colors ${
+                  selectedIds.has(order._id) ? "bg-goat-tint/50" : "hover:bg-brand-light-gray/50"
+                }`}
+              >
+                <td className="pl-4 md:pl-6 pr-1 py-4">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(order._id)}
+                    onChange={() => toggleOne(order._id)}
+                    className="w-4 h-4 accent-goat-primary rounded border-brand-border cursor-pointer"
+                    aria-label={`Select order ${order.orderNumber}`}
+                  />
+                </td>
+                <td className="px-4 md:px-6 py-4 font-mono font-semibold text-brand-black">
+                  <span className="inline-flex items-center gap-2">
+                    {order.orderNumber}
+                    {order.orderType === "custom" && (
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-rose-text bg-rose-tint border border-rose-primary/30 rounded-full px-2 py-0.5">
+                        Custom
+                      </span>
+                    )}
+                  </span>
+                </td>
+                <td className="px-4 md:px-6 py-4">
+                  <div className="font-semibold text-brand-black">{order.customerName}</div>
+                  <div className="text-xs text-brand-gray flex items-center gap-1 mt-0.5">
+                    <Phone size={12} className="text-neutral-400" />
+                    <span>{order.phone}</span>
+                  </div>
+                </td>
+                <td className="px-4 md:px-6 py-4 font-semibold text-brand-black">{totalQty}</td>
+                <td className="px-4 md:px-6 py-4 font-bold text-brand-black">₹{order.totalAmount}</td>
+                <td className="px-4 md:px-6 py-4 text-brand-gray">
+                  {new Date(order.createdAt).toLocaleTimeString("en-IN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
+                <td className="px-4 md:px-6 py-4">
+                  <StatusBadge status={order.status} />
+                </td>
+                <td className="px-4 md:px-6 py-4 text-right">
+                  <div className="inline-flex items-center gap-2">
+                    <Link
+                      href={`/admin/orders/${order._id}`}
+                      className="inline-flex items-center justify-center h-8 px-3 text-xs font-semibold rounded-full border border-brand-border text-brand-black hover:bg-brand-light-gray transition-colors"
+                    >
+                      Manage
+                    </Link>
+                    <button
+                      onClick={() => setOrderPendingDelete(order)}
+                      aria-label={`Delete order ${order.orderNumber}`}
+                      className="inline-flex items-center justify-center h-8 w-8 rounded-full border border-brand-border text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
 
   const clearSelection = () => setSelectedIds(new Set());
 
@@ -394,6 +507,48 @@ export default function AdminOrdersPage() {
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Orders containing a product from the Bangles catalog category,
+                pulled out of the day-grouped list below. Custom-order requests
+                that merely name the category are not included — they stay in the
+                main list. See lib/orderCategories.ts. */}
+            {banglesOrders.length > 0 && (
+              <div className="bg-white border-2 border-gold-primary/40 rounded-2xl shadow-card overflow-hidden">
+                <div className="flex items-center justify-between gap-3 px-4 md:px-6 py-3 bg-gold-tint/60 border-b border-gold-primary/30">
+                  <label className="flex items-center gap-2.5 min-w-0 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isGroupAllSelected(banglesOrders)}
+                      onChange={() => toggleGroup(banglesOrders)}
+                      className="w-4 h-4 shrink-0 accent-goat-primary rounded border-brand-border cursor-pointer"
+                      title="Select all bangles orders"
+                    />
+                    <Gem size={16} className="text-gold-text shrink-0" />
+                    <h3 className="text-sm font-bold text-brand-black tracking-wide truncate uppercase">
+                      Bangles Orders
+                    </h3>
+                    <span className="shrink-0 text-[11px] font-bold text-gold-text bg-white border border-gold-primary/30 rounded-full px-2.5 py-0.5">
+                      {banglesOrders.length} {banglesOrders.length === 1 ? "order" : "orders"}
+                    </span>
+                  </label>
+                  <span className="shrink-0 text-sm font-bold text-gold-text">
+                    ₹{banglesTotal.toLocaleString("en-IN")}
+                  </span>
+                </div>
+
+                {ordersTable(banglesOrders)}
+              </div>
+            )}
+
+            {/* Everything else, still grouped by day */}
+            {banglesOrders.length > 0 && groupedOrders.length > 0 && (
+              <div className="flex items-center gap-3 pt-1">
+                <span className="text-[11px] font-bold text-brand-gray uppercase tracking-wider shrink-0">
+                  All Other Orders
+                </span>
+                <span className="h-px flex-1 bg-brand-border" />
+              </div>
+            )}
+
             {groupedOrders.map((group) => (
               <div
                 key={group.key}
@@ -422,96 +577,7 @@ export default function AdminOrdersPage() {
                   </span>
                 </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="text-brand-gray font-semibold text-xs border-b border-brand-border">
-                        <th className="pl-4 md:pl-6 pr-1 py-2.5 w-8"></th>
-                        <th className="px-4 md:px-6 py-2.5">Order Number</th>
-                        <th className="px-4 md:px-6 py-2.5">Customer</th>
-                        <th className="px-4 md:px-6 py-2.5">Items Qty</th>
-                        <th className="px-4 md:px-6 py-2.5">Total Amount</th>
-                        <th className="px-4 md:px-6 py-2.5">Time</th>
-                        <th className="px-4 md:px-6 py-2.5">Status</th>
-                        <th className="px-4 md:px-6 py-2.5 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-brand-border text-sm">
-                      {group.items.map((order) => {
-                        const totalQty = order.items.reduce((acc, item) => acc + item.quantity, 0);
-                        return (
-                          <tr
-                            key={order._id}
-                            className={`transition-colors ${
-                              selectedIds.has(order._id)
-                                ? "bg-goat-tint/50"
-                                : "hover:bg-brand-light-gray/50"
-                            }`}
-                          >
-                            <td className="pl-4 md:pl-6 pr-1 py-4">
-                              <input
-                                type="checkbox"
-                                checked={selectedIds.has(order._id)}
-                                onChange={() => toggleOne(order._id)}
-                                className="w-4 h-4 accent-goat-primary rounded border-brand-border cursor-pointer"
-                                aria-label={`Select order ${order.orderNumber}`}
-                              />
-                            </td>
-                            <td className="px-4 md:px-6 py-4 font-mono font-semibold text-brand-black">
-                              <span className="inline-flex items-center gap-2">
-                                {order.orderNumber}
-                                {order.orderType === "custom" && (
-                                  <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-rose-text bg-rose-tint border border-rose-primary/30 rounded-full px-2 py-0.5">
-                                    Custom
-                                  </span>
-                                )}
-                              </span>
-                            </td>
-                            <td className="px-4 md:px-6 py-4">
-                              <div className="font-semibold text-brand-black">{order.customerName}</div>
-                              <div className="text-xs text-brand-gray flex items-center gap-1 mt-0.5">
-                                <Phone size={12} className="text-neutral-400" />
-                                <span>{order.phone}</span>
-                              </div>
-                            </td>
-                            <td className="px-4 md:px-6 py-4 font-semibold text-brand-black">
-                              {totalQty}
-                            </td>
-                            <td className="px-4 md:px-6 py-4 font-bold text-brand-black">
-                              ₹{order.totalAmount}
-                            </td>
-                            <td className="px-4 md:px-6 py-4 text-brand-gray">
-                              {new Date(order.createdAt).toLocaleTimeString("en-IN", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </td>
-                            <td className="px-4 md:px-6 py-4">
-                              <StatusBadge status={order.status} />
-                            </td>
-                            <td className="px-4 md:px-6 py-4 text-right">
-                              <div className="inline-flex items-center gap-2">
-                                <Link
-                                  href={`/admin/orders/${order._id}`}
-                                  className="inline-flex items-center justify-center h-8 px-3 text-xs font-semibold rounded-full border border-brand-border text-brand-black hover:bg-brand-light-gray transition-colors"
-                                >
-                                  Manage
-                                </Link>
-                                <button
-                                  onClick={() => setOrderPendingDelete(order)}
-                                  aria-label={`Delete order ${order.orderNumber}`}
-                                  className="inline-flex items-center justify-center h-8 w-8 rounded-full border border-brand-border text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors"
-                                >
-                                  <Trash2 size={13} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                {ordersTable(group.items)}
               </div>
             ))}
           </div>

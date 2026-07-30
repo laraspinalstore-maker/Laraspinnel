@@ -48,7 +48,9 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
+          {/* min-w-0 lets this shrink inside the justify-between row, so the brand
+              name is sized down to fit rather than being clipped by a fixed width. */}
+          <Link href="/" className="flex items-center gap-2 group min-w-0">
             {settings.logo_url && (
               <Image
                 src={settings.logo_url}
@@ -58,10 +60,16 @@ export default function Navbar() {
                 sizes="200px"
                 quality={75}
                 priority
-                className="h-8 md:h-10 w-auto object-contain"
+                className="h-8 md:h-10 w-auto object-contain shrink-0"
               />
             )}
-            <span className="font-display text-xl md:text-4xl tracking-wider text-brand-black group-hover:text-goat-primary transition-colors uppercase truncate max-w-[130px] min-[375px]:max-w-[180px] sm:max-w-none leading-none translate-y-[2px]">
+            {/* The name previously sat at text-xl behind `truncate max-w-[130px]`.
+                At that size it needs ~174px, so on anything narrower than ~375px it
+                rendered as "LARA'S PI…". Scaling the type down instead means the
+                full name fits: ~134px at text-base, against the ~144px available on
+                a 320px screen once the logo and the two 44px controls are counted.
+                `truncate` stays only as a fallback for an unusually long farm_name. */}
+            <span className="font-display text-base min-[380px]:text-lg sm:text-2xl md:text-4xl tracking-wide md:tracking-wider text-brand-black group-hover:text-goat-primary transition-colors uppercase truncate min-w-0 leading-none translate-y-0.5">
               {settings.farm_name || "Lara's Pinnal"}
             </span>
           </Link>
@@ -193,7 +201,7 @@ export default function Navbar() {
       <div className="h-14 md:h-16"></div>
 
       {/* Fixed Bottom Navigation Bar (Mobile only) */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white text-neutral-500 border-t border-neutral-200 md:hidden h-[3.75rem] shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white text-neutral-500 border-t border-neutral-200 md:hidden h-15 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
         <div className="flex items-center justify-around h-full px-2 max-w-md mx-auto">
           {bottomLinks.map((link) => {
             const isActive = pathname === link.href;
