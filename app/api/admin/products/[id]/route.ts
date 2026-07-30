@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { sanitizeRichText } from "@/lib/security/sanitize";
+import { requireAdmin, isDenied, serverError, readJsonBody, badRequest, isDuplicateKeyError, isValidObjectId, notFound } from "@/lib/security/http";
 import { connectToDatabase } from "@/lib/db";
 import Product from "@/models/Product";
 import { productSchema } from "@/lib/validations";
@@ -12,13 +12,14 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Product not found");
     const product = await Product.findById(id).populate("category", "name").lean();
 
     if (!product) {
@@ -26,9 +27,8 @@ export async function GET(
     }
 
     return NextResponse.json(product);
-  } catch (error: any) {
-    console.error("Admin Product Detail GET error:", error);
-    return NextResponse.json({ error: "Failed to fetch product details" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin Product Detail GET error:", error, "Failed to fetch product details");
   }
 }
 
@@ -37,15 +37,18 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Product not found");
 
-    const body = await req.json();
+    const parsed = await readJsonBody(req, 512 * 1024);
+    if (!parsed.ok) return parsed.response;
+    const body = parsed.data;
     const result = productSchema.safeParse(body);
 
     if (!result.success) {
@@ -55,7 +58,14 @@ export async function PUT(
       );
     }
 
-    const { name, category, price, discountPrice, description, images, stock, isFeatured, isActive } = result.data;
+    const { name, category, price, discountPrice, images, stock, isFeatured, isActive } = result.data;
+
+    // The description is the one admin field rendered as HTML (product page,
+    // via dangerouslySetInnerHTML). Sanitized HERE rather than in the zod schema:
+    // lib/validations.ts is shared with a client component, so it cannot import
+    // sanitize-html — and the route is the correct boundary anyway, since it also
+    // covers a caller posting straight to the API.
+    const description = sanitizeRichText(result.data.description);
     const slug = slugify(name);
 
     // Verify slug uniqueness (excluding current)
@@ -78,9 +88,14 @@ export async function PUT(
     }
 
     return NextResponse.json(product);
-  } catch (error: any) {
-    console.error("Admin Product PUT error:", error);
-    return NextResponse.json({ error: error.message || "Failed to update product" }, { status: 500 });
+  } catch (error) {
+    // The slug uniqueness check above is a read-then-write: two concurrent
+    // requests both pass it and the unique index rejects one. Report that as the
+    // same 400 the check would have returned, not an opaque 500.
+    if (isDuplicateKeyError(error)) {
+      return badRequest("A product with this name already exists.");
+    }
+    return serverError("Admin Product PUT error:", error, "Failed to update product");
   }
 }
 
@@ -89,13 +104,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Product not found");
 
     const product = await Product.findByIdAndDelete(id);
 
@@ -111,9 +127,8 @@ export async function DELETE(
     );
 
     return NextResponse.json({ message: "Product deleted successfully" });
-  } catch (error: any) {
-    console.error("Admin Product DELETE error:", error);
-    return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin Product DELETE error:", error, "Failed to delete product");
   }
 }
 export const revalidate = 0;

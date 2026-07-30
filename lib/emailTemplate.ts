@@ -29,14 +29,30 @@ export interface EmailTemplateData {
   messageSubject?: string;
 }
 
+/**
+ * Substitutes {{placeholders}} in an admin-authored template.
+ *
+ * Returns PLAIN TEXT. Callers must escape the result before placing it in HTML —
+ * see the renderers in lib/email/, which wrap every call in escapeHtml(). Some
+ * values here originate from customer input (customerName, messageSubject), so
+ * treating the output as markup would be an injection path.
+ *
+ * Replacements are passed as functions rather than strings, so a value
+ * containing a `$&` or `$'` sequence is inserted literally instead of being
+ * interpreted as a regex substitution pattern.
+ */
 export function renderEmailText(template: string, data: EmailTemplateData): string {
+  const literal = (value: string) => () => value;
   return template
-    .replace(/{{\s*customerName\s*}}/g, data.customerName)
-    .replace(/{{\s*shopName\s*}}/g, data.shopName)
-    .replace(/{{\s*orderNumber\s*}}/g, data.orderNumber || "")
-    .replace(/{{\s*totalAmount\s*}}/g, data.totalAmount !== undefined ? String(data.totalAmount) : "")
-    .replace(/{{\s*statusLabel\s*}}/g, data.statusLabel || "")
-    .replace(/{{\s*messageSubject\s*}}/g, data.messageSubject || "");
+    .replace(/{{\s*customerName\s*}}/g, literal(data.customerName ?? ""))
+    .replace(/{{\s*shopName\s*}}/g, literal(data.shopName ?? ""))
+    .replace(/{{\s*orderNumber\s*}}/g, literal(data.orderNumber || ""))
+    .replace(
+      /{{\s*totalAmount\s*}}/g,
+      literal(data.totalAmount !== undefined ? String(data.totalAmount) : "")
+    )
+    .replace(/{{\s*statusLabel\s*}}/g, literal(data.statusLabel || ""))
+    .replace(/{{\s*messageSubject\s*}}/g, literal(data.messageSubject || ""));
 }
 
 // --- Order status update email ---

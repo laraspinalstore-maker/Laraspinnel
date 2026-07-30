@@ -5,6 +5,7 @@ import {
   renderEmailText,
 } from "@/lib/emailTemplate";
 import { renderEmailShell, EMAIL_COLORS } from "@/lib/email/layout";
+import { escapeHtml } from "@/lib/security/url";
 
 interface ContactMessageInput {
   name: string;
@@ -37,18 +38,18 @@ export function getContactConfirmationEmail(
   const footer = renderEmailText(footerTemplate || DEFAULT_CONTACT_CONFIRMATION_FOOTER_TEMPLATE, data);
 
   const bodyHtml = `
-    <p style="white-space: pre-line; margin: 0 0 4px; font-size: 14px;">${intro}</p>
+    <p style="white-space: pre-line; margin: 0 0 4px; font-size: 14px;">${escapeHtml(intro)}</p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0;">
       <tr>
         <td style="background-color: ${EMAIL_COLORS.sageTint}; border-left: 4px solid ${EMAIL_COLORS.sage}; border-radius: 6px; padding: 14px 16px;">
-          <p style="margin: 0 0 4px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: ${EMAIL_COLORS.sageText}; font-weight: bold;">Your Message &mdash; ${contact.subject}</p>
-          <p style="margin: 0; font-size: 13px; color: ${EMAIL_COLORS.ink}; white-space: pre-wrap;">${contact.message}</p>
+          <p style="margin: 0 0 4px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: ${EMAIL_COLORS.sageText}; font-weight: bold;">Your Message &mdash; ${escapeHtml(contact.subject)}</p>
+          <p style="margin: 0; font-size: 13px; color: ${EMAIL_COLORS.ink}; white-space: pre-wrap;">${escapeHtml(contact.message)}</p>
         </td>
       </tr>
     </table>
 
-    <p style="white-space: pre-line; font-size: 13px; color: ${EMAIL_COLORS.brownText}; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid ${EMAIL_COLORS.border};">${footer}</p>
+    <p style="white-space: pre-line; font-size: 13px; color: ${EMAIL_COLORS.brownText}; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid ${EMAIL_COLORS.border};">${escapeHtml(footer)}</p>
   `;
 
   const html = renderEmailShell({

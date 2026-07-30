@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...but keep the placeholder template committable
+!.env.example
+
+# never commit real secret dumps (example.txt held live prod secrets)
+example.txt
 
 # vercel
 .vercel
@@ -39,3 +44,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# audit/report artifacts — regenerate, do not commit
+ALL_REPORTS.txt
+report.json
+seo-audit.json

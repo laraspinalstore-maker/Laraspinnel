@@ -1,11 +1,13 @@
 import React from "react";
 import { OrderStatus } from "@/components/admin/StatusBadge";
-import { TrendingUp, PieChart, Trophy } from "lucide-react";
+import { TrendingUp, PieChart } from "lucide-react";
+import TopSellingProducts, { type TopProduct, type CustomRequestSummary } from "@/components/admin/TopSellingProducts";
 
 export interface DashboardAnalyticsData {
   revenueTrend: { day: string; label: string; total: number }[];
   ordersByStatus: { status: OrderStatus; label: string; count: number }[];
-  topProducts: { name: string; qty: number; revenue: number }[];
+  topProducts: TopProduct[];
+  customRequests: CustomRequestSummary;
 }
 
 // Solid bar/dot colors that match the pastel StatusBadge palette.
@@ -24,12 +26,12 @@ export default function DashboardAnalytics({
   revenueTrend,
   ordersByStatus,
   topProducts,
+  customRequests,
 }: DashboardAnalyticsData) {
   const maxRevenue = Math.max(1, ...revenueTrend.map((d) => d.total));
   const trendTotal = revenueTrend.reduce((acc, d) => acc + d.total, 0);
   const statusTotal = Math.max(1, ordersByStatus.reduce((acc, s) => acc + s.count, 0));
   const maxStatus = Math.max(1, ...ordersByStatus.map((s) => s.count));
-  const maxQty = Math.max(1, ...topProducts.map((p) => p.qty));
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -61,7 +63,7 @@ export default function DashboardAnalytics({
                   <div className="relative w-full flex items-end justify-center h-full">
                     <div
                       title={`${d.label}: ${inr(d.total)}`}
-                      className="w-full max-w-[22px] rounded-t-md bg-goat-primary/80 group-hover:bg-goat-primary transition-all"
+                      className="w-full max-w-5.5 rounded-t-md bg-goat-primary/80 group-hover:bg-goat-primary transition-all"
                       style={{ height: `${heightPct}%` }}
                     />
                   </div>
@@ -111,47 +113,9 @@ export default function DashboardAnalytics({
         </div>
       </div>
 
-      {/* Top selling products */}
-      <div className="lg:col-span-3 bg-white border border-brand-border rounded-2xl shadow-card p-4 md:p-6">
-        <div className="flex items-center gap-2 mb-5">
-          <Trophy size={18} className="text-gold-primary" />
-          <h3 className="font-display text-base md:text-lg text-brand-black tracking-wide">
-            Top Selling Products
-          </h3>
-        </div>
-
-        {topProducts.length === 0 ? (
-          <div className="py-8 text-center text-sm text-brand-gray">
-            No sales yet — top products will appear here once orders come in.
-          </div>
-        ) : (
-          <div className="space-y-3.5">
-            {topProducts.map((p, i) => {
-              const widthPct = Math.max(6, (p.qty / maxQty) * 100);
-              return (
-                <div key={p.name} className="flex items-center gap-3">
-                  <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gold-tint text-gold-text text-xs font-bold">
-                    {i + 1}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-3 mb-1">
-                      <span className="text-sm font-semibold text-brand-black truncate">{p.name}</span>
-                      <span className="shrink-0 text-xs text-brand-gray font-medium tabular-nums">
-                        {p.qty} sold · <span className="font-bold text-brand-black">{inr(p.revenue)}</span>
-                      </span>
-                    </div>
-                    <div className="h-2.5 w-full rounded-full bg-brand-light-gray overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-gold-primary/80"
-                        style={{ width: `${widthPct}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+      {/* Top selling products — interactive, so it lives in its own client component */}
+      <div className="lg:col-span-3">
+        <TopSellingProducts topProducts={topProducts} customRequests={customRequests} />
       </div>
     </div>
   );

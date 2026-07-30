@@ -26,6 +26,15 @@ export interface IOrder extends Document {
   totalAmount: number;
   status: "pending" | "confirmed" | "preparing" | "ready" | "delivered" | "cancelled";
   orderType: "shop" | "custom";
+  /**
+   * Whether the stock reserved by this order has been returned to inventory.
+   *
+   * Set when the order moves to "cancelled" (or is deleted), and cleared if it
+   * moves back out of "cancelled". Exists so the restore is idempotent: without
+   * a flag, two concurrent cancellations — or a cancel followed by a delete —
+   * would credit the same units twice and inflate stock.
+   */
+  stockRestored?: boolean;
   /* Inspiration images uploaded with a custom-order request */
   referenceImages?: string[];
   /* Structured request details from the custom-order form */
@@ -77,6 +86,7 @@ const OrderSchema = new Schema<IOrder>(
       enum: ["shop", "custom"],
       default: "shop",
     },
+    stockRestored: { type: Boolean, default: false },
     referenceImages: { type: [String], default: undefined },
     customDetails: { type: Schema.Types.Mixed, default: undefined },
   },

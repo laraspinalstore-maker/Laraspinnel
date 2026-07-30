@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin, isDenied, serverError, readJsonBody, badRequest, isDuplicateKeyError } from "@/lib/security/http";
 import { connectToDatabase } from "@/lib/db";
 import Category from "@/models/Category";
 import { categorySchema } from "@/lib/validations";
@@ -8,30 +7,27 @@ import { slugify } from "@/lib/utils";
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const categories = await Category.find({}).sort({ name: 1 }).lean();
     return NextResponse.json(categories);
-  } catch (error: any) {
-    console.error("Admin Categories GET error:", error);
-    return NextResponse.json({ error: "Failed to fetch categories" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin Categories GET error:", error, "Failed to fetch categories");
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
 
-    const body = await req.json();
+    const parsed = await readJsonBody(req, 256 * 1024);
+    if (!parsed.ok) return parsed.response;
+    const body = parsed.data;
     const result = categorySchema.safeParse(body);
 
     if (!result.success) {
@@ -62,9 +58,14 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(category, { status: 201 });
-  } catch (error: any) {
-    console.error("Admin Category POST error:", error);
-    return NextResponse.json({ error: error.message || "Failed to create category" }, { status: 500 });
+  } catch (error) {
+    // The slug uniqueness check above is a read-then-write: two concurrent
+    // requests both pass it and the unique index rejects one. Report that as the
+    // same 400 the check would have returned, not an opaque 500.
+    if (isDuplicateKeyError(error)) {
+      return badRequest("A category with this name already exists.");
+    }
+    return serverError("Admin Category POST error:", error, "Failed to create category");
   }
 }
 export const revalidate = 0;

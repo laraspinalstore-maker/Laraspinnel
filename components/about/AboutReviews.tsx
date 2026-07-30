@@ -4,6 +4,7 @@ import React from "react";
 import useSWR from "swr";
 import { Heart, Star } from "lucide-react";
 import Reveal from "./Reveal";
+import { safeImageUrl } from "@/lib/security/url";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -24,7 +25,7 @@ type ImageReview = {
  */
 export default function AboutReviews() {
   const { data: testimonials, isLoading } = useSWR(
-    "/api/admin/testimonials?activeOnly=true",
+    "/api/testimonials",
     fetcher
   );
 
@@ -101,7 +102,7 @@ export default function AboutReviews() {
                         <div className="relative aspect-4/5 bg-rose-tint/25 flex items-center justify-center p-2">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={rev.imageUrl}
+                            src={safeImageUrl(rev.imageUrl)}
                             alt={half === 0 ? `Review from ${rev.name}` : ""}
                             loading="lazy"
                             className="max-w-full max-h-full object-contain rounded-lg"

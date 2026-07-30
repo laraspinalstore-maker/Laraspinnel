@@ -1,47 +1,84 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import Testimonial from "@/models/Testimonial";
-import { rateLimit } from "@/lib/rateLimit";
+import { checkRateLimit } from "@/lib/security/rateLimit";
+import { getClientIp, serverError, badRequest, tooManyRequests, readJsonBody } from "@/lib/security/http";
+import { isOwnImageKitUrl, stripTags } from "@/lib/security/sanitize";
 
 export const dynamic = "force-dynamic";
+
+/** Cap on returned reviews. */
+const MAX_RESULTS = 100;
+
+/**
+ * Public list of APPROVED reviews.
+ *
+ * SECURITY: the public home and about pages previously read this data from
+ * `/api/admin/testimonials`, whose GET handler had no session check — the only
+ * admin route missing one. Because its `activeOnly` filter was a caller-supplied
+ * query flag, omitting it returned every document, including reviews still
+ * awaiting moderation. This endpoint replaces that call and can only ever return
+ * approved rows: `isActive: true` is hardcoded, not derived from the request.
+ *
+ * Only the fields the public UI renders are projected, so moderation metadata
+ * doesn't ride along.
+ */
+export async function GET() {
+  try {
+    await connectToDatabase();
+
+    const testimonials = await Testimonial.find({ isActive: true })
+      .select("name location goal outcome initial rating avatarUrl imageUrl orderImageUrl createdAt")
+      .sort({ createdAt: -1 })
+      .limit(MAX_RESULTS)
+      .lean();
+
+    return NextResponse.json(testimonials);
+  } catch (error) {
+    return serverError("testimonials:GET", error, "Failed to fetch reviews");
+  }
+}
 
 // Public endpoint — customers submit a review from the "Customer Love" section.
 // Submissions land as inactive and only appear on the site after admin approval.
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-    const { success } = rateLimit(`testimonial_submit_${ip}`, 5, 60 * 1000);
+    const ip = getClientIp(req);
+    const { success, retryAfterSeconds } = await checkRateLimit("testimonial", ip, {
+      route: "/api/testimonials",
+    });
     if (!success) {
-      return NextResponse.json(
-        { error: "Too many submissions. Please wait a moment and try again." },
-        { status: 429 }
+      return tooManyRequests(
+        "Too many submissions. Please wait a moment and try again.",
+        retryAfterSeconds
       );
     }
 
     await connectToDatabase();
-    const body = await req.json();
-    const { name, location, goal, outcome, rating, refId, avatarUrl, orderImageUrl } = body;
+
+    const parsed = await readJsonBody<Record<string, unknown>>(req, 32 * 1024);
+    if (!parsed.ok) return parsed.response;
+
+    const { name, location, goal, outcome, rating, refId, avatarUrl, orderImageUrl } = parsed.data ?? {};
 
     if (!name || !location || !goal || !outcome || !refId) {
-      return NextResponse.json(
-        { error: "Name, location, order ref ID, and both messages are required" },
-        { status: 400 }
-      );
+      return badRequest("Name, location, order ref ID, and both messages are required");
     }
 
-    const clean = (value: unknown, max: number) => String(value).trim().slice(0, max);
+    // Strip markup as well as trimming: these values are rendered on the home
+    // and about pages once approved.
+    const clean = (value: unknown, max: number) => stripTags(String(value ?? "")).trim().slice(0, max);
 
-    // Avatar and order photo are optional and must be our own ImageKit uploads
-    const safeAvatar =
-      typeof avatarUrl === "string" && avatarUrl.startsWith("https://ik.imagekit.io/")
-        ? avatarUrl
-        : "";
-    const safeOrderImage =
-      typeof orderImageUrl === "string" && orderImageUrl.startsWith("https://ik.imagekit.io/")
-        ? orderImageUrl
-        : "";
+    // Avatar and order photo are optional and must be our own ImageKit uploads.
+    // Compared against the parsed endpoint origin rather than a string prefix,
+    // so a lookalike host or neighbouring account id can't pass.
+    const safeAvatar = isOwnImageKitUrl(avatarUrl) ? String(avatarUrl) : "";
+    const safeOrderImage = isOwnImageKitUrl(orderImageUrl) ? String(orderImageUrl) : "";
 
     const cleanName = clean(name, 80);
+    if (!cleanName) {
+      return badRequest("Please enter your name.");
+    }
 
     await Testimonial.create({
       name: cleanName,
@@ -60,11 +97,7 @@ export async function POST(req: NextRequest) {
       { message: "Review submitted and pending approval" },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error("Public testimonial POST error:", error);
-    return NextResponse.json(
-      { error: "Failed to submit review" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return serverError("testimonials:POST", error, "Failed to submit review");
   }
 }

@@ -4,7 +4,7 @@ export interface IAdminUser extends Document {
   name: string;
   email: string;
   passwordHash: string;
-  role: "superadmin" | "admin";
+  role: "owner" | "superadmin" | "admin";
   createdAt: Date;
 }
 
@@ -13,7 +13,10 @@ const AdminUserSchema = new Schema<IAdminUser>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, index: true },
     passwordHash: { type: String, required: true },
-    role: { type: String, enum: ["superadmin", "admin"], default: "admin" },
+    // "owner" is the highest privilege and is what the live account uses. It was
+    // missing from this enum, which meant Mongoose validation rejected any save of
+    // that document. See lib/security/roles.ts for the authoritative list.
+    role: { type: String, enum: ["owner", "superadmin", "admin"], default: "admin" },
   },
   { timestamps: true }
 );

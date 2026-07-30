@@ -1,24 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { NextResponse } from "next/server";
+import { requireAdmin, isDenied, serverError } from "@/lib/security/http";
 import { connectToDatabase } from "@/lib/db";
 import ContactMessage from "@/models/ContactMessage";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const messages = await ContactMessage.find().sort({ createdAt: -1 }).lean();
     return NextResponse.json(messages);
-  } catch (error: any) {
-    console.error("Admin Messages GET error:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to fetch contact messages" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return serverError("Admin Messages GET error:", error, "Failed to fetch contact messages");
   }
 }

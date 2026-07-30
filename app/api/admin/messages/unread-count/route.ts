@@ -1,17 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { NextResponse } from "next/server";
+import { requireAdmin, isDenied, serverError } from "@/lib/security/http";
 import { connectToDatabase } from "@/lib/db";
 import ContactMessage from "@/models/ContactMessage";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     
@@ -19,11 +16,7 @@ export async function GET(req: NextRequest) {
     const count = await ContactMessage.countDocuments({ status: "new" });
 
     return NextResponse.json({ count });
-  } catch (error: any) {
-    console.error("Admin Messages Unread Count GET error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch unread message count" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return serverError("Admin Messages Unread Count GET error:", error, "Failed to fetch unread message count");
   }
 }

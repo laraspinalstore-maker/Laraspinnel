@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin, isDenied, serverError, readJsonBody, badRequest, isDuplicateKeyError, isValidObjectId, notFound } from "@/lib/security/http";
 import { connectToDatabase } from "@/lib/db";
 import Category from "@/models/Category";
 import Product from "@/models/Product";
@@ -13,13 +12,14 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Category not found");
     const category = await Category.findById(id).lean();
 
     if (!category) {
@@ -27,9 +27,8 @@ export async function GET(
     }
 
     return NextResponse.json(category);
-  } catch (error: any) {
-    console.error("Admin Category Detail GET error:", error);
-    return NextResponse.json({ error: "Failed to fetch category" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin Category Detail GET error:", error, "Failed to fetch category");
   }
 }
 
@@ -38,15 +37,18 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Category not found");
 
-    const body = await req.json();
+    const parsed = await readJsonBody(req, 256 * 1024);
+    if (!parsed.ok) return parsed.response;
+    const body = parsed.data;
     const result = categorySchema.safeParse(body);
 
     if (!result.success) {
@@ -79,9 +81,14 @@ export async function PUT(
     }
 
     return NextResponse.json(category);
-  } catch (error: any) {
-    console.error("Admin Category PUT error:", error);
-    return NextResponse.json({ error: error.message || "Failed to update category" }, { status: 500 });
+  } catch (error) {
+    // The slug uniqueness check above is a read-then-write: two concurrent
+    // requests both pass it and the unique index rejects one. Report that as the
+    // same 400 the check would have returned, not an opaque 500.
+    if (isDuplicateKeyError(error)) {
+      return badRequest("A category with this name already exists.");
+    }
+    return serverError("Admin Category PUT error:", error, "Failed to update category");
   }
 }
 
@@ -90,13 +97,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Category not found");
 
     // Check if category is used by products
     const productCount = await Product.countDocuments({ category: id });
@@ -121,9 +129,8 @@ export async function DELETE(
     }
 
     return NextResponse.json({ message: "Category deleted successfully" });
-  } catch (error: any) {
-    console.error("Admin Category DELETE error:", error);
-    return NextResponse.json({ error: "Failed to delete category" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin Category DELETE error:", error, "Failed to delete category");
   }
 }
 export const revalidate = 0;

@@ -7,9 +7,11 @@ import {
 import {
   renderEmailShell,
   stitchCard,
+  trackOrderButton,
   EMAIL_COLORS,
   EMAIL_FONTS,
 } from "@/lib/email/layout";
+import { escapeHtml } from "@/lib/security/url";
 
 type OrderStatus = "pending" | "confirmed" | "preparing" | "ready" | "delivered" | "cancelled";
 
@@ -68,19 +70,21 @@ export function getOrderStatusUpdateEmail(
   const footer = renderEmailText(footerTemplate || DEFAULT_STATUS_EMAIL_FOOTER_TEMPLATE, data);
 
   const bodyHtml = `
-    <p style="white-space: pre-line; margin: 0 0 4px; font-size: 14px;">${intro}</p>
+    <p style="white-space: pre-line; margin: 0 0 4px; font-size: 14px;">${escapeHtml(intro)}</p>
 
     ${stitchCard(`
       <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: ${EMAIL_COLORS.goldText}; font-weight: bold;">Order Reference</span>
       <span style="font-family: ${EMAIL_FONTS.mono}; font-size: 20px; font-weight: bold; color: ${EMAIL_COLORS.ink}; margin-top: 4px; display: block;">
-        #${order.orderNumber}
+        #${escapeHtml(order.orderNumber)}
       </span>
       <span style="display: inline-block; margin-top: 12px; padding: 5px 16px; background-color: ${statusColor}; color: #ffffff; border-radius: 9999px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
-        ${statusLabel}
+        ${escapeHtml(statusLabel)}
       </span>
     `)}
 
-    <p style="white-space: pre-line; font-size: 13px; color: ${EMAIL_COLORS.brownText}; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid ${EMAIL_COLORS.border};">${footer}</p>
+    ${trackOrderButton(order.orderNumber)}
+
+    <p style="white-space: pre-line; font-size: 13px; color: ${EMAIL_COLORS.brownText}; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid ${EMAIL_COLORS.border};">${escapeHtml(footer)}</p>
   `;
 
   const html = renderEmailShell({

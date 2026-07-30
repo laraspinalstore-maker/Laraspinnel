@@ -1,6 +1,12 @@
 User-agent: *
 Allow: /
 
+# Never index the admin panel or the API surface. This is discoverability
+# hygiene, not access control — both are enforced server-side.
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
 # Allow AI crawlers explicitly
 User-agent: GPTBot
 Allow: /

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin, isDenied, serverError } from "@/lib/security/http";
 import { connectToDatabase } from "@/lib/db";
 import Order from "@/models/Order";
 import ContactMessage from "@/models/ContactMessage";
@@ -9,10 +8,8 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
 
@@ -22,8 +19,7 @@ export async function GET() {
     ]);
 
     return NextResponse.json({ orders, messages });
-  } catch (error: any) {
-    console.error("Admin counts GET error:", error);
-    return NextResponse.json({ error: "Failed to fetch counts" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin counts GET error:", error, "Failed to fetch counts");
   }
 }

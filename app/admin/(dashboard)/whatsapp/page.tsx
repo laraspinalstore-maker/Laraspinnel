@@ -171,7 +171,7 @@ export default function AdminWhatsAppSettingsPage() {
               </h3>
               <div className="bg-[#e5ddd5] rounded-2xl p-4 shadow-card">
                 <div className="bg-white rounded-2xl rounded-tl-sm p-4 shadow-sm max-w-full">
-                  <p className="text-sm text-brand-black whitespace-pre-wrap break-words leading-relaxed">
+                  <p className="text-sm text-brand-black whitespace-pre-wrap wrap-break-word leading-relaxed">
                     {previewText.split(/(\*[^*]+\*)/g).map((part, idx) =>
                       part.startsWith("*") && part.endsWith("*") && part.length > 1 ? (
                         <strong key={idx}>{part.slice(1, -1)}</strong>

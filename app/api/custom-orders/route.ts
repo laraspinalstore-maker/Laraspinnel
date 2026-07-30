@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import Order from "@/models/Order";
 import SiteSettings from "@/models/SiteSettings";
-import { rateLimit } from "@/lib/rateLimit";
+import { checkRateLimit } from "@/lib/security/rateLimit";
+import { getClientIp, serverError, badRequest, tooManyRequests, readJsonBody } from "@/lib/security/http";
+import { isOwnImageKitUrl, stripTags } from "@/lib/security/sanitize";
 import { generateRefId } from "@/lib/utils";
 import { sendEmail } from "@/lib/email/sendEmail";
 import { getAdminNewContactEmailHtml } from "@/lib/email/adminNewContact";
@@ -14,17 +16,23 @@ export const dynamic = "force-dynamic";
 // price is 0 until the admin confirms a quote with the customer.
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-    const { success } = rateLimit(`custom_order_${ip}`, 3, 60 * 1000);
+    // Client IP is read from the last forwarded hop rather than the raw header,
+    // which a caller can prepend to in order to rotate their limiter bucket.
+    const ip = getClientIp(req);
+    const { success, retryAfterSeconds } = await checkRateLimit("customOrder", ip, {
+      route: "/api/custom-orders",
+    });
     if (!success) {
-      return NextResponse.json(
-        { error: "Too many requests. Please wait a moment and try again." },
-        { status: 429 }
+      return tooManyRequests(
+        "Too many requests. Please wait a moment and try again.",
+        retryAfterSeconds
       );
     }
 
     await connectToDatabase();
-    const body = await req.json();
+    const parsed = await readJsonBody<Record<string, unknown>>(req, 64 * 1024);
+    if (!parsed.ok) return parsed.response;
+    const body = parsed.data ?? {};
     const {
       name,
       phone,
@@ -44,29 +52,27 @@ export async function POST(req: NextRequest) {
     } = body;
 
     if (!name || !phone || !category) {
-      return NextResponse.json(
-        { error: "Name, phone, and product category are required" },
-        { status: 400 }
-      );
+      return badRequest("Name, phone, and product category are required");
     }
     if (!/^\d{10}$/.test(String(phone).replace(/[^\d]/g, "").slice(-10))) {
-      return NextResponse.json(
-        { error: "Please enter a valid 10-digit phone number" },
-        { status: 400 }
-      );
+      return badRequest("Please enter a valid 10-digit phone number");
     }
 
+    // Markup is stripped, not just trimmed: every one of these values is shown
+    // in the admin panel and interpolated into the owner notification email.
     const clean = (value: unknown, max: number) =>
-      typeof value === "string" ? value.trim().slice(0, max) : "";
+      typeof value === "string" ? stripTags(value).trim().slice(0, max) : "";
 
     // Only accept image URLs from our own ImageKit uploads
     const safeImages = (Array.isArray(images) ? images : [])
-      .filter((u: unknown): u is string => typeof u === "string" && u.startsWith("https://ik.imagekit.io/"))
+      // Parsed-origin check, not a string prefix: "https://ik.imagekit.io/" also
+      // prefixes a neighbouring account's path.
+      .filter((u: unknown): u is string => isOwnImageKitUrl(u))
       .slice(0, 4);
     const safeCategoryImage =
-      typeof categoryImage === "string" &&
-      (categoryImage.startsWith("https://ik.imagekit.io/") || categoryImage.startsWith("/"))
-        ? categoryImage
+      isOwnImageKitUrl(categoryImage) ||
+      (typeof categoryImage === "string" && categoryImage.startsWith("/") && !categoryImage.startsWith("//"))
+        ? String(categoryImage)
         : "";
 
     const colorList = (Array.isArray(colors) ? colors : [])
@@ -162,11 +168,7 @@ export async function POST(req: NextRequest) {
       { message: "Custom order request received", orderNumber, id: order._id },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error("Public custom-order POST error:", error);
-    return NextResponse.json(
-      { error: "Failed to submit your request. Please try again." },
-      { status: 500 }
-    );
+  } catch (error) {
+    return serverError("custom-orders:POST", error, "Failed to submit your request. Please try again.");
   }
 }

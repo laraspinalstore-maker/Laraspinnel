@@ -8,6 +8,7 @@ import Autoplay from "embla-carousel-autoplay";
 import type { EmblaCarouselType } from "embla-carousel";
 import { useSettings } from "@/hooks/useSettings";
 import { PromoCard, DEFAULT_PROMO_CARDS, CONTENT_DEFAULTS, getPromoCardColorClass, parseList } from "@/lib/siteContent";
+import { safeUrl } from "@/lib/security/url";
 
 const TWEEN_FACTOR_BASE = 0.84;
 
@@ -18,15 +19,22 @@ function numberWithinRange(value: number, min: number, max: number) {
 function PromoCardButton({ text, href }: { text: string; href: string }) {
   const className =
     "inline-flex items-center px-5 py-2.5 rounded-full bg-white text-brand-black text-xs font-bold uppercase tracking-wide shadow-sm hover:scale-105 active:scale-95 transition-transform";
-  if (href.startsWith("/")) {
+  // buttonLink is admin-editable settings content, so it is normalised BEFORE
+  // the internal-vs-external branch is chosen. Doing it the other way round
+  // meant a protocol-relative value like "//evil.com" passed the
+  // startsWith("/") test and was rendered as an internal <Link>, and a
+  // "javascript:" value reached the anchor untouched.
+  const safeHref = safeUrl(href);
+
+  if (safeHref.startsWith("/")) {
     return (
-      <Link href={href} className={className}>
+      <Link href={safeHref} className={className}>
         {text}
       </Link>
     );
   }
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+    <a href={safeHref} target="_blank" rel="noopener noreferrer" className={className}>
       {text}
     </a>
   );

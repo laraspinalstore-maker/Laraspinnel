@@ -10,9 +10,10 @@ import StatusBadge, { OrderStatus } from "@/components/admin/StatusBadge";
 import TypeToConfirmDialog from "@/components/admin/TypeToConfirmDialog";
 import { useToast } from "@/components/admin/Toast";
 import { useSettings } from "@/hooks/useSettings";
-import { ArrowLeft, Save, Calendar, Phone, MapPin, User, FileText, ShoppingCart, Trash2, Images, Sparkles } from "lucide-react";
+import { ArrowLeft, Save, Calendar, Phone, MapPin, User, FileText, ShoppingCart, Trash2, Images, Sparkles, X, ImageOff } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
 import { DEFAULT_WHATSAPP_ORDER_TEMPLATE, renderWhatsAppTemplate, getWhatsAppLink } from "@/lib/whatsappTemplate";
+import { safeUrl } from "@/lib/security/url";
 
 interface OrderItem {
   productId: string;
@@ -82,6 +83,10 @@ export default function OrderDetailPage() {
   const [successMsg, setSuccessMsg] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  /** Reference image shown in the in-page lightbox; null when closed. */
+  const [previewImage, setPreviewImage] = useState<{ url: string; label: string } | null>(null);
+  /** URLs that failed to load, so a missing file shows a message not a broken icon. */
+  const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
   const fetchOrderDetails = async () => {
     setIsLoading(true);
@@ -106,6 +111,25 @@ export default function OrderDetailPage() {
       fetchOrderDetails();
     }
   }, [id]);
+
+  // Escape closes the image viewer, and the page behind it stops scrolling while
+  // it's open — the two things that make an overlay feel like a real dialog.
+  useEffect(() => {
+    if (!previewImage) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreviewImage(null);
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [previewImage]);
 
   const handleStatusUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -325,43 +349,57 @@ export default function OrderDetailPage() {
                               />
                             </div>
                           </td>
-                          <td className="px-4 py-4 font-semibold text-brand-black">
-                            <div>{item.name}</div>
+                          {/* max-w + align-top keep a long customization note inside this
+                              column instead of pushing the price cells sideways. */}
+                          <td className="px-4 py-4 align-top font-semibold text-brand-black max-w-88">
+                            <div className="wrap-break-word">{item.name}</div>
                             {item.customText && (
-                              <p className="mt-1 text-xs font-medium text-goat-text bg-goat-tint border border-goat-primary/20 rounded-lg px-2 py-1 inline-block max-w-xs italic">
-                                Customization: {item.customText}
+                              /* Customers paste unbroken strings, which have no wrap
+                                 opportunity — break-all forces one. whitespace-pre-wrap
+                                 keeps any line breaks they actually typed. */
+                              <p className="mt-1 text-xs font-medium text-goat-text bg-goat-tint border border-goat-primary/20 rounded-lg px-2 py-1 block max-w-full whitespace-pre-wrap break-all italic">
+                                <span className="not-italic font-bold">Customization: </span>
+                                {item.customText}
                               </p>
                             )}
                             {item.customImage && (
-                              <a
-                                href={item.customImage}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="mt-1.5 flex items-center gap-2 group/img"
-                                title="View full-size reference image"
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setPreviewImage({ url: item.customImage!, label: `Reference image — ${item.name}` })
+                                }
+                                className="mt-1.5 flex items-center gap-2 group/img text-left cursor-pointer"
+                                title="View reference image"
                               >
-                                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-goat-primary/30 shrink-0">
-                                  <Image
-                                    src={item.customImage}
-                                    alt="Customer reference image"
-                                    fill
-                                    sizes="48px"
-                                    className="object-cover group-hover/img:scale-105 transition-transform"
-                                  />
+                                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-goat-primary/30 shrink-0 bg-brand-light-gray flex items-center justify-center">
+                                  {brokenImages[item.customImage] ? (
+                                    <ImageOff size={16} className="text-brand-gray" />
+                                  ) : (
+                                    <Image
+                                      src={item.customImage}
+                                      alt="Customer reference image"
+                                      fill
+                                      sizes="48px"
+                                      className="object-cover group-hover/img:scale-105 transition-transform"
+                                      onError={() =>
+                                        setBrokenImages((prev) => ({ ...prev, [item.customImage!]: true }))
+                                      }
+                                    />
+                                  )}
                                 </div>
                                 <span className="text-xs font-semibold text-goat-primary group-hover/img:underline">
-                                  Reference Image
+                                  {brokenImages[item.customImage] ? "Image unavailable" : "Reference Image"}
                                 </span>
-                              </a>
+                              </button>
                             )}
                           </td>
-                          <td className="px-4 py-4 text-center text-brand-black font-semibold">
+                          <td className="px-4 py-4 align-top text-center text-brand-black font-semibold whitespace-nowrap">
                             ₹{item.price}
                           </td>
-                          <td className="px-4 py-4 text-center text-brand-black">
+                          <td className="px-4 py-4 align-top text-center text-brand-black">
                             {item.quantity}
                           </td>
-                          <td className="px-4 py-4 text-right font-bold text-brand-black">
+                          <td className="px-4 py-4 align-top text-right font-bold text-brand-black whitespace-nowrap">
                             ₹{item.price * item.quantity}
                           </td>
                         </tr>
@@ -404,22 +442,26 @@ export default function OrderDetailPage() {
                   </div>
                   <div className="p-5 flex flex-wrap gap-3">
                     {order.referenceImages.map((url, i) => (
-                      <a
+                      <button
                         key={url}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="View full size"
-                        className="group relative w-28 h-28 rounded-xl overflow-hidden border border-brand-border bg-brand-light-gray"
+                        type="button"
+                        onClick={() => setPreviewImage({ url, label: `Customer inspiration image ${i + 1}` })}
+                        title="View larger"
+                        className="group relative w-28 h-28 rounded-xl overflow-hidden border border-brand-border bg-brand-light-gray cursor-pointer flex items-center justify-center"
                       >
-                        <Image
-                          src={url}
-                          alt={`Customer inspiration image ${i + 1}`}
-                          fill
-                          sizes="112px"
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </a>
+                        {brokenImages[url] ? (
+                          <ImageOff size={20} className="text-brand-gray" />
+                        ) : (
+                          <Image
+                            src={url}
+                            alt={`Customer inspiration image ${i + 1}`}
+                            fill
+                            sizes="112px"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={() => setBrokenImages((prev) => ({ ...prev, [url]: true }))}
+                          />
+                        )}
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -560,6 +602,58 @@ export default function OrderDetailPage() {
         onConfirm={handleDelete}
         onCancel={() => setShowDeleteConfirm(false)}
       />
+
+      {/* In-page reference-image viewer. Previously these thumbnails were links
+          with target="_blank", which pulled the admin out of the order they were
+          working on. */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-100 bg-black/80 flex items-center justify-center p-4 sm:p-8"
+          onClick={() => setPreviewImage(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={previewImage.label}
+        >
+          <div
+            className="relative w-full max-w-3xl max-h-full flex flex-col gap-3"
+            // Clicks inside the panel must not fall through to the backdrop.
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-semibold text-white truncate">{previewImage.label}</p>
+              <button
+                type="button"
+                onClick={() => setPreviewImage(null)}
+                className="shrink-0 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                aria-label="Close image preview"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="relative w-full aspect-square sm:aspect-4/3 bg-white/5 rounded-2xl overflow-hidden border border-white/15">
+              <Image
+                src={previewImage.url}
+                alt={previewImage.label}
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
+                // contain, not cover: an admin needs to see the whole reference,
+                // not a cropped centre.
+                className="object-contain"
+              />
+            </div>
+
+            <a
+              href={safeUrl(previewImage.url, "#")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-semibold text-white/70 hover:text-white underline self-start"
+            >
+              Open original in a new tab
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

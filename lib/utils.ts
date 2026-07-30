@@ -17,13 +17,39 @@ export function slugify(text: string): string {
     .replace(/-+$/, ""); // Trim - from end of text
 }
 
+/**
+ * Generates an order reference.
+ *
+ * This was `Math.random()` over a 4-digit range, which gave only 9,000 values
+ * per day. Two consequences: order numbers were guessable (they are one of the
+ * two factors on the public /track-order lookup), and `orderNumber` carries a
+ * unique index, so collisions surfaced as failed checkouts well before that
+ * space was exhausted.
+ *
+ * Now: 8 characters from a cryptographically secure source over a 32-symbol
+ * Crockford-style alphabet (no I/L/O/U, so a reference read off a phone screen
+ * isn't ambiguous) — about 1.1e12 values per day. Web Crypto is used rather
+ * than `node:crypto` so this stays safe to import from shared code.
+ */
+const REF_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+const REF_RANDOM_LENGTH = 8;
+
 export function generateRefId(): string {
   const date = new Date();
   const year = date.getFullYear().toString();
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
-  const rand = Math.floor(1000 + Math.random() * 9000); // 4 digit random number
-  return `LPO-${year}${month}${day}-${rand}`;
+
+  const bytes = new Uint8Array(REF_RANDOM_LENGTH);
+  crypto.getRandomValues(bytes);
+
+  let random = "";
+  for (const byte of bytes) {
+    // 256 is a multiple of 32, so the modulo introduces no bias.
+    random += REF_ALPHABET[byte % REF_ALPHABET.length];
+  }
+
+  return `LPO-${year}${month}${day}-${random}`;
 }
 
 /**

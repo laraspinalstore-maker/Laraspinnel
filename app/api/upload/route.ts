@@ -1,60 +1,82 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { uploadImageToImageKit } from "@/lib/imagekit";
+import {
+  requireAdmin,
+  isDenied,
+  getClientIp,
+  serverError,
+  badRequest,
+  tooManyRequests,
+} from "@/lib/security/http";
+import { checkRateLimit } from "@/lib/security/rateLimit";
+import { validateUpload, buildSafeFileName } from "@/lib/security/files";
+import { logSecurityEvent, maskEmail } from "@/lib/security/audit";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 
+// Legacy image-upload endpoint kept for backward compatibility with any admin
+// form still pointing at /api/upload. Same guarantees as /api/admin/upload:
+// admin role required, content verified by magic bytes, filename generated
+// server-side. Images only.
 export async function POST(req: NextRequest) {
   try {
-    // 1. Require an authenticated admin session
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // 1. Require an authenticated admin session with an admin role.
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
+
+    const ip = getClientIp(req);
+    const { success, retryAfterSeconds } = await checkRateLimit("adminUpload", auth.admin.id || ip, {
+      route: "/api/upload",
+    });
+    if (!success) {
+      return tooManyRequests("Too many uploads. Please slow down.", retryAfterSeconds);
     }
 
     // 2. Parse FormData
     const formData = await req.formData();
-    const file = formData.get("file") as File | null;
+    const file = formData.get("file");
 
-    if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    if (!(file instanceof File)) {
+      return badRequest("No file uploaded");
     }
 
-    // 3. Validate file type and size
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Unsupported file type. Allowed: JPEG, PNG, WebP, AVIF, GIF." },
-        { status: 415 }
-      );
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: "File too large. Maximum size is 5 MB." },
-        { status: 413 }
-      );
+    // 3. Validate real content type and size.
+    const validated = await validateUpload(file, {
+      allow: ["image"],
+      maxImageBytes: MAX_IMAGE_BYTES,
+      maxVideoBytes: MAX_IMAGE_BYTES,
+    });
+
+    if (!validated.ok) {
+      logSecurityEvent("upload.rejected", {
+        ip,
+        actor: maskEmail(auth.admin.email),
+        route: "/api/upload",
+        reason: validated.reason,
+        declaredType: file.type,
+      });
+      return NextResponse.json({ error: validated.error }, { status: validated.status });
     }
 
-    // 4. Read file as buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // 5. Upload to ImageKit
+    // 4. Upload under a server-generated filename.
     const uploadResponse = await uploadImageToImageKit(
-      buffer,
-      file.name || `image_${Date.now()}`
+      validated.buffer,
+      buildSafeFileName(file.name, validated.type.extension, "image")
     );
+
+    logSecurityEvent("upload.accepted", {
+      ip,
+      actor: maskEmail(auth.admin.email),
+      route: "/api/upload",
+      mime: validated.type.mime,
+      bytes: validated.buffer.length,
+    });
 
     return NextResponse.json({
       url: uploadResponse.url,
       fileId: uploadResponse.fileId,
     });
-  } catch (error: any) {
-    console.error("Upload route error:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to upload image" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return serverError("upload:POST", error, "Failed to upload image.");
   }
 }

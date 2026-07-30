@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin, isDenied, serverError, readJsonBody } from "@/lib/security/http";
 import { connectToDatabase } from "@/lib/db";
 import ContactMessage from "@/models/ContactMessage";
 import { sendEmail } from "@/lib/email/sendEmail";
@@ -11,12 +10,12 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
-    const { replyText } = await request.json();
+    const parsed = await readJsonBody<{ replyText?: unknown }>(request, 16 * 1024);
+    if (!parsed.ok) return parsed.response;
+    const replyText = typeof parsed.data?.replyText === "string" ? parsed.data.replyText : "";
     if (!replyText || replyText.trim() === "") {
       return NextResponse.json({ error: "Reply text is required" }, { status: 400 });
     }
@@ -63,8 +62,7 @@ export async function POST(
     await message.save();
 
     return NextResponse.json({ success: true, message: "Reply sent successfully", reply: { text: replyText, date: new Date() } });
-  } catch (error: any) {
-    console.error("Error replying to message:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  } catch (error) {
+    return serverError("Error replying to message:", error, "Internal Server Error");
   }
 }

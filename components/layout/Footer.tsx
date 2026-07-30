@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useSettings } from "@/hooks/useSettings";
 import { Phone, Mail, MapPin, Clock, Lock, ShieldCheck, Heart, Sparkles } from "lucide-react";
 import { FaWhatsapp, FaFacebook, FaInstagram, FaYoutube, FaXTwitter } from "react-icons/fa6";
+import { safeUrl } from "@/lib/security/url";
 import {
   parseList,
   CONTENT_DEFAULTS,
@@ -68,7 +69,7 @@ export default function Footer() {
           <div className="flex items-center gap-4 pt-2">
             {settings.social_facebook && (
               <a
-                href={settings.social_facebook}
+                href={safeUrl(settings.social_facebook)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-neutral-400 hover:text-white transition-colors"
@@ -79,7 +80,7 @@ export default function Footer() {
             )}
             {settings.social_instagram && (
               <a
-                href={settings.social_instagram}
+                href={safeUrl(settings.social_instagram)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-neutral-400 hover:text-white transition-colors"
@@ -90,7 +91,7 @@ export default function Footer() {
             )}
             {settings.social_youtube && (
               <a
-                href={settings.social_youtube}
+                href={safeUrl(settings.social_youtube)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-neutral-400 hover:text-white transition-colors"
@@ -101,7 +102,7 @@ export default function Footer() {
             )}
             {settings.social_x && (
               <a
-                href={settings.social_x}
+                href={safeUrl(settings.social_x)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-neutral-400 hover:text-white transition-colors"
@@ -132,7 +133,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             {quickLinks.map((link, i) => (
               <li key={i}>
-                <Link href={link.href || "#"} className="hover:text-white transition-colors">
+                <Link href={safeUrl(link.href, "#")} className="hover:text-white transition-colors">
                   {link.label}
                 </Link>
               </li>
@@ -148,7 +149,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-neutral-400">
             {categoryLinks.map((link, i) => (
               <li key={i}>
-                <Link href={link.href || "#"} className="hover:text-white transition-colors">
+                <Link href={safeUrl(link.href, "#")} className="hover:text-white transition-colors">
                   {link.label}
                 </Link>
               </li>

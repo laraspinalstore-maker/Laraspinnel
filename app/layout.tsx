@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { serializeJsonLd } from "@/lib/security/sanitize";
 import { Baloo_Da_2, Poppins } from "next/font/google";
 import "./globals.css";
 
@@ -141,7 +142,13 @@ export default async function RootLayout({
   let socialLinks: string[] = [];
 
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
-  const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+
+  // Interpolated into an inline <script> and into an <img src> below, so the
+  // value is constrained to the digits a real Pixel ID consists of. Env vars are
+  // not attacker-controlled today, but this keeps the one remaining inline-script
+  // interpolation in the app incapable of carrying markup.
+  const rawPixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID?.trim() ?? "";
+  const FB_PIXEL_ID = /^\d{5,25}$/.test(rawPixelId) ? rawPixelId : "";
 
   try {
     await connectToDatabase();
@@ -320,7 +327,7 @@ export default async function RootLayout({
           <script
             key={index}
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
           />
         ))}
         {/* Facebook Pixel — only rendered when NEXT_PUBLIC_FB_PIXEL_ID is set */}

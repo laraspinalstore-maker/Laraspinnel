@@ -1,85 +1,115 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { uploadImageToImageKit, deleteImageByUrl } from "@/lib/imagekit";
+import {
+  requireAdmin,
+  isDenied,
+  getClientIp,
+  serverError,
+  badRequest,
+  tooManyRequests,
+  readJsonBody,
+} from "@/lib/security/http";
+import { checkRateLimit } from "@/lib/security/rateLimit";
+import { validateUpload, buildSafeFileName } from "@/lib/security/files";
+import { logSecurityEvent, maskEmail } from "@/lib/security/audit";
+import { isOwnImageKitUrl } from "@/lib/security/sanitize";
+
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
+const MAX_VIDEO_BYTES = 50 * 1024 * 1024; // 50 MB
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Verify admin session
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // 1. Verify admin session AND role.
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
+
+    const ip = getClientIp(req);
+    const { success, retryAfterSeconds } = await checkRateLimit("adminUpload", auth.admin.id || ip, {
+      route: "/api/admin/upload",
+    });
+    if (!success) {
+      return tooManyRequests("Too many uploads. Please slow down.", retryAfterSeconds);
     }
 
     // 2. Parse FormData
     const formData = await req.formData();
-    const file = formData.get("file") as File | null;
+    const file = formData.get("file");
 
-    if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    if (!(file instanceof File)) {
+      return badRequest("No file uploaded");
     }
 
-    // 2b. Validate file type and size (videos get a larger cap than images)
-    const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
-    const VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"];
-    const isVideo = VIDEO_TYPES.includes(file.type);
-    if (!IMAGE_TYPES.includes(file.type) && !isVideo) {
-      return NextResponse.json(
-        { error: "Unsupported file type. Allowed: JPEG, PNG, WebP, AVIF, GIF, MP4, WebM, MOV." },
-        { status: 415 }
-      );
-    }
-    const MAX_FILE_SIZE = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: `File too large. Maximum size is ${isVideo ? "50" : "5"} MB.` },
-        { status: 413 }
-      );
+    // 3. Validate by magic bytes rather than the client-declared MIME type, and
+    //    cap size per detected kind (videos keep the larger allowance).
+    const validated = await validateUpload(file, {
+      allow: ["image", "video"],
+      maxImageBytes: MAX_IMAGE_BYTES,
+      maxVideoBytes: MAX_VIDEO_BYTES,
+    });
+
+    if (!validated.ok) {
+      logSecurityEvent("upload.rejected", {
+        ip,
+        actor: maskEmail(auth.admin.email),
+        route: "/api/admin/upload",
+        reason: validated.reason,
+        declaredType: file.type,
+      });
+      return NextResponse.json({ error: validated.error }, { status: validated.status });
     }
 
-    // 3. Read file as buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // 4. Upload to ImageKit
+    // 4. Upload under a server-generated filename.
     const uploadResponse = await uploadImageToImageKit(
-      buffer,
-      file.name || `image_${Date.now()}`
+      validated.buffer,
+      buildSafeFileName(file.name, validated.type.extension, "media")
     );
+
+    logSecurityEvent("upload.accepted", {
+      ip,
+      actor: maskEmail(auth.admin.email),
+      route: "/api/admin/upload",
+      mime: validated.type.mime,
+      bytes: validated.buffer.length,
+    });
 
     return NextResponse.json({
       url: uploadResponse.url,
       fileId: uploadResponse.fileId,
     });
-  } catch (error: any) {
-    console.error("Upload route error:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to upload image" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return serverError("admin-upload:POST", error, "Failed to upload file.");
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
-    const { url } = await req.json();
+    const body = await readJsonBody<{ url?: unknown }>(req, 4 * 1024);
+    if (!body.ok) return body.response;
+
+    const url = typeof body.data?.url === "string" ? body.data.url : "";
     if (!url) {
-      return NextResponse.json({ error: "No image URL provided" }, { status: 400 });
+      return badRequest("No image URL provided");
     }
 
-    await deleteImageByUrl(url);
+    // Even for an admin, restrict deletion to this account's own storage so a
+    // malformed or hostile value can't be aimed at an unrelated URL.
+    if (!isOwnImageKitUrl(url)) {
+      return badRequest("That image URL is not hosted on this account.");
+    }
 
-    return NextResponse.json({ message: "Image deleted" });
-  } catch (error: any) {
-    console.error("Upload DELETE route error:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to delete image" },
-      { status: 500 }
-    );
+    const deleted = await deleteImageByUrl(url);
+
+    logSecurityEvent("upload.deleted", {
+      actor: maskEmail(auth.admin.email),
+      route: "/api/admin/upload",
+      reason: deleted ? "deleted" : "no_exact_match",
+    });
+
+    return NextResponse.json({ message: deleted ? "Image deleted" : "Image not found in storage" });
+  } catch (error) {
+    return serverError("admin-upload:DELETE", error, "Failed to delete image.");
   }
 }

@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-const uri = process.env.MONGODB_URI || "mongodb+srv://senthilraguanthan2004:Senthilragu@ragugoatfarm.32xhe.mongodb.net/ragu-goat-farm?retryWrites=true&w=majority&appName=RaguGoatFarm";
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+  console.error("MONGODB_URI is not set. Set it in your environment before running this script.");
+  process.exit(1);
+}
 
 mongoose.connect(uri)
   .then(async () => {

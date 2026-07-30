@@ -1,24 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin, isDenied, serverError, readJsonBody, isValidObjectId, notFound } from "@/lib/security/http";
 import { connectToDatabase } from "@/lib/db";
 import Order from "@/models/Order";
 import SiteSettings from "@/models/SiteSettings";
 import { sendEmail } from "@/lib/email/sendEmail";
 import { getOrderStatusUpdateEmail } from "@/lib/email/customerStatusUpdate";
+import { restoreOrderStock, reserveOrderStock } from "@/lib/inventory";
+import { logSecurityEvent, maskEmail } from "@/lib/security/audit";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Order not found");
     const order = await Order.findById(id).lean();
 
     if (!order) {
@@ -26,9 +28,8 @@ export async function GET(
     }
 
     return NextResponse.json(order);
-  } catch (error: any) {
-    console.error("Admin Order Detail GET error:", error);
-    return NextResponse.json({ error: "Failed to fetch order details" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin Order Detail GET error:", error, "Failed to fetch order details");
   }
 }
 
@@ -37,20 +38,31 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Order not found");
 
-    const body = await req.json();
-    const { status } = body;
+    const parsed = await readJsonBody<{ status?: unknown }>(req, 8 * 1024);
+    if (!parsed.ok) return parsed.response;
+    // Coerced to a string before the allowlist check, so a non-string body
+    // value can't slip past includes() and reach the update.
+    const status = String(parsed.data?.status ?? "");
 
     const validStatuses = ["pending", "confirmed", "preparing", "ready", "delivered", "cancelled"];
     if (!validStatuses.includes(status)) {
       return NextResponse.json({ error: "Invalid status value" }, { status: 400 });
+    }
+
+    // Read the previous status first, so the stock side effect can be decided
+    // from the actual transition rather than from the new value alone.
+    const previous = await Order.findById(id).select("status").lean();
+    if (!previous) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
     const order = await Order.findByIdAndUpdate(
@@ -63,6 +75,16 @@ export async function PUT(
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
+    // Keep inventory consistent with the order's lifecycle. Checkout reserved
+    // these units; cancelling has to give them back, and un-cancelling has to
+    // take them again. Both calls are idempotent (see lib/inventory.ts), so a
+    // repeated or concurrent status write can't double-credit stock.
+    if (status === "cancelled" && previous.status !== "cancelled") {
+      await restoreOrderStock(id, "order_cancelled");
+    } else if (previous.status === "cancelled" && status !== "cancelled") {
+      await reserveOrderStock(id, "order_uncancelled");
+    }
+
     // Notify the customer of the status change if they gave an email.
     // Best-effort — a failed/misconfigured email must never fail the update.
     if (order.email?.trim()) {
@@ -70,7 +92,7 @@ export async function PUT(
         const settingsList = await SiteSettings.find({
           key: { $in: ["farm_name", "email_status_subject", "email_status_intro", "email_status_footer"] },
         }).lean();
-        const settingsMap = settingsList.reduce((acc: Record<string, string>, s: any) => {
+        const settingsMap = settingsList.reduce((acc: Record<string, string>, s) => {
           acc[s.key] = s.value;
           return acc;
         }, {});
@@ -92,9 +114,8 @@ export async function PUT(
     }
 
     return NextResponse.json(order);
-  } catch (error: any) {
-    console.error("Admin Order status PUT error:", error);
-    return NextResponse.json({ error: "Failed to update order status" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin Order status PUT error:", error, "Failed to update order status");
   }
 }
 
@@ -103,13 +124,19 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const auth = await requireAdmin();
+    if (isDenied(auth)) return auth.response;
 
     await connectToDatabase();
     const { id } = await params;
+    // Reject a malformed id before Mongoose throws a CastError (which would
+    // otherwise be reported as a 500 rather than "not found").
+    if (!isValidObjectId(id)) return notFound("Order not found");
+
+    // Return the reserved units BEFORE the order document disappears — once it's
+    // deleted there is no record of what to credit back. Idempotent, so an order
+    // already cancelled (and therefore already restored) is not credited twice.
+    await restoreOrderStock(id, "order_deleted");
 
     const order = await Order.findByIdAndDelete(id);
 
@@ -117,10 +144,16 @@ export async function DELETE(
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
+    logSecurityEvent("admin.mutation", {
+      actor: maskEmail(auth.admin.email),
+      resource: "order",
+      resourceId: order.orderNumber,
+      action: "DELETE",
+    });
+
     return NextResponse.json({ message: "Order deleted successfully" });
-  } catch (error: any) {
-    console.error("Admin Order DELETE error:", error);
-    return NextResponse.json({ error: "Failed to delete order" }, { status: 500 });
+  } catch (error) {
+    return serverError("Admin Order DELETE error:", error, "Failed to delete order");
   }
 }
 export const revalidate = 0;

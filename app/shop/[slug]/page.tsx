@@ -200,7 +200,10 @@ export default function ProductDetailPage() {
               </div>
               
               {/\<[a-z][\s\S]*>/i.test(product.description) ? (
-                // Rich-text description (written with the formatting editor)
+                // Rich-text description (written with the formatting editor).
+                // Already sanitized server-side by /api/products/[slug] — see the
+                // note there. Do NOT sanitize here: that would ship sanitize-html
+                // to the browser and make the guarantee client-side.
                 <div
                   className="prose text-sm leading-relaxed text-brand-gray text-justify"
                   dangerouslySetInnerHTML={{ __html: product.description }}

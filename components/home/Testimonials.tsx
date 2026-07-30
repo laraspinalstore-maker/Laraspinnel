@@ -149,7 +149,7 @@ const AddReviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
 
 export default function Testimonials() {
   const { data: settings = {} } = useSWR("/api/settings", fetcher);
-  const { data: testimonials = [] } = useSWR("/api/admin/testimonials?activeOnly=true", fetcher);
+  const { data: testimonials = [] } = useSWR("/api/testimonials", fetcher);
   
   const reviews = testimonials.length > 0 ? testimonials : [
     {

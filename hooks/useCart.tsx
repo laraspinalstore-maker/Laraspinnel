@@ -53,12 +53,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Load cart from localStorage on mount
+  // Load cart from localStorage on mount.
+  //
+  // The stored value was previously fed straight into state, so anything that had
+  // written to `lp_cart` — a stale format from an older release, or a tampered
+  // value — could put a non-array or wrongly-shaped object into the cart and
+  // crash every component that maps over it. Prices here are display-only
+  // regardless: app/api/orders/route.ts recomputes every amount from the
+  // database and ignores what the client sends.
   useEffect(() => {
     const savedCart = localStorage.getItem("lp_cart");
     if (savedCart) {
       try {
-        setCart(JSON.parse(savedCart));
+        const parsed: unknown = JSON.parse(savedCart);
+        const clean = Array.isArray(parsed)
+          ? (parsed.filter(
+              (item): item is CartItem =>
+                Boolean(item) &&
+                typeof item === "object" &&
+                typeof (item as CartItem).productId === "string" &&
+                typeof (item as CartItem).name === "string" &&
+                Number.isFinite((item as CartItem).price) &&
+                Number.isInteger((item as CartItem).quantity) &&
+                (item as CartItem).quantity > 0
+            ) as CartItem[])
+          : [];
+        setCart(clean);
       } catch (err) {
         console.error("Failed to parse cart from localStorage", err);
       }

@@ -52,12 +52,17 @@ export function formatWhatsAppItemsList(items: WhatsAppTemplateOrderItem[]): str
 }
 
 export function renderWhatsAppTemplate(template: string, data: WhatsAppTemplateData): string {
+  // Replacements are passed as functions, not strings: `customerName` and the
+  // item names come from customer input, and a value containing a `$&` / `$'`
+  // sequence would otherwise be interpreted as a regex substitution pattern and
+  // splice other parts of the template into the message.
+  const literal = (value: string) => () => value;
   return template
-    .replace(/{{\s*customerName\s*}}/g, data.customerName)
-    .replace(/{{\s*shopName\s*}}/g, data.shopName)
-    .replace(/{{\s*orderNumber\s*}}/g, data.orderNumber)
-    .replace(/{{\s*items\s*}}/g, formatWhatsAppItemsList(data.items))
-    .replace(/{{\s*totalAmount\s*}}/g, String(data.totalAmount));
+    .replace(/{{\s*customerName\s*}}/g, literal(data.customerName ?? ""))
+    .replace(/{{\s*shopName\s*}}/g, literal(data.shopName ?? ""))
+    .replace(/{{\s*orderNumber\s*}}/g, literal(data.orderNumber ?? ""))
+    .replace(/{{\s*items\s*}}/g, literal(formatWhatsAppItemsList(data.items)))
+    .replace(/{{\s*totalAmount\s*}}/g, literal(String(data.totalAmount)));
 }
 
 export function getWhatsAppLink(phone: string, message: string): string {

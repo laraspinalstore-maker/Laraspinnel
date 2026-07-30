@@ -8,9 +8,11 @@ import {
   renderEmailShell,
   stitchCard,
   sectionHeading,
+  trackOrderButton,
   EMAIL_COLORS,
   EMAIL_FONTS,
 } from "@/lib/email/layout";
+import { escapeHtml } from "@/lib/security/url";
 
 interface OrderConfirmationOrder {
   orderNumber: string;
@@ -34,14 +36,17 @@ interface GetOrderConfirmationEmailOptions {
   footerTemplate?: string;
 }
 
+// `customText` is free-text supplied by the customer at checkout and `name`
+// comes from an admin-authored product record, so both are escaped before being
+// interpolated into the item table.
 function buildItemsTableRows(items: OrderConfirmationOrder["items"]): string {
   return items
     .map(
       (item) => `
         <tr>
           <td style="padding: 10px 0; border-bottom: 1px solid ${EMAIL_COLORS.border};">
-            <div style="font-weight: bold; color: ${EMAIL_COLORS.ink}; font-size: 13px;">${item.name}</div>
-            ${item.customText ? `<div style="font-size: 11px; color: ${EMAIL_COLORS.sageText}; font-style: italic; margin-top: 2px;">Customization: ${item.customText}</div>` : ""}
+            <div style="font-weight: bold; color: ${EMAIL_COLORS.ink}; font-size: 13px;">${escapeHtml(item.name)}</div>
+            ${item.customText ? `<div style="font-size: 11px; color: ${EMAIL_COLORS.sageText}; font-style: italic; margin-top: 2px;">Customization: ${escapeHtml(item.customText)}</div>` : ""}
           </td>
           <td style="padding: 10px 0; border-bottom: 1px solid ${EMAIL_COLORS.border}; text-align: center; font-size: 13px; color: ${EMAIL_COLORS.ink};">
             ${item.quantity}
@@ -72,13 +77,15 @@ export function getOrderConfirmationEmail(
   const intro = renderEmailText(introTemplate || DEFAULT_EMAIL_INTRO_TEMPLATE, data);
   const footer = renderEmailText(footerTemplate || DEFAULT_EMAIL_FOOTER_TEMPLATE, data);
 
+  // renderEmailText returns plain text (it substitutes customer-supplied values
+  // into admin copy), so each block is escaped at the point it becomes HTML.
   const bodyHtml = `
-    <p style="white-space: pre-line; margin: 0 0 4px; font-size: 14px;">${intro}</p>
+    <p style="white-space: pre-line; margin: 0 0 4px; font-size: 14px;">${escapeHtml(intro)}</p>
 
     ${stitchCard(`
       <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: ${EMAIL_COLORS.goldText}; font-weight: bold;">Order Reference</span>
       <span style="font-family: ${EMAIL_FONTS.mono}; font-size: 20px; font-weight: bold; color: ${EMAIL_COLORS.ink}; margin-top: 4px; display: block;">
-        #${order.orderNumber}
+        #${escapeHtml(order.orderNumber)}
       </span>
     `)}
 
@@ -111,10 +118,12 @@ export function getOrderConfirmationEmail(
 
     ${sectionHeading("Delivery Address")}
     <p style="font-size: 13px; color: ${EMAIL_COLORS.ink}; margin: 8px 0 0;">
-      ${order.address}, ${order.city} - ${order.pincode}
+      ${escapeHtml(order.address)}, ${escapeHtml(order.city)} - ${escapeHtml(order.pincode)}
     </p>
 
-    <p style="white-space: pre-line; font-size: 13px; color: ${EMAIL_COLORS.brownText}; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid ${EMAIL_COLORS.border};">${footer}</p>
+    ${trackOrderButton(order.orderNumber)}
+
+    <p style="white-space: pre-line; font-size: 13px; color: ${EMAIL_COLORS.brownText}; margin: 24px 0 0; padding-top: 16px; border-top: 1px solid ${EMAIL_COLORS.border};">${escapeHtml(footer)}</p>
   `;
 
   const html = renderEmailShell({

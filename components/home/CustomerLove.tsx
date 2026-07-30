@@ -571,7 +571,7 @@ const ChatCard = ({ rev }: { rev: ChatReview }) => (
 );
 
 export default function CustomerLove() {
-  const { data: testimonials } = useSWR("/api/admin/testimonials?activeOnly=true", fetcher);
+  const { data: testimonials } = useSWR("/api/testimonials", fetcher);
   /* Section heading is admin-editable under Admin → Content → Customer Reviews */
   const { data: settings = {} } = useSWR("/api/settings", fetcher);
 

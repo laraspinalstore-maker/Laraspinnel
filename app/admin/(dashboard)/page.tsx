@@ -90,25 +90,87 @@ async function getDashboardData() {
     count: statusCountMap.get(status) || 0,
   }));
 
-  // ---- Analytics: top selling products (by quantity, non-cancelled) ----
-  const topProductsRaw = await Order.aggregate([
+  // ---- Analytics: top selling products (non-cancelled) ----
+  //
+  // Grouped by productId, not by name. Grouping by name split a product's totals
+  // the moment it was renamed, and it swept in custom-order request lines — which
+  // are quote placeholders carrying `price: 0` and no productId, so they topped
+  // the chart at ₹0 while real revenue sat below them. Those are now counted
+  // separately (customRequests) instead of being ranked as products.
+  //
+  // $facet returns the leaders by BOTH metrics in one round trip, so the
+  // units/revenue toggle can re-sort without missing a high-value, low-volume
+  // product that never made the top of the quantity list.
+  const PER_METRIC = 10;
+  const topFacet = await Order.aggregate([
     { $match: { status: { $ne: "cancelled" } } },
     { $unwind: "$items" },
+    { $match: { "items.productId": { $exists: true, $ne: null } } },
     {
       $group: {
-        _id: "$items.name",
+        _id: "$items.productId",
+        fallbackName: { $last: "$items.name" },
         qty: { $sum: "$items.quantity" },
         revenue: { $sum: { $multiply: ["$items.price", "$items.quantity"] } },
       },
     },
-    { $sort: { qty: -1 } },
-    { $limit: 5 },
+    {
+      $facet: {
+        byQty: [{ $sort: { qty: -1, revenue: -1 } }, { $limit: PER_METRIC }],
+        byRevenue: [{ $sort: { revenue: -1, qty: -1 } }, { $limit: PER_METRIC }],
+      },
+    },
   ]);
-  const topProducts = topProductsRaw.map((p: any) => ({
-    name: p._id || "Unknown",
-    qty: p.qty,
-    revenue: p.revenue,
-  }));
+
+  type TopRow = { _id: unknown; fallbackName?: string; qty: number; revenue: number };
+  const facet = (topFacet[0] ?? { byQty: [], byRevenue: [] }) as {
+    byQty: TopRow[];
+    byRevenue: TopRow[];
+  };
+
+  // Union the two leaderboards, keeping one entry per product.
+  const merged = new Map<string, TopRow>();
+  for (const row of [...facet.byQty, ...facet.byRevenue]) {
+    merged.set(String(row._id), row);
+  }
+
+  // Resolve current names/slugs so a renamed product shows its real name, and so
+  // each row can link to its edit page. A product deleted since the order falls
+  // back to the name snapshot stored on the line item.
+  const productIds = [...merged.keys()];
+  const productDocs = productIds.length
+    ? await Product.find({ _id: { $in: productIds } }).select("name slug").lean()
+    : [];
+  const productMap = new Map(productDocs.map((p) => [String(p._id), p]));
+
+  const topProducts = [...merged.entries()].map(([id, row]) => {
+    const doc = productMap.get(id);
+    return {
+      id,
+      name: doc?.name || row.fallbackName || "Unknown product",
+      qty: row.qty,
+      revenue: row.revenue,
+      // null means the product no longer exists, so the row isn't a link.
+      exists: Boolean(doc),
+    };
+  });
+
+  // Custom-order requests, summarised rather than ranked. Their price is 0 until
+  // an admin agrees a quote, so they can't meaningfully sit in a sales chart.
+  const customRequestsRaw = await Order.aggregate([
+    { $match: { status: { $ne: "cancelled" }, orderType: "custom" } },
+    {
+      $group: {
+        _id: null,
+        orders: { $sum: 1 },
+        awaitingQuote: { $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] } },
+      },
+    },
+  ]);
+  const customRequests = {
+    orders: customRequestsRaw[0]?.orders || 0,
+    awaitingQuote: customRequestsRaw[0]?.awaitingQuote || 0,
+  };
 
   // New Messages (unread)
   const newMessages = await ContactMessage.countDocuments({ status: "new" });
@@ -149,6 +211,7 @@ async function getDashboardData() {
     revenueTrend,
     ordersByStatus,
     topProducts,
+    customRequests,
   };
 }
 
@@ -179,6 +242,7 @@ export default async function AdminDashboardPage() {
       revenueTrend: [],
       ordersByStatus: [],
       topProducts: [],
+      customRequests: { orders: 0, awaitingQuote: 0 },
     };
   }
 
@@ -279,6 +343,7 @@ export default async function AdminDashboardPage() {
           revenueTrend={data.revenueTrend}
           ordersByStatus={data.ordersByStatus}
           topProducts={data.topProducts}
+          customRequests={data.customRequests}
         />
 
         {/* Recent Orders Section */}

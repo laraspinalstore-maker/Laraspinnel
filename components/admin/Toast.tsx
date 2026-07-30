@@ -67,7 +67,7 @@ function ToastCard({ toast, onDismiss }: { toast: ToastItem; onDismiss: (id: num
       <span className="shrink-0 mt-0.5">{config.icon}</span>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold text-brand-black">{toast.title || config.defaultTitle}</p>
-        <p className="text-xs text-brand-gray mt-0.5 break-words">{toast.message}</p>
+        <p className="text-xs text-brand-gray mt-0.5 wrap-break-word">{toast.message}</p>
       </div>
       <button
         type="button"

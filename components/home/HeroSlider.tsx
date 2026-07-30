@@ -7,6 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { safeUrl } from "@/lib/security/url";
 
 interface Banner {
   _id: string;
@@ -148,7 +149,7 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
                     {slide.buttonText && (
                       <div className="pt-2">
                         <Link
-                          href={slide.buttonLink || "/"}
+                          href={safeUrl(slide.buttonLink, "/")}
                           className={`inline-flex items-center justify-center px-7 py-3 rounded-full text-sm font-semibold shadow-md transition-all duration-300 hover:scale-102 ${slide.buttonTheme === "red"
                             ? "bg-mutton-primary text-white hover:bg-mutton-hover"
                             : "bg-goat-primary text-white hover:bg-goat-hover"
