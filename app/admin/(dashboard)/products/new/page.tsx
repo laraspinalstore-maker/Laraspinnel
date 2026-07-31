@@ -85,7 +85,7 @@ export default function NewProductPage() {
       const payload = {
         ...formData,
         price: parseFloat(formData.price),
-        discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : undefined,
+        discountPrice: formData.discountPrice ? Math.round(parseFloat(formData.discountPrice)) : undefined,
         stock: parseInt(formData.stock, 10),
         images: imagesArr,
       };
@@ -196,10 +196,10 @@ export default function NewProductPage() {
                 type="number"
                 id="discountPrice"
                 value={formData.discountPrice}
-                onChange={(e) => setFormData({ ...formData, discountPrice: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, discountPrice: e.target.value.replace(/\D/g, "") })}
                 placeholder="e.g. 999 (Leave blank if no discount)"
                 min="0"
-                step="0.01"
+                step="1"
                 className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
               />
             </div>
