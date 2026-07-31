@@ -31,6 +31,7 @@ import { connectToDatabase } from "@/lib/db";
 import SiteSettings from "@/models/SiteSettings";
 
 import { SITE_URL } from "@/lib/siteUrl";
+import { CONTENT_DEFAULTS } from "@/lib/siteContent";
 const BASE_URL = SITE_URL;
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -139,7 +140,7 @@ export default async function RootLayout({
   let phone = "+91 9442379832";
   let email = "senthilraguanthan2004@gmail.com";
   let address = " MettuStreet, Therkunam, Villupuram, Tamil Nadu - 604102";
-  let socialLinks: string[] = [];
+  let socialLinks: string[] = [CONTENT_DEFAULTS.social_instagram];
 
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -162,7 +163,7 @@ export default async function RootLayout({
     address = getSetting("contact_address") || address;
     socialLinks = [
       getSetting("social_facebook"),
-      getSetting("social_instagram"),
+      getSetting("social_instagram") || CONTENT_DEFAULTS.social_instagram,
       getSetting("social_youtube"),
     ].filter((v): v is string => Boolean(v));
   } catch (error) {

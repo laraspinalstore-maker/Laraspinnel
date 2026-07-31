@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import { FaInstagram } from "react-icons/fa6";
-import { parseList, DEFAULT_CUSTOM_GALLERY, CustomGalleryItem } from "@/lib/siteContent";
+import { parseList, DEFAULT_CUSTOM_GALLERY, CustomGalleryItem, CONTENT_DEFAULTS } from "@/lib/siteContent";
 import Reveal from "./Reveal";
 
 /* Extracts "@handle" from a configured instagram.com URL; falls back to
@@ -22,7 +22,7 @@ function handleFromUrl(url: string): string | null {
 /* Small social bridge after reviews. Renders only when the admin has
    configured social_instagram — no invented links or handles. */
 export default function InstagramBridge({ settings }: { settings: Record<string, string> }) {
-  const instagram = settings.social_instagram;
+  const instagram = settings.social_instagram || CONTENT_DEFAULTS.social_instagram;
   if (!instagram) return null;
 
   const handle = handleFromUrl(instagram);

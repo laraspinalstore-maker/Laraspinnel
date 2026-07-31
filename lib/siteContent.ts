@@ -239,6 +239,8 @@ export const CONTENT_DEFAULTS: Record<string, string> = {
   footer_badges: JSON.stringify(DEFAULT_FOOTER_BADGES),
   footer_disclaimer: DEFAULT_FOOTER_DISCLAIMER,
   footer_note: DEFAULT_FOOTER_NOTE,
+  // Social — real profile URLs (an admin Settings value overrides these)
+  social_instagram: "https://www.instagram.com/laras_pinnal",
 };
 
 /**
@@ -291,7 +293,7 @@ export const CONTENT_PLACEHOLDERS: Record<string, string> = {
   business_hours: "Monday - Sunday: 9:00 AM - 9:00 PM",
   contact_map_url: "Google Maps embed URL",
   social_facebook: "https://facebook.com/...",
-  social_instagram: "https://instagram.com/...",
+  social_instagram: "https://www.instagram.com/laras_pinnal",
   social_youtube: "https://youtube.com/...",
   social_x: "https://x.com/...",
 };

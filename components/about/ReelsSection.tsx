@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Play, Pause, ExternalLink } from "lucide-react";
 import { FaInstagram } from "react-icons/fa6";
 import { motion } from "framer-motion";
-import { parseList, DEFAULT_CUSTOM_GALLERY } from "@/lib/siteContent";
+import { parseList, DEFAULT_CUSTOM_GALLERY, CONTENT_DEFAULTS } from "@/lib/siteContent";
 import Reveal from "./Reveal";
 import { FloralDoodle } from "./AboutHero";
 
@@ -199,7 +199,7 @@ function ReelCard({
 export default function ReelsSection({ settings }: { settings: Record<string, string> }) {
   const configured = parseList<AboutReel>(settings.about_reels, []);
   const reels = configured.length > 0 ? configured : DEFAULT_REELS;
-  const instagram = settings.social_instagram || "https://instagram.com";
+  const instagram = settings.social_instagram || CONTENT_DEFAULTS.social_instagram;
   const [isHovered, setIsHovered] = useState(false);
   /* Ticker pauses while any reel is playing so the card doesn't scroll away mid-watch */
   const [activePlays, setActivePlays] = useState(0);

@@ -39,6 +39,7 @@ export default function Footer() {
   const badges = parseList<string>(settings.footer_badges, DEFAULT_FOOTER_BADGES);
   const disclaimer = settings.footer_disclaimer || CONTENT_DEFAULTS.footer_disclaimer;
   const footerNote = settings.footer_note || CONTENT_DEFAULTS.footer_note;
+  const instagramUrl = settings.social_instagram || CONTENT_DEFAULTS.social_instagram;
 
   const whatsappFormatted = whatsapp.replace(/[^\d+]/g, "");
   const whatsappUrl = `https://wa.me/${whatsappFormatted}`;
@@ -78,9 +79,9 @@ export default function Footer() {
                 <FaFacebook size={20} />
               </a>
             )}
-            {settings.social_instagram && (
+            {instagramUrl && (
               <a
-                href={safeUrl(settings.social_instagram)}
+                href={safeUrl(instagramUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-neutral-400 hover:text-white transition-colors"
