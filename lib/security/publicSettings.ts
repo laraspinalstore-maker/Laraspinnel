@@ -25,6 +25,8 @@
 const PRIVATE_KEY_PATTERNS: RegExp[] = [
   /^email_/i, // outgoing email copy/templates: internal ops content
   /smtp/i,
+  /resend/i, // Resend (email provider) credentials/config must never be public
+
   /secret/i,
   /token/i,
   /password/i,

@@ -9,7 +9,7 @@ E-commerce storefront and admin CMS for [Lara's Pinnal](https://laraspinnel.verc
 - **Database:** MongoDB (Mongoose)
 - **Auth:** NextAuth v4 (credentials, admin panel only)
 - **Media:** ImageKit CDN (uploads + transformations)
-- **Email:** Nodemailer (SMTP) / Resend
+- **Email:** Resend
 - **Rate limiting:** Upstash Redis
 - **UI extras:** Framer Motion, GSAP, Embla Carousel, Tiptap (rich-text editor), SWR, React Hook Form + Zod
 
@@ -38,7 +38,7 @@ E-commerce storefront and admin CMS for [Lara's Pinnal](https://laraspinnel.verc
 - Node.js 20+
 - MongoDB instance (local or Atlas)
 - ImageKit account (media)
-- SMTP credentials (order/contact emails)
+- Resend API key (order/contact emails)
 
 ### Setup
 
@@ -65,7 +65,7 @@ Create `.env` (git-ignored — never commit it):
 | `NEXT_PUBLIC_SITE_URL` | Legacy fallback for the above |
 | `IMAGEKIT_PUBLIC_KEY` / `IMAGEKIT_PRIVATE_KEY` / `IMAGEKIT_URL_ENDPOINT` | ImageKit server-side config |
 | `NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY` / `NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT` | ImageKit client-side config |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `EMAIL_FROM` | Outgoing email |
+| `RESEND_API_KEY` / `EMAIL_FROM` | Outgoing email via Resend (`EMAIL_FROM` domain must be verified in Resend) |
 | `ADMIN_EMAIL` / `ADMIN_NOTIFICATION_EMAIL` | Where order/contact notifications go |
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Rate limiting (optional in dev) |
 | `NEXT_PUBLIC_GA_ID` | Google Analytics 4 ID (optional) |

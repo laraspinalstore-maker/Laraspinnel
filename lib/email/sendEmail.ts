@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { maskEmail } from "@/lib/security/audit";
 
 interface SendEmailParams {
@@ -31,51 +31,39 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
 
   const safeSubject = sanitizeHeaderValue(subject).slice(0, 300);
 
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (!process.env.RESEND_API_KEY) {
     // Development fallback. The recipient is masked because this line lands in
     // application logs, which must not become a store of customer addresses.
     console.log("-----------------------------------------");
-    console.log(`DEBUG EMAIL LOG (SMTP Credentials Missing)`);
+    console.log(`DEBUG EMAIL LOG (RESEND_API_KEY Missing)`);
     console.log(`TO: ${maskEmail(recipient)}`);
     console.log(`FROM: ${fromEmail}`);
     console.log(`SUBJECT: ${safeSubject}`);
     console.log(`CONTENT SIZE: ${html.length} chars`);
     console.log("-----------------------------------------");
-    return { success: true, message: "Email logged to console (Missing SMTP Credentials)" };
+    return { success: true, message: "Email logged to console (Missing RESEND_API_KEY)" };
   }
 
   try {
-    const port = Number(process.env.SMTP_PORT) || 587;
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port,
-      secure: port === 465,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-      // On port 587 the connection starts in the clear and is upgraded, so
-      // STARTTLS is required rather than optional — otherwise a network
-      // attacker can strip it and the SMTP password crosses the wire in plain
-      // text. Certificate validation is left at its (enabled) default.
-      requireTLS: port !== 465,
-      tls: {
-        minVersion: "TLSv1.2",
-      },
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const info = await transporter.sendMail({
+    const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: recipient,
       subject: safeSubject,
       html,
     });
 
-    return { success: true, data: info };
+    if (error) {
+      // Logged server-side only: the error can quote account/domain detail
+      // that must not reach a caller.
+      console.error("Resend sendEmail error:", error);
+      return { success: false, error: "Failed to send email" };
+    }
+
+    return { success: true, data };
   } catch (error) {
-    // Logged server-side only: SMTP errors quote credentials-adjacent detail
-    // (host, user, auth mechanism) that must not reach a caller.
-    console.error("Nodemailer sendEmail error:", error);
+    console.error("Resend sendEmail error:", error);
     return { success: false, error: "Failed to send email" };
   }
 }
