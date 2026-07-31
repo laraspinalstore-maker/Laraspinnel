@@ -23,7 +23,10 @@ const contentSecurityPolicy = [
   `script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"} https://www.googletagmanager.com https://connect.facebook.net`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://images.unsplash.com https://ik.imagekit.io https://www.googletagmanager.com https://www.google-analytics.com https://www.facebook.com",
-  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://connect.facebook.net https://www.facebook.com",
+  // upload.imagekit.io: admin image uploads POST directly from the browser to
+  // ImageKit's upload API (signed client-side upload), so connect-src must
+  // allow it — without this the admin media upload fails in production.
+  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://connect.facebook.net https://www.facebook.com https://upload.imagekit.io",
   "font-src 'self' data:",
   "media-src 'self' blob: https://ik.imagekit.io",
   "frame-src 'self' https://www.google.com https://maps.google.com",
