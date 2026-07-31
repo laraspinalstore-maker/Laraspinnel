@@ -23,7 +23,10 @@ const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
-  preload: true,
+  // Not preloaded: 4 body-font preloads were competing with the hero LCP image
+  // for bandwidth during the critical window. swap keeps text visible while
+  // the font loads normally via CSS.
+  preload: false,
   adjustFontFallback: true,
 });
 
@@ -33,6 +36,24 @@ import SiteSettings from "@/models/SiteSettings";
 import { SITE_URL } from "@/lib/siteUrl";
 import { CONTENT_DEFAULTS } from "@/lib/siteContent";
 const BASE_URL = SITE_URL;
+
+// Favicons never pass through /_next/image, so an ImageKit-hosted icon URL
+// would otherwise be fetched at its full upload size on every page load (the
+// admin-configured favicon was a 2K ~147KB JPEG — the single heaviest resource
+// on the page). For ImageKit URLs, request the icon at its display size via
+// ImageKit's own transform params; any other host is returned untouched.
+function iconAtSize(url: string, size: number): string {
+  try {
+    const u = new URL(url, BASE_URL);
+    if (u.hostname === "ik.imagekit.io") {
+      u.searchParams.set("tr", `w-${size},h-${size},f-png`);
+      return u.toString();
+    }
+  } catch {
+    // Relative or malformed value — leave as-is.
+  }
+  return url;
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   let title = "Lara's Pinnal | Handmade Crochet Gifts & Flowers in Tamil Nadu";
@@ -74,12 +95,9 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: "Lara's Pinnal", url: BASE_URL }],
     creator: "Lara's Pinnal",
     metadataBase: new URL(BASE_URL),
-    alternates: {
-      canonical: "/",
-      languages: {
-        "en-IN": "/",
-      },
-    },
+    // No `alternates` here: a canonical set in the root layout is inherited by
+    // every page that doesn't override it, which pointed the whole site's
+    // canonical at the homepage. Each page declares its own canonical.
     robots: {
       index: true,
       follow: true,
@@ -113,9 +131,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
     },
     icons: {
-      icon: favicon,
-      apple: favicon,
-      shortcut: favicon,
+      icon: iconAtSize(favicon, 64),
+      apple: iconAtSize(favicon, 180),
+      shortcut: iconAtSize(favicon, 64),
     },
     other: {
       "geo.region": "IN-TN",
@@ -128,7 +146,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 import { Providers } from "@/components/Providers";
 import FloatingCartBar from "@/components/layout/FloatingCartBar";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import Script from "next/script";
 
 export default async function RootLayout({
@@ -142,7 +159,11 @@ export default async function RootLayout({
   let address = " MettuStreet, Therkunam, Villupuram, Tamil Nadu - 604102";
   let socialLinks: string[] = [CONTENT_DEFAULTS.social_instagram];
 
-  const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+  // Interpolated into an inline <script> below (same treatment as the Pixel
+  // ID): constrain to the G-/AW-/GT- measurement-ID shape so the interpolation
+  // can never carry markup.
+  const rawGaId = process.env.NEXT_PUBLIC_GA_ID?.trim() ?? "";
+  const GA_ID = /^(G|AW|GT)-[A-Z0-9]{4,20}$/.test(rawGaId) ? rawGaId : "";
 
   // Interpolated into an inline <script> and into an <img src> below, so the
   // value is constrained to the digits a real Pixel ID consists of. Env vars are
@@ -363,8 +384,31 @@ export default async function RootLayout({
             </noscript>
           </>
         )}
-        {/* Google Analytics — only rendered when NEXT_PUBLIC_GA_ID is set */}
-        {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
+        {/* Google Analytics — only rendered when NEXT_PUBLIC_GA_ID is set.
+            Loaded lazyOnload (after the window load event) instead of
+            @next/third-parties' afterInteractive: gtag.js evaluation was
+            competing with hydration inside the LCP/INP-critical window on
+            mobile. Page-view data is unaffected; only beacon timing shifts. */}
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="lazyOnload"
+            />
+            <Script
+              id="ga-init"
+              strategy="lazyOnload"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}');
+                `,
+              }}
+            />
+          </>
+        )}
       </body>
     </html>
   );

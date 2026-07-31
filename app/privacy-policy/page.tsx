@@ -8,6 +8,7 @@ import SiteSettings from "@/models/SiteSettings";
 export const metadata = {
   title: "Privacy Policy | Lara's Pinnal",
   description: "Privacy Policy for Lara's Pinnal.",
+  alternates: { canonical: "/privacy-policy" },
 };
 
 const DEFAULT_CONTENT = `
@@ -53,7 +54,7 @@ export default async function PrivacyPolicyPage() {
         <p className="text-sm text-brand-gray mb-10 italic">Last Updated: {updatedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
 
         <div 
-          className="space-y-6 text-brand-gray leading-relaxed text-sm md:text-base prose prose-sm max-w-none text-justify [&_p]:text-justify! prose-p:text-brand-gray prose-a:text-primary [&_:is(h1,h2,h3,h4,h5,h6)]:!text-xl md:[&_:is(h1,h2,h3,h4,h5,h6)]:!text-2xl [&_:is(h1,h2,h3,h4,h5,h6)]:!font-bold [&_:is(h1,h2,h3,h4,h5,h6)]:!text-brand-black [&_:is(h1,h2,h3,h4,h5,h6)]:!mt-8 [&_:is(h1,h2,h3,h4,h5,h6)]:!mb-4"
+          className="space-y-6 text-brand-gray leading-relaxed text-sm md:text-base prose prose-sm max-w-none text-justify [&_p]:text-justify! prose-p:text-brand-gray prose-a:text-primary [&_:is(h1,h2,h3,h4,h5,h6)]:text-xl! md:[&_:is(h1,h2,h3,h4,h5,h6)]:text-2xl! [&_:is(h1,h2,h3,h4,h5,h6)]:font-bold! [&_:is(h1,h2,h3,h4,h5,h6)]:text-brand-black! [&_:is(h1,h2,h3,h4,h5,h6)]:mt-8! [&_:is(h1,h2,h3,h4,h5,h6)]:mb-4!"
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(content) }}
         />
       </main>

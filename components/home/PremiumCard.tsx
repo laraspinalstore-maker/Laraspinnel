@@ -71,7 +71,7 @@ export default function PremiumCard({
     <Link
       href={url}
       prefetch={true}
-      className={`group relative flex flex-col w-full overflow-hidden rounded-[1.25rem] sm:rounded-[1.5rem] bg-white border border-brand-border/60 shadow-xs transition-all duration-300 h-full ${
+      className={`group relative flex flex-col w-full overflow-hidden rounded-[1.25rem] sm:rounded-3xl bg-white border border-brand-border/60 shadow-xs transition-all duration-300 h-full ${
         outOfStock ? "opacity-60 hover:shadow-xs" : "hover:shadow-md"
       }`}
     >

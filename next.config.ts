@@ -71,6 +71,18 @@ const nextConfig: NextConfig = {
     // full server bundle — on a 16GB machine that exhausts memory and build
     // dies with "Array buffer allocation failed".
     cpus: 4,
+    // Barrel-file imports from these icon packages otherwise pull far more
+    // module graph than the handful of icons actually used (react-icons/fa6
+    // alone is a single multi-hundred-KB module). lucide-react is already in
+    // Next's default list; these two are not.
+    optimizePackageImports: ["react-icons", "@phosphor-icons/react"],
+    // Ship route CSS as an inline <style> instead of a render-blocking
+    // <link> request (~330ms of first-paint delay on mobile). Unlike the
+    // critters-based optimizeCss above, this is Next's own implementation and
+    // doesn't trigger the Turbopack compilation loop. Trade-off: CSS is no
+    // longer a separately-cacheable asset, but client-side navigations never
+    // refetch CSS anyway, so only full reloads pay the ~22KB HTML increase.
+    inlineCss: true,
   },
 
   async redirects() {

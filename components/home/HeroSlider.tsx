@@ -42,6 +42,20 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
+  // Slides 2+ sit inside the on-screen carousel viewport, so loading="lazy"
+  // never defers them — mounted eagerly they compete with the slide-1 LCP
+  // image for bandwidth during the critical window. Mount their images only
+  // once the browser goes idle (well before the 5s autoplay advance).
+  const [restReady, setRestReady] = useState(false);
+  useEffect(() => {
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(() => setRestReady(true), { timeout: 3000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const t = setTimeout(() => setRestReady(true), 2500);
+    return () => clearTimeout(t);
+  }, []);
+
   const onInit = useCallback((emblaApi: any) => {
     setScrollSnaps(emblaApi.scrollSnapList());
   }, []);
@@ -110,7 +124,7 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
                 key={slide._id}
                 className="flex-[0_0_100%] min-w-full w-full h-[45vh] min-h-85 md:min-h-120 md:h-[55vh] xl:h-[65vh] relative bg-brand-black"
               >
-                {slide.imageUrl && (
+                {slide.imageUrl && (index === 0 || restReady) && (
                   <Image
                     src={slide.imageUrl}
                     alt={slide.headline}
