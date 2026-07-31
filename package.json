@@ -11,6 +11,7 @@
     "admin:verify": "tsx --env-file=.env scripts/simulate-auth.ts"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.4.0",
     "@next/third-parties": "^16.2.10",
     "@phosphor-icons/react": "^2.1.10",

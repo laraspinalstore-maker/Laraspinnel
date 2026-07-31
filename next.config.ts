@@ -63,6 +63,11 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   experimental: {
     // optimizeCss is disabled to prevent Turbopack compilation loop
+    // Cap page-data collection workers: the default (logical cores - 1 = 15
+    // here) spawns one Node process per worker, each loading mongoose and the
+    // full server bundle — on a 16GB machine that exhausts memory and build
+    // dies with "Array buffer allocation failed".
+    cpus: 4,
   },
 
   async redirects() {
