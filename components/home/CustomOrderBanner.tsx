@@ -58,9 +58,13 @@ export default function CustomOrderBanner({
     storedPrimaryLink && storedPrimaryLink !== "/contact" ? storedPrimaryLink : customOrderLink;
   const secondaryText = s("home_custom_secondary_text");
   const secondaryLink = settings["home_custom_secondary_link"]?.trim() || exploreLink;
-  const bgImage = s("home_custom_bg_image");
-  const bgImageTablet = settings["home_custom_bg_image_tablet"]?.trim() || bgImage;
-  const bgImageMobile = s("home_custom_bg_image_mobile") || bgImage;
+  // Admin-saved settings may still point at the original ~1 MB PNGs; serve the
+  // pre-optimized WebP versions instead (same art, ~98% smaller).
+  const remapLegacyBg = (v: string) =>
+    v === "/custombg.png" ? "/custombg.webp" : v === "/custommobile.png" ? "/custommobile.webp" : v;
+  const bgImage = remapLegacyBg(s("home_custom_bg_image"));
+  const bgImageTablet = remapLegacyBg(settings["home_custom_bg_image_tablet"]?.trim() || bgImage);
+  const bgImageMobile = remapLegacyBg(s("home_custom_bg_image_mobile") || bgImage);
   const galleryItems = parseList<CustomGalleryItem>(
     settings["home_custom_gallery"],
     DEFAULT_CUSTOM_GALLERY

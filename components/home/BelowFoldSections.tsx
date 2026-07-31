@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import LazySection from "@/components/shared/LazySection";
 import { useSettings } from "@/hooks/useSettings";
 import { DEFAULT_MARQUEE_ITEMS, parseList } from "@/lib/siteContent";
 
@@ -48,35 +49,52 @@ export default function BelowFoldSections() {
   const { settings } = useSettings();
   const marqueeItems = parseList<string>(settings.home_marquee, DEFAULT_MARQUEE_ITEMS);
 
+  // Each section mounts (chunk downloads + hydrates) only as it nears the
+  // viewport; the LazySection className mirrors the dynamic() loading
+  // placeholder's min-height so the page doesn't shift.
   return (
     <>
       {/* Bangles category showcase */}
-      <CategoryShowcase title="Bangles" categorySlug="bangles" />
+      <LazySection className="min-h-75">
+        <CategoryShowcase title="Bangles" categorySlug="bangles" />
+      </LazySection>
 
       {/* Featured Products catalog */}
-      <FeaturedProducts />
+      <LazySection className="min-h-75">
+        <FeaturedProducts />
+      </LazySection>
 
       {/* Why Choose Us (HowItWorks refactored) */}
-      <HowItWorks />
+      <LazySection className="min-h-50">
+        <HowItWorks />
+      </LazySection>
 
       {/* Promo Showcase — rotating auto-scroll cards */}
-      <PromoShowcase />
+      <LazySection className="min-h-120">
+        <PromoShowcase />
+      </LazySection>
 
       {/* Customer Testimonials — WhatsApp-style chat cards */}
-      <CustomerLove />
+      <LazySection className="min-h-75">
+        <CustomerLove />
+      </LazySection>
 
       {/* Promotional banner — tablet only; phones get the order-tracking card instead */}
-      <FooterBanner />
-      <TrackOrderCard />
+      <LazySection>
+        <FooterBanner />
+        <TrackOrderCard />
+      </LazySection>
 
       {/* Gift Categories / Marketing Marquee — last section before the footer */}
-      <TextMarquee
-        items={marqueeItems}
-        bgColor="bg-[#111111]"
-        textColor="text-white"
-        dividerColor="text-white/20"
-        borderColor="border-white/10"
-      />
+      <LazySection className="min-h-12">
+        <TextMarquee
+          items={marqueeItems}
+          bgColor="bg-[#111111]"
+          textColor="text-white"
+          dividerColor="text-white/20"
+          borderColor="border-white/10"
+        />
+      </LazySection>
     </>
   );
 }

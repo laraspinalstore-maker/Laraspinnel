@@ -132,7 +132,13 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
 
                 {/* Slide Content */}
                 <div className="absolute inset-0 flex flex-col justify-center pb-12 md:pb-6 max-w-7xl mx-auto px-4 md:px-6 pt-6">
-                  <div className="max-w-3xl space-y-4 max-[300px]:space-y-2 text-left animate-in fade-in slide-in-from-bottom-5 duration-700">
+                  {/* No entry animation on the first slide — its headline is the
+                      page's LCP element and a fade-in delays the LCP paint. */}
+                  <div
+                    className={`max-w-3xl space-y-4 max-[300px]:space-y-2 text-left ${
+                      index === 0 ? "" : "animate-in fade-in slide-in-from-bottom-5 duration-700"
+                    }`}
+                  >
                     {/* Title in display Anton font */}
                     <Heading className="font-display text-white text-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight uppercase tracking-wide max-[300px]:text-2xl max-[300px]:leading-tight line-clamp-2">
                       {slide.headline}

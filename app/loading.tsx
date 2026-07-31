@@ -9,11 +9,14 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function Loading() {
   const { data: settings = {} } = useSWR("/api/settings", fetcher);
   
-  const logoUrl = settings.logo_url;
+  // Show the bundled logo immediately — the loading screen is transient and
+  // waiting on /api/settings meant the text fallback usually showed instead.
+  // The admin-configured logo takes over as soon as settings arrive.
+  const logoUrl = settings.logo_url || "/logo.png";
   const farmName = settings.farm_name || "LARA'S PINNAL";
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center min-h-screen">
+    <div className="fixed inset-0 z-9999 bg-white flex flex-col items-center justify-center min-h-screen">
       <div className="relative flex flex-col items-center justify-center">
         {/* Outer Pulsing Effect */}
         <div className="absolute w-32 h-32 rounded-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] bg-primary/20" />

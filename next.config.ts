@@ -65,6 +65,19 @@ const nextConfig: NextConfig = {
     // optimizeCss is disabled to prevent Turbopack compilation loop
   },
 
+  async redirects() {
+    return [
+      // The old .vercel.app host must not serve a duplicate of the site now
+      // that laraspinal.in is the primary domain — 308 everything across.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "laraspinnel.vercel.app" }],
+        destination: "https://laraspinal.in/:path*",
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {

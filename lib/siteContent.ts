@@ -230,8 +230,8 @@ export const CONTENT_DEFAULTS: Record<string, string> = {
   home_custom_primary_link: "/custom-order",
   home_custom_secondary_text: "View Custom Creations",
   home_custom_secondary_link: "/shop",
-  home_custom_bg_image: "/custombg.png",
-  home_custom_bg_image_mobile: "/custommobile.png",
+  home_custom_bg_image: "/custombg.webp",
+  home_custom_bg_image_mobile: "/custommobile.webp",
   home_custom_gallery: JSON.stringify(DEFAULT_CUSTOM_GALLERY),
   // Footer
   footer_quicklinks: JSON.stringify(DEFAULT_FOOTER_QUICKLINKS),
