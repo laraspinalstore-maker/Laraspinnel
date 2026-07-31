@@ -16,7 +16,9 @@ function sanitizeHeaderValue(value: string): string {
 }
 
 export async function sendEmail({ to, subject, html }: SendEmailParams) {
-  const fromEmail = process.env.EMAIL_FROM || "Laraspinnel <no-reply@laraspinnal.com>";
+  // Fallback must stay on the Resend-verified domain (laraspinal.in) — any
+  // other from-domain is rejected with a 403 validation_error.
+  const fromEmail = process.env.EMAIL_FROM || "Laraspinnel <no-reply@laraspinal.in>";
 
   const recipient = String(to ?? "").trim();
 
