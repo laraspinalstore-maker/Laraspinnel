@@ -96,9 +96,17 @@ export default function NewProductPage() {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      let data: { error?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+
       if (res.ok) {
         router.push("/admin/products");
+      } else if (res.status === 413) {
+        setError("Product data is too large. Remove pasted/base64 images from the description and use the image uploader instead.");
       } else {
         setError(data.error || "Failed to create product");
       }

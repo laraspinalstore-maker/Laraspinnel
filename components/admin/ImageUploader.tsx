@@ -35,15 +35,39 @@ export default function ImageUploader({
     try {
       const uploadedUrls: string[] = [];
       for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Pre-check size so oversized files fail with a clear message instead
+        // of the server/platform rejecting the request with a plain-text 413.
+        const isVideo = file.type.startsWith("video/");
+        const maxBytes = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+        if (file.size > maxBytes) {
+          setUploadError(
+            `${file.name} is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Max ${isVideo ? "50" : "5"} MB.`
+          );
+          continue;
+        }
+
         const body = new FormData();
-        body.append("file", files[i]);
+        body.append("file", file);
 
         const res = await fetch("/api/admin/upload", { method: "POST", body });
-        const data = await res.json();
-        if (res.ok) {
+
+        // The platform (e.g. Vercel) can reject big requests with a plain-text
+        // body before our API runs, so don't assume the response is JSON.
+        let data: { url?: string; error?: string } = {};
+        try {
+          data = await res.json();
+        } catch {
+          data = {};
+        }
+
+        if (res.ok && data.url) {
           uploadedUrls.push(data.url);
+        } else if (res.status === 413) {
+          setUploadError(`${file.name} is too large for the server to accept.`);
         } else {
-          setUploadError(data.error || `Failed to upload ${files[i].name}`);
+          setUploadError(data.error || `Failed to upload ${file.name}`);
         }
       }
 

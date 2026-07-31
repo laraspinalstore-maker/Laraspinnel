@@ -398,14 +398,50 @@ export function ReelListEditor({
       return;
     }
 
+    // Direct-to-ImageKit uploads skip the server's magic-byte validation, so
+    // at least gate on the browser-reported type here.
+    if (!["video/mp4", "video/webm", "video/quicktime"].includes(file.type)) {
+      setError("Only MP4, WebM, or MOV videos are allowed.");
+      return;
+    }
+
     setUploadingIndex(index);
     setError("");
     try {
+      // Videos are uploaded DIRECTLY from the browser to ImageKit using
+      // short-lived signed credentials. Routing the file through our own API
+      // would hit the hosting platform's request-body cap (~4.5 MB on Vercel),
+      // which rejects with a plain-text 413 before the API even runs.
+      const authRes = await fetch("/api/admin/upload-auth");
+      let auth: { token?: string; expire?: number; signature?: string; publicKey?: string } = {};
+      try {
+        auth = await authRes.json();
+      } catch {
+        auth = {};
+      }
+      if (!authRes.ok || !auth.token || !auth.signature || !auth.publicKey) {
+        throw new Error("Could not prepare the upload. Please try again.");
+      }
+
+      const ext = (file.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4";
       const body = new FormData();
       body.append("file", file);
-      const res = await fetch("/api/admin/upload", { method: "POST", body });
-      const data = await res.json();
-      if (!res.ok || !data.url) throw new Error(data.error || "Upload failed");
+      body.append("fileName", `reel-${Date.now()}.${ext}`);
+      body.append("publicKey", auth.publicKey);
+      body.append("signature", auth.signature);
+      body.append("expire", String(auth.expire));
+      body.append("token", auth.token);
+      body.append("folder", "laraspinnal");
+      body.append("useUniqueFileName", "true");
+
+      const res = await fetch("https://upload.imagekit.io/api/v1/files/upload", { method: "POST", body });
+      let data: { url?: string; message?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+      if (!res.ok || !data.url) throw new Error(data.message || "Upload failed");
       const current = itemsRef.current;
       const copy = [...current];
       copy[index] = { ...current[index], videoUrl: data.url };
