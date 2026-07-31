@@ -9,6 +9,7 @@ import { useCart } from "@/hooks/useCart";
 import { useSettings } from "@/hooks/useSettings";
 import { ShoppingBag, ChevronRight, ArrowLeft, Phone, ShieldCheck, Heart, FileText, CheckCircle2 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
+import AlertCard from "@/components/ui/AlertCard";
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
@@ -27,6 +28,7 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<{ orderNumber: string; id: string } | null>(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const contactPhone = settings.contact_phone || "+91 9442379832";
   const contactWhatsapp = settings.contact_whatsapp || "+91 9442379832";
@@ -97,7 +99,7 @@ export default function CheckoutPage() {
       setPlacedOrder({ orderNumber: data.orderNumber, id: data.id });
       clearCart();
     } catch (err: any) {
-      alert(err.message || "An error occurred while placing order.");
+      setAlertMessage(err.message || "An error occurred while placing order.");
     } finally {
       setIsSubmitting(false);
     }
@@ -189,6 +191,12 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col justify-between">
       <Navbar />
+
+      <AlertCard
+        title="Order Not Placed"
+        message={alertMessage ?? ""}
+        onClose={() => setAlertMessage(null)}
+      />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16 w-full space-y-8 animate-in fade-in">
         {/* Page Header */}
