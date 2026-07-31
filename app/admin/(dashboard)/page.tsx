@@ -268,7 +268,7 @@ export default async function AdminDashboardPage() {
           <Link
             href="/"
             target="_blank"
-            className="w-full lg:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-brand-black text-white hover:bg-goat-primary px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-200 whitespace-nowrap"
+            className="w-full lg:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-brand-black text-white hover:bg-primary px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-200 whitespace-nowrap"
           >
             <span>View Public Site</span>
             <ArrowRight size={14} />
@@ -280,7 +280,7 @@ export default async function AdminDashboardPage() {
           <StatCard
             title="Total Orders"
             value={data.totalOrders}
-            icon={<ShoppingBag size={22} className="text-goat-primary" />}
+            icon={<ShoppingBag size={22} className="text-primary" />}
           />
           <StatCard
             title="Pending Orders"
@@ -314,7 +314,7 @@ export default async function AdminDashboardPage() {
           <StatCard
             title="Revenue This Month"
             value={inr(data.revenueThisMonth)}
-            icon={<CalendarDays size={22} className="text-goat-primary" />}
+            icon={<CalendarDays size={22} className="text-primary" />}
             badge={
               data.revenueToday > 0
                 ? { text: `${inr(data.revenueToday)} today`, variant: "green" }
@@ -354,7 +354,7 @@ export default async function AdminDashboardPage() {
             </h3>
             <Link
               href="/admin/orders"
-              className="text-sm font-semibold text-goat-primary hover:text-goat-hover flex items-center gap-1 transition-colors"
+              className="text-sm font-semibold text-primary hover:text-primary-hover flex items-center gap-1 transition-colors"
             >
               <span>View All Orders</span>
               <ArrowRight size={14} />

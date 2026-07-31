@@ -114,7 +114,7 @@ export default function ImageUploader({
 
               {/* Cover badge on the first image */}
               {index === 0 && (
-                <span className="absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-goat-primary text-white text-[8px] font-bold uppercase tracking-wide shadow-sm">
+                <span className="absolute top-1 left-1 flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-primary text-white text-[8px] font-bold uppercase tracking-wide shadow-sm">
                   <Star size={8} className="fill-white" /> Cover
                 </span>
               )}
@@ -134,7 +134,7 @@ export default function ImageUploader({
                 <button
                   type="button"
                   onClick={() => handleMakeCover(index)}
-                  className="absolute bottom-0 inset-x-0 py-1 bg-black/55 text-white text-[9px] font-bold uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-all hover:bg-goat-primary"
+                  className="absolute bottom-0 inset-x-0 py-1 bg-black/55 text-white text-[9px] font-bold uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-all hover:bg-primary"
                 >
                   Set as cover
                 </button>
@@ -157,9 +157,9 @@ export default function ImageUploader({
           />
           <label
             htmlFor={inputId}
-            className="flex items-center justify-center gap-2 border border-dashed border-neutral-300 hover:border-goat-primary hover:bg-goat-tint/40 bg-white rounded-xl py-5 px-4 cursor-pointer transition-all text-sm font-semibold text-brand-black"
+            className="flex items-center justify-center gap-2 border border-dashed border-neutral-300 hover:border-primary hover:bg-primary-tint/40 bg-white rounded-xl py-5 px-4 cursor-pointer transition-all text-sm font-semibold text-brand-black"
           >
-            <Upload size={18} className={isUploading ? "animate-bounce text-goat-primary" : "text-brand-gray"} />
+            <Upload size={18} className={isUploading ? "animate-bounce text-primary" : "text-brand-gray"} />
             {isUploading
               ? "Uploading..."
               : images.length > 0
@@ -194,14 +194,14 @@ export default function ImageUploader({
                 }
               }}
               placeholder="Or paste an image URL..."
-              className="w-full h-10 pl-9 pr-3 bg-white border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+              className="w-full h-10 pl-9 pr-3 bg-white border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
             />
           </div>
           <button
             type="button"
             onClick={handleAddUrl}
             disabled={!urlInput.trim()}
-            className="h-10 px-3.5 flex items-center gap-1 rounded-xl bg-brand-black hover:bg-goat-primary text-white text-xs font-bold transition-all disabled:bg-neutral-300 disabled:cursor-not-allowed"
+            className="h-10 px-3.5 flex items-center gap-1 rounded-xl bg-brand-black hover:bg-primary text-white text-xs font-bold transition-all disabled:bg-neutral-300 disabled:cursor-not-allowed"
           >
             <Plus size={14} /> Add
           </button>

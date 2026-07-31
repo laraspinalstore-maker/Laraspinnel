@@ -10,7 +10,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const ReviewCard = ({ rev, className = "" }: { rev: any; className?: string }) => (
   <div className={`bg-white p-5 md:p-6 rounded-2xl border border-brand-border shadow-card flex flex-col justify-between relative group hover:-translate-y-0.5 transition-transform duration-200 h-full ${className}`}>
-    <Quote className="text-goat-primary/10 absolute top-5 right-5 group-hover:scale-105 transition-transform" size={36} />
+    <Quote className="text-primary/10 absolute top-5 right-5 group-hover:scale-105 transition-transform" size={36} />
 
     {/* Review Text */}
     <div className="space-y-4">
@@ -27,7 +27,7 @@ const ReviewCard = ({ rev, className = "" }: { rev: any; className?: string }) =
 
     {/* Customer Info */}
     <div className="flex items-center gap-3 pt-6 border-t border-brand-border mt-6">
-      <div className="w-10 h-10 rounded-full bg-goat-tint text-goat-text font-bold text-sm flex items-center justify-center border border-goat-primary/10 shrink-0">
+      <div className="w-10 h-10 rounded-full bg-primary-tint text-primary-text font-bold text-sm flex items-center justify-center border border-primary/10 shrink-0">
         {rev.initial}
       </div>
       <div>
@@ -136,7 +136,7 @@ const AddReviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
 
               {status === "error" && <p className="text-red-500 text-xs font-medium text-center bg-red-50 p-2 rounded-lg">{errorMessage}</p>}
 
-              <button type="submit" disabled={status === "loading"} className="w-full h-12 bg-goat-primary text-white font-bold uppercase tracking-wider text-sm rounded-xl hover:bg-goat-primary/90 transition-colors flex items-center justify-center gap-2 mt-4">
+              <button type="submit" disabled={status === "loading"} className="w-full h-12 bg-primary text-white font-bold uppercase tracking-wider text-sm rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 mt-4">
                 {status === "loading" ? <><Loader2 size={18} className="animate-spin" /> Submitting...</> : "Submit Review"}
               </button>
             </form>
@@ -235,13 +235,13 @@ export default function Testimonials() {
               {settings.home_testimonials_subtitle || "Stories of satisfaction from gift-givers, families, and loyal customers."}
             </p>
             <p className="text-sm font-medium text-brand-gray mt-1 flex items-center gap-1.5">
-              <ShieldCheck size={16} className="text-goat-primary" /> Verified Purchases Only
+              <ShieldCheck size={16} className="text-primary" /> Verified Purchases Only
             </p>
           </div>
 
           <div className="w-full md:w-auto md:min-w-50">
             <div className="hidden sm:block">
-              <button onClick={() => setIsModalOpen(true)} className="px-8 py-3 w-full bg-goat-primary border-2 border-transparent text-white font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-goat-hover transition-all shadow-sm active:scale-95">
+              <button onClick={() => setIsModalOpen(true)} className="px-8 py-3 w-full bg-primary border-2 border-transparent text-white font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-primary-hover transition-all shadow-sm active:scale-95">
                 Add Your Review
               </button>
             </div>
@@ -318,15 +318,15 @@ export default function Testimonials() {
           {/* Desktop View */}
           <div className="hidden sm:flex flex-wrap items-center justify-center gap-6">
             <span className="inline-flex shrink-0 items-center gap-2 bg-white px-4 py-2 rounded-full border border-brand-border text-brand-black font-semibold text-xs shadow-xs transition-colors hover:bg-neutral-50 cursor-default">
-              <Users size={15} className="text-goat-primary shrink-0" />
+              <Users size={15} className="text-primary shrink-0" />
               <span className="whitespace-nowrap">{settings.home_stat_1 || "500+ Happy Customers"}</span>
             </span>
             <span className="inline-flex shrink-0 items-center gap-2 bg-white px-4 py-2 rounded-full border border-brand-border text-brand-black font-semibold text-xs shadow-xs transition-colors hover:bg-neutral-50 cursor-default">
-              <MapPin size={15} className="text-goat-primary shrink-0" />
+              <MapPin size={15} className="text-primary shrink-0" />
               <span className="whitespace-nowrap">{settings.home_stat_2 || "Ships Across India"}</span>
             </span>
             <span className="inline-flex shrink-0 items-center gap-2 bg-white px-4 py-2 rounded-full border border-brand-border text-brand-black font-semibold text-xs shadow-xs transition-colors hover:bg-neutral-50 cursor-default">
-              <ShieldCheck size={15} className="text-goat-primary shrink-0" />
+              <ShieldCheck size={15} className="text-primary shrink-0" />
               <span className="whitespace-nowrap">{settings.home_stat_3 || "Handmade Quality Guaranteed"}</span>
             </span>
           </div>
@@ -341,15 +341,15 @@ export default function Testimonials() {
               {[1, 2].map((i) => (
                 <div key={i} className="flex gap-3 pr-3 shrink-0">
                   <span className="inline-flex shrink-0 items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-brand-border text-brand-black font-semibold text-[11px] shadow-xs cursor-default">
-                    <Users size={15} className="text-goat-primary shrink-0" />
+                    <Users size={15} className="text-primary shrink-0" />
                     <span className="whitespace-nowrap">{settings.home_stat_1 || "500+ Happy Customers"}</span>
                   </span>
                   <span className="inline-flex shrink-0 items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-brand-border text-brand-black font-semibold text-[11px] shadow-xs cursor-default">
-                    <MapPin size={15} className="text-goat-primary shrink-0" />
+                    <MapPin size={15} className="text-primary shrink-0" />
                     <span className="whitespace-nowrap">{settings.home_stat_2 || "Ships Across India"}</span>
                   </span>
                   <span className="inline-flex shrink-0 items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-brand-border text-brand-black font-semibold text-[11px] shadow-xs cursor-default">
-                    <ShieldCheck size={15} className="text-goat-primary shrink-0" />
+                    <ShieldCheck size={15} className="text-primary shrink-0" />
                     <span className="whitespace-nowrap">{settings.home_stat_3 || "Handmade Quality Guaranteed"}</span>
                   </span>
                 </div>

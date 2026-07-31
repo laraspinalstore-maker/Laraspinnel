@@ -240,7 +240,7 @@ export default function AdminProductsPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search products by name..."
-                className="w-full h-10 pl-9 pr-4 bg-white border border-brand-border rounded-xl text-sm text-brand-black focus:ring-2 focus:ring-goat-primary outline-none transition-all"
+                className="w-full h-10 pl-9 pr-4 bg-white border border-brand-border rounded-xl text-sm text-brand-black focus:ring-2 focus:ring-primary outline-none transition-all"
               />
             </div>
 
@@ -250,7 +250,7 @@ export default function AdminProductsPage() {
                 options={categories}
                 value={categoryFilter}
                 onChange={(val) => setCategoryFilter(val)}
-                theme="goat"
+                theme="primary"
               />
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function AdminProductsPage() {
           {/* Add Product Button */}
           <Link
             href="/admin/products/new"
-            className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-brand-black hover:bg-goat-primary text-white font-semibold text-sm h-10 px-4 rounded-xl transition-colors duration-200 shadow-sm whitespace-nowrap"
+            className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-brand-black hover:bg-primary text-white font-semibold text-sm h-10 px-4 rounded-xl transition-colors duration-200 shadow-sm whitespace-nowrap"
           >
             <Plus size={16} />
             <span>Add Product</span>
@@ -267,8 +267,8 @@ export default function AdminProductsPage() {
 
         {/* Bulk action bar — appears when products are selected */}
         {selectedIds.size > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-goat-tint border border-goat-primary/30 rounded-xl px-4 py-3 animate-in fade-in slide-in-from-top-1">
-            <span className="text-sm font-bold text-goat-text">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-primary-tint border border-primary/30 rounded-xl px-4 py-3 animate-in fade-in slide-in-from-top-1">
+            <span className="text-sm font-bold text-primary-text">
               {selectedIds.size} selected
             </span>
             <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -293,7 +293,7 @@ export default function AdminProductsPage() {
         {/* List — grouped category-wise */}
         {isLoading ? (
           <div className="bg-white border border-brand-border rounded-2xl shadow-card p-12 text-center text-brand-gray flex flex-col items-center gap-3">
-            <div className="animate-spin text-goat-primary">
+            <div className="animate-spin text-primary">
               <ShoppingBag size={40} />
             </div>
             <p className="text-sm font-semibold">Loading products...</p>
@@ -328,10 +328,10 @@ export default function AdminProductsPage() {
                       type="checkbox"
                       checked={isGroupAllSelected(group.items)}
                       onChange={() => toggleGroup(group.items)}
-                      className="w-4 h-4 shrink-0 accent-goat-primary rounded border-brand-border cursor-pointer"
+                      className="w-4 h-4 shrink-0 accent-primary rounded border-brand-border cursor-pointer"
                       title="Select all in this category"
                     />
-                    <FolderOpen size={16} className="text-goat-primary shrink-0" />
+                    <FolderOpen size={16} className="text-primary shrink-0" />
                     <h3 className="text-sm font-bold text-brand-black uppercase tracking-wide truncate">
                       {group.name}
                     </h3>
@@ -360,7 +360,7 @@ export default function AdminProductsPage() {
                           key={product._id}
                           className={`transition-colors ${
                             selectedIds.has(product._id)
-                              ? "bg-goat-tint/50"
+                              ? "bg-primary-tint/50"
                               : "hover:bg-brand-light-gray/50"
                           }`}
                         >
@@ -369,7 +369,7 @@ export default function AdminProductsPage() {
                               type="checkbox"
                               checked={selectedIds.has(product._id)}
                               onChange={() => toggleOne(product._id)}
-                              className="w-4 h-4 accent-goat-primary rounded border-brand-border cursor-pointer"
+                              className="w-4 h-4 accent-primary rounded border-brand-border cursor-pointer"
                               aria-label={`Select ${product.name}`}
                             />
                           </td>
@@ -393,7 +393,7 @@ export default function AdminProductsPage() {
                             <div className="font-semibold text-brand-black flex items-center gap-2">
                               <span>{product.name}</span>
                               {product.isFeatured && (
-                                <span className="bg-goat-tint text-goat-text text-[10px] font-bold px-1.5 py-0.5 rounded border border-goat-primary/10 shrink-0">
+                                <span className="bg-primary-tint text-primary-text text-[10px] font-bold px-1.5 py-0.5 rounded border border-primary/10 shrink-0">
                                   Featured
                                 </span>
                               )}
@@ -429,7 +429,7 @@ export default function AdminProductsPage() {
                             <div className="flex items-center justify-end gap-2">
                               <Link
                                 href={`/admin/products/${product._id}`}
-                                className="p-1.5 hover:bg-brand-light-gray text-brand-black hover:text-goat-primary rounded transition-colors"
+                                className="p-1.5 hover:bg-brand-light-gray text-brand-black hover:text-primary rounded transition-colors"
                                 title="Edit"
                               >
                                 <Pencil size={16} />

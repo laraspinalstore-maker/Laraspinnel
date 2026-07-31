@@ -50,7 +50,7 @@ export default function FloatingCartBar() {
             <div className="flex items-center gap-3 py-1">
               <div className="bg-white/10 p-1.5 md:p-2 rounded-lg md:rounded-xl flex items-center justify-center relative">
                 <ShoppingBag className="text-white w-4 h-4 md:w-5 md:h-5" />
-                <span className="absolute -top-1.5 -right-1.5 bg-goat-primary text-white text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center shadow-sm">
+                <span className="absolute -top-1.5 -right-1.5 bg-primary text-white text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center shadow-sm">
                   {cartCount}
                 </span>
               </div>
@@ -65,7 +65,7 @@ export default function FloatingCartBar() {
             </div>
 
             {/* Right section: Action */}
-            <div className="flex items-center gap-1 bg-goat-primary group-hover:bg-goat-hover transition-colors rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 h-full">
+            <div className="flex items-center gap-1 bg-primary group-hover:bg-primary-hover transition-colors rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 h-full">
               <span className="text-xs md:text-sm font-bold uppercase tracking-wide">View Cart</span>
               <ChevronRight className="w-4 h-4 md:w-4 md:h-4 animate-slide-right" strokeWidth={2.5} />
             </div>

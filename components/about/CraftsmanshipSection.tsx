@@ -36,8 +36,8 @@ const PILLARS: CraftPillar[] = [
       "Easy spot cleaning & hand washable",
     ],
     icon: Sparkles,
-    colorClass: "text-goat-primary",
-    bgTintClass: "bg-goat-tint",
+    colorClass: "text-primary",
+    bgTintClass: "bg-primary-tint",
     imageSrc:
       "https://ik.imagekit.io/senra6374/laraspinnal/Crochet_rose_flower_on_stem_202607192151-removebg-preview_6NgeZL4GE.png",
     imageAlt: "Single Pink Rose Stem in milk cotton yarn",
@@ -115,12 +115,12 @@ export default function CraftsmanshipSection() {
   return (
     <section id="our-craft" className="bg-cream-bg scroll-mt-20 py-16 md:py-24 border-t border-brand-border/60 relative overflow-hidden">
       {/* Decorative subtle background elements */}
-      <div className="absolute top-10 right-10 w-72 h-72 rounded-full bg-goat-tint/40 blur-3xl pointer-events-none" />
+      <div className="absolute top-10 right-10 w-72 h-72 rounded-full bg-primary-tint/40 blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-rose-tint/40 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10 space-y-12">
         <Reveal className="max-w-2xl mx-auto text-center space-y-3">
-          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
             Inside Our Studio
           </p>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-brand-black tracking-wide text-balance">
@@ -144,7 +144,7 @@ export default function CraftsmanshipSection() {
                   className={`flex items-center gap-2.5 px-4 md:px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
                     isActive
                       ? "bg-brand-black text-white shadow-md scale-105"
-                      : "bg-white text-brand-gray border border-brand-border hover:bg-goat-tint/40 hover:text-brand-black"
+                      : "bg-white text-brand-gray border border-brand-border hover:bg-primary-tint/40 hover:text-brand-black"
                   }`}
                 >
                   <Icon size={15} className={isActive ? "text-rose-text" : pillar.colorClass} />

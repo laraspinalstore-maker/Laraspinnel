@@ -174,7 +174,7 @@ export default function AdminBannersPage() {
           {!isFormOpen && (
             <button
               onClick={openAddForm}
-              className="inline-flex items-center justify-center gap-2 bg-brand-black hover:bg-goat-primary text-white font-semibold text-sm h-10 px-4 rounded-xl transition-colors duration-200 shadow-sm shrink-0"
+              className="inline-flex items-center justify-center gap-2 bg-brand-black hover:bg-primary text-white font-semibold text-sm h-10 px-4 rounded-xl transition-colors duration-200 shadow-sm shrink-0"
             >
               <Plus size={16} />
               <span>Add Banner</span>
@@ -212,7 +212,7 @@ export default function AdminBannersPage() {
                     value={headline}
                     onChange={(e) => setHeadline(e.target.value)}
                     placeholder="e.g. Handmade Crochet Gifts, Delivered Across Tamil Nadu"
-                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
 
@@ -226,7 +226,7 @@ export default function AdminBannersPage() {
                     value={subtext}
                     onChange={(e) => setSubtext(e.target.value)}
                     placeholder="e.g. Bouquets, amigurumi, and custom gifts. Order now for home delivery."
-                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
 
@@ -240,7 +240,7 @@ export default function AdminBannersPage() {
                     value={buttonText}
                     onChange={(e) => setButtonText(e.target.value)}
                     placeholder="e.g. Shop Crochet Gifts"
-                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
 
@@ -254,7 +254,7 @@ export default function AdminBannersPage() {
                     value={buttonLink}
                     onChange={(e) => setButtonLink(e.target.value)}
                     placeholder="e.g. /shop"
-                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
 
@@ -266,7 +266,7 @@ export default function AdminBannersPage() {
                   <select
                     value={buttonTheme}
                     onChange={(e) => setButtonTheme(e.target.value as "green" | "red")}
-                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="green">Green Button</option>
                     <option value="red">Red Button</option>
@@ -282,7 +282,7 @@ export default function AdminBannersPage() {
                     type="number"
                     value={order}
                     onChange={(e) => setOrder(Number(e.target.value))}
-                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                    className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -302,7 +302,7 @@ export default function AdminBannersPage() {
                     type="checkbox"
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
-                    className="w-4 h-4 rounded text-goat-primary focus:ring-goat-primary border-brand-border"
+                    className="w-4 h-4 rounded text-primary focus:ring-primary border-brand-border"
                   />
                   <span className="text-sm font-semibold text-brand-black">Visible / Active slide</span>
                 </label>
@@ -320,7 +320,7 @@ export default function AdminBannersPage() {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-2 h-10 px-5 text-sm font-semibold bg-brand-black hover:bg-goat-primary text-white rounded-xl transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 h-10 px-5 text-sm font-semibold bg-brand-black hover:bg-primary text-white rounded-xl transition-colors disabled:opacity-50"
                 >
                   {isSaving ? (
                     <Loader2 size={16} className="animate-spin" />
@@ -338,7 +338,7 @@ export default function AdminBannersPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             <div className="col-span-full p-12 text-center text-brand-gray flex flex-col items-center gap-3">
-              <Loader2 size={36} className="animate-spin text-goat-primary" />
+              <Loader2 size={36} className="animate-spin text-primary" />
               <p className="text-sm font-semibold">Loading banner slides...</p>
             </div>
           ) : banners.length === 0 ? (
@@ -391,8 +391,8 @@ export default function AdminBannersPage() {
                         <span
                           className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${
                             banner.buttonTheme === "red"
-                              ? "bg-mutton-tint text-mutton-text border-mutton-primary/20"
-                              : "bg-goat-tint text-goat-text border-goat-primary/20"
+                              ? "bg-secondary-tint text-secondary-text border-secondary/20"
+                              : "bg-primary-tint text-primary-text border-primary/20"
                           }`}
                         >
                           Btn: {banner.buttonText} → {banner.buttonLink}

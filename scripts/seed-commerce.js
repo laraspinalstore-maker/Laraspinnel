@@ -997,14 +997,6 @@ async function seed() {
 
     // Also try to clear obsolete models from previous database if they exist
     try {
-      await mongoose.connection.db.dropCollection("goatvarieties");
-      console.log("Dropped collection: goatvarieties");
-    } catch (e) {}
-    try {
-      await mongoose.connection.db.dropCollection("muttonpacks");
-      console.log("Dropped collection: muttonpacks");
-    } catch (e) {}
-    try {
       await mongoose.connection.db.dropCollection("bookings");
       console.log("Dropped collection: bookings");
     } catch (e) {}

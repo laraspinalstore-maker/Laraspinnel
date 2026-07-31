@@ -10,7 +10,7 @@ export default function StorySection({ settings }: { settings: Record<string, st
   const mainStoryImage =
     settings.about_story_image && settings.about_story_image !== "/custombg.png"
       ? settings.about_story_image
-      : "https://images.unsplash.com/photo-1596436889106-be35e843f974?w=1000&auto=format&fit=crop&q=80";
+      : "";
 
   /* Heading: last word gets the italic gold accent, like the mock */
   const title = settings.about_story_title?.trim() || "How It All Began";
@@ -36,18 +36,20 @@ export default function StorySection({ settings }: { settings: Record<string, st
               <div className="lg:col-span-5 relative pt-8 pl-4 sm:pl-6">
                 <div className="relative rounded-3xl border-2 border-dashed border-gold-primary/40 p-2.5 bg-white shadow-card">
                   <div className="relative aspect-4/5 rounded-2xl overflow-hidden bg-gold-tint/40">
-                    <Image
-                      src={mainStoryImage}
-                      alt="The maker at work in the Lara's Pinnal studio"
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 480px"
-                      className="object-cover"
-                    />
+                    {mainStoryImage && (
+                      <Image
+                        src={mainStoryImage}
+                        alt="The maker at work in the Lara's Pinnal studio"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 480px"
+                        className="object-cover"
+                      />
+                    )}
                   </div>
                 </div>
 
                 {/* EST. badge */}
-                <div className="absolute top-0 left-0 z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-goat-primary shadow-md flex flex-col items-center justify-center">
+                <div className="absolute top-0 left-0 z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-primary shadow-md flex flex-col items-center justify-center">
                   <span className="font-display font-extrabold text-xl sm:text-2xl text-cream-bg leading-none">
                     {estYear}
                   </span>
@@ -60,14 +62,14 @@ export default function StorySection({ settings }: { settings: Record<string, st
               {/* Right: story copy */}
               <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
                 {/* Eyebrow with trailing thread */}
-                <p className="inline-flex items-center gap-3 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+                <p className="inline-flex items-center gap-3 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
                   {eyebrow}
-                  <span aria-hidden="true" className="h-px w-10 bg-goat-primary/40" />
+                  <span aria-hidden="true" className="h-px w-10 bg-primary/40" />
                 </p>
 
                 <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl tracking-wide leading-tight text-brand-black">
                   {titleLead && <>{titleLead} </>}
-                  <span className="italic text-goat-text">{titleAccent}</span>
+                  <span className="italic text-primary-text">{titleAccent}</span>
                 </h2>
 
                 <div className="space-y-4 text-sm md:text-base text-brand-gray leading-relaxed font-medium max-w-xl mx-auto lg:mx-0 text-justify">
@@ -87,7 +89,7 @@ export default function StorySection({ settings }: { settings: Record<string, st
                   {chips.map((chip) => (
                     <li
                       key={chip}
-                      className="rounded-full bg-goat-tint border border-goat-primary/15 text-primary-hover font-bold text-xs sm:text-sm px-5 py-2.5"
+                      className="rounded-full bg-primary-tint border border-primary/15 text-primary-hover font-bold text-xs sm:text-sm px-5 py-2.5"
                     >
                       {chip}
                     </li>
@@ -99,13 +101,13 @@ export default function StorySection({ settings }: { settings: Record<string, st
                 <div>
                   <Link
                     href="#our-craft"
-                    className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-brand-black hover:bg-goat-primary text-white font-bold text-xs uppercase tracking-wider transition-colors duration-300 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-goat-primary focus-visible:ring-offset-2"
+                    className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-brand-black hover:bg-primary text-white font-bold text-xs uppercase tracking-wider transition-colors duration-300 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
                     {ctaText}
                   </Link>
                 </div>
 
-                <p className="font-display italic text-lg md:text-xl text-goat-text">
+                <p className="font-display italic text-lg md:text-xl text-primary-text">
                   {signoff}
                 </p>
               </div>

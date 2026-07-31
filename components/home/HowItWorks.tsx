@@ -6,11 +6,11 @@ import { useSettings } from "@/hooks/useSettings";
 import { CONTENT_DEFAULTS, DEFAULT_WHY_STEPS, parseList, WhyStep } from "@/lib/siteContent";
 
 const STEP_ICONS = [
-  <Heart key="h" size={30} className="text-goat-primary" />,
-  <ShieldCheck key="s" size={30} className="text-goat-primary" />,
-  <Sparkles key="sp" size={30} className="text-goat-primary" />,
-  <Truck key="t" size={30} className="text-goat-primary" />,
-  <Tag key="tg" size={30} className="text-goat-primary" />,
+  <Heart key="h" size={30} className="text-primary" />,
+  <ShieldCheck key="s" size={30} className="text-primary" />,
+  <Sparkles key="sp" size={30} className="text-primary" />,
+  <Truck key="t" size={30} className="text-primary" />,
+  <Tag key="tg" size={30} className="text-primary" />,
 ];
 
 export default function HowItWorks() {
@@ -78,8 +78,8 @@ export default function HowItWorks() {
         {/* Desktop View */}
         <div className="hidden md:grid grid-cols-5 gap-6 relative pt-10">
           {/* Connector Line with Moving Dot */}
-          <div className="absolute top-18 left-[10%] right-[10%] h-0.5 border-t-2 border-dashed border-goat-primary/25 z-0">
-            <div className="absolute -top-1.25 w-2 h-2 rounded-full bg-goat-primary animate-dot-move shadow-[0_0_8px_rgba(143,168,138,0.8)]"></div>
+          <div className="absolute top-18 left-[10%] right-[10%] h-0.5 border-t-2 border-dashed border-primary/25 z-0">
+            <div className="absolute -top-1.25 w-2 h-2 rounded-full bg-primary animate-dot-move shadow-[0_0_8px_rgba(143,168,138,0.8)]"></div>
           </div>
 
           {steps.map((step, idx) => (
@@ -88,7 +88,7 @@ export default function HowItWorks() {
               className="flex flex-col items-center text-center space-y-4 relative z-10 group"
             >
               <div
-                className="w-16 h-16 rounded-full bg-goat-tint border border-goat-primary/10 flex items-center justify-center relative shadow-sm transition-transform duration-200 animate-icon-zoom"
+                className="w-16 h-16 rounded-full bg-primary-tint border border-primary/10 flex items-center justify-center relative shadow-sm transition-transform duration-200 animate-icon-zoom"
                 style={{ animationDelay: `${idx * 3}s` }}
               >
                 {step.icon}
@@ -114,8 +114,8 @@ export default function HowItWorks() {
             {[1, 2].map((setIndex) => (
               <div key={setIndex} className="flex gap-12 relative shrink-0 pr-12">
                 {/* Connector Line with Moving Dot for Mobile */}
-                <div className="absolute top-8 left-27.5 right-39.5 h-0.5 border-t-2 border-dashed border-goat-primary/25 z-0">
-                  <div className="absolute -top-1.25 w-2 h-2 rounded-full bg-goat-primary animate-dot-move-mobile shadow-[0_0_8px_rgba(143,168,138,0.8)]" style={{ animationDelay: '-1.6s' }}></div>
+                <div className="absolute top-8 left-27.5 right-39.5 h-0.5 border-t-2 border-dashed border-primary/25 z-0">
+                  <div className="absolute -top-1.25 w-2 h-2 rounded-full bg-primary animate-dot-move-mobile shadow-[0_0_8px_rgba(143,168,138,0.8)]" style={{ animationDelay: '-1.6s' }}></div>
                 </div>
 
                 {steps.map((step, idx) => (
@@ -124,7 +124,7 @@ export default function HowItWorks() {
                     className="flex flex-col items-center text-center space-y-4 relative z-10 group shrink-0 w-45"
                   >
                     <div
-                      className="w-16 h-16 rounded-full bg-goat-tint border border-goat-primary/10 flex items-center justify-center relative shadow-sm transition-transform duration-200 animate-icon-zoom-mobile"
+                      className="w-16 h-16 rounded-full bg-primary-tint border border-primary/10 flex items-center justify-center relative shadow-sm transition-transform duration-200 animate-icon-zoom-mobile"
                       style={{ animationDelay: `${(idx * 5) - 1.6}s` }}
                     >
                       {step.icon}

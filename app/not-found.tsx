@@ -14,8 +14,8 @@ export default function NotFound() {
         <div className="max-w-xl mx-auto space-y-8 animate-in fade-in zoom-in-95 duration-700">
           {/* Icon Container */}
           <div className="relative w-32 h-32 mx-auto">
-            <div className="absolute inset-0 bg-goat-primary/10 rounded-full animate-pulse blur-xl"></div>
-            <div className="relative bg-white border border-brand-border shadow-xl rounded-full w-full h-full flex items-center justify-center text-goat-primary">
+            <div className="absolute inset-0 bg-primary/10 rounded-full animate-pulse blur-xl"></div>
+            <div className="relative bg-white border border-brand-border shadow-xl rounded-full w-full h-full flex items-center justify-center text-primary">
               <MapPinOff size={56} strokeWidth={1.5} />
             </div>
           </div>
@@ -37,7 +37,7 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link
               href="/"
-              className="inline-flex items-center justify-center gap-2 h-14 px-8 rounded-full bg-brand-black text-white hover:bg-goat-primary hover:shadow-lg hover:shadow-goat-primary/30 transition-all duration-300 font-semibold w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 h-14 px-8 rounded-full bg-brand-black text-white hover:bg-primary hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 font-semibold w-full sm:w-auto"
             >
               <Home size={18} />
               <span>Back to Home</span>

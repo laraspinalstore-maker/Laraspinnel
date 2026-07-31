@@ -11,7 +11,7 @@ import Sprinkles from "./Sprinkles";
 import { motion } from "framer-motion";
 
 const CARD_CLASSES =
-  "relative w-full overflow-hidden rounded-[2rem] bg-brand-light-gray ring-1 ring-goat-primary/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-700 ease-out group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)]";
+  "relative w-full overflow-hidden rounded-[2rem] bg-brand-light-gray ring-1 ring-primary/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-700 ease-out group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)]";
 
 function CardDecoration({ colorHex }: { colorHex: string }) {
   return (

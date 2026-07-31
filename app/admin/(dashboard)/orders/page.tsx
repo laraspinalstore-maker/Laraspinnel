@@ -209,7 +209,7 @@ export default function AdminOrdersPage() {
               <tr
                 key={order._id}
                 className={`transition-colors ${
-                  selectedIds.has(order._id) ? "bg-goat-tint/50" : "hover:bg-brand-light-gray/50"
+                  selectedIds.has(order._id) ? "bg-primary-tint/50" : "hover:bg-brand-light-gray/50"
                 }`}
               >
                 <td className="pl-4 md:pl-6 pr-1 py-4">
@@ -217,7 +217,7 @@ export default function AdminOrdersPage() {
                     type="checkbox"
                     checked={selectedIds.has(order._id)}
                     onChange={() => toggleOne(order._id)}
-                    className="w-4 h-4 accent-goat-primary rounded border-brand-border cursor-pointer"
+                    className="w-4 h-4 accent-primary rounded border-brand-border cursor-pointer"
                     aria-label={`Select order ${order.orderNumber}`}
                   />
                 </td>
@@ -396,7 +396,7 @@ export default function AdminOrdersPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search orders by number, client, or phone..."
-                className="w-full h-10 pl-9 pr-4 bg-white border border-brand-border rounded-xl text-sm text-brand-black focus:ring-2 focus:ring-goat-primary outline-none transition-all"
+                className="w-full h-10 pl-9 pr-4 bg-white border border-brand-border rounded-xl text-sm text-brand-black focus:ring-2 focus:ring-primary outline-none transition-all"
               />
             </div>
 
@@ -406,7 +406,7 @@ export default function AdminOrdersPage() {
                 options={[{ label: "All Statuses", value: "all" }, ...STATUS_CHOICES]}
                 value={statusFilter}
                 onChange={(val) => setStatusFilter(val)}
-                theme="goat"
+                theme="primary"
               />
             </div>
 
@@ -417,7 +417,7 @@ export default function AdminOrdersPage() {
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
                 aria-label="Filter by date"
-                className={`w-full h-10 pl-3 pr-8 bg-white border border-brand-border rounded-xl text-sm focus:ring-2 focus:ring-goat-primary outline-none transition-all ${
+                className={`w-full h-10 pl-3 pr-8 bg-white border border-brand-border rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-all ${
                   dateFilter ? "text-brand-black font-semibold" : "text-brand-gray"
                 }`}
               />
@@ -437,8 +437,8 @@ export default function AdminOrdersPage() {
 
         {/* Bulk status update bar — appears when orders are selected */}
         {selectedIds.size > 0 && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-goat-tint border border-goat-primary/30 rounded-xl px-4 py-3 animate-in fade-in slide-in-from-top-1">
-            <span className="text-sm font-bold text-goat-text shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-primary-tint border border-primary/30 rounded-xl px-4 py-3 animate-in fade-in slide-in-from-top-1">
+            <span className="text-sm font-bold text-primary-text shrink-0">
               {selectedIds.size} selected
             </span>
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
@@ -450,7 +450,7 @@ export default function AdminOrdersPage() {
                   options={STATUS_CHOICES}
                   value={bulkStatus}
                   onChange={(val) => setBulkStatus(val as OrderStatus)}
-                  theme="goat"
+                  theme="primary"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -463,7 +463,7 @@ export default function AdminOrdersPage() {
                 <button
                   onClick={doBulkStatusUpdate}
                   disabled={isBulkUpdating}
-                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 text-sm font-bold text-white bg-goat-primary hover:bg-goat-hover h-9 px-4 rounded-lg transition-colors shadow-sm disabled:bg-neutral-400"
+                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 text-sm font-bold text-white bg-primary hover:bg-primary-hover h-9 px-4 rounded-lg transition-colors shadow-sm disabled:bg-neutral-400"
                 >
                   <RefreshCw size={15} className={isBulkUpdating ? "animate-spin" : ""} />
                   {isBulkUpdating ? "Updating..." : "Update status"}
@@ -484,7 +484,7 @@ export default function AdminOrdersPage() {
         {/* List — grouped date-wise */}
         {isLoading ? (
           <div className="bg-white border border-brand-border rounded-2xl shadow-card p-12 text-center text-brand-gray flex flex-col items-center gap-3">
-            <div className="animate-spin text-goat-primary">
+            <div className="animate-spin text-primary">
               <FileText size={40} />
             </div>
             <p className="text-sm font-semibold">Loading orders...</p>
@@ -519,7 +519,7 @@ export default function AdminOrdersPage() {
                       type="checkbox"
                       checked={isGroupAllSelected(banglesOrders)}
                       onChange={() => toggleGroup(banglesOrders)}
-                      className="w-4 h-4 shrink-0 accent-goat-primary rounded border-brand-border cursor-pointer"
+                      className="w-4 h-4 shrink-0 accent-primary rounded border-brand-border cursor-pointer"
                       title="Select all bangles orders"
                     />
                     <Gem size={16} className="text-gold-text shrink-0" />
@@ -561,10 +561,10 @@ export default function AdminOrdersPage() {
                       type="checkbox"
                       checked={isGroupAllSelected(group.items)}
                       onChange={() => toggleGroup(group.items)}
-                      className="w-4 h-4 shrink-0 accent-goat-primary rounded border-brand-border cursor-pointer"
+                      className="w-4 h-4 shrink-0 accent-primary rounded border-brand-border cursor-pointer"
                       title="Select all orders on this date"
                     />
-                    <CalendarDays size={16} className="text-goat-primary shrink-0" />
+                    <CalendarDays size={16} className="text-primary shrink-0" />
                     <h3 className="text-sm font-bold text-brand-black tracking-wide truncate">
                       {group.label}
                     </h3>
@@ -572,7 +572,7 @@ export default function AdminOrdersPage() {
                       {group.items.length} {group.items.length === 1 ? "order" : "orders"}
                     </span>
                   </label>
-                  <span className="shrink-0 text-sm font-bold text-goat-text">
+                  <span className="shrink-0 text-sm font-bold text-primary-text">
                     ₹{group.total.toLocaleString("en-IN")}
                   </span>
                 </div>

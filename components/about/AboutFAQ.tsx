@@ -50,7 +50,7 @@ export default function AboutFAQ() {
     <section className="bg-white py-16 md:py-24 border-b border-brand-border">
       <div className="max-w-4xl mx-auto px-4 md:px-6 space-y-12">
         <Reveal className="text-center space-y-3">
-          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
             Clear Answers
           </p>
           <h2 className="font-display text-3xl md:text-4xl text-brand-black tracking-wide text-balance">
@@ -74,10 +74,10 @@ export default function AboutFAQ() {
                     type="button"
                     onClick={() => toggle(index)}
                     aria-expanded={isOpen}
-                    className="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-goat-primary"
+                    className="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     <div className="flex items-center gap-3">
-                      <HelpCircle size={18} className="text-goat-primary shrink-0" />
+                      <HelpCircle size={18} className="text-primary shrink-0" />
                       <span className="font-display text-base md:text-lg text-brand-black font-semibold">
                         {faq.question}
                       </span>
@@ -85,7 +85,7 @@ export default function AboutFAQ() {
                     <ChevronDown
                       size={18}
                       className={`text-brand-gray shrink-0 transition-transform duration-300 ${
-                        isOpen ? "rotate-180 text-goat-primary" : ""
+                        isOpen ? "rotate-180 text-primary" : ""
                       }`}
                     />
                   </button>
@@ -112,11 +112,11 @@ export default function AboutFAQ() {
 
         {/* Ask Us Direct Banner */}
         <Reveal className="text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-3 bg-goat-tint border border-goat-primary/20 px-6 py-4 rounded-2xl shadow-3xs">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-3 bg-primary-tint border border-primary/20 px-6 py-4 rounded-2xl shadow-3xs">
             <span className="text-xs font-semibold text-brand-black">Have a specific question or custom idea?</span>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-goat-primary hover:text-goat-hover transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary hover:text-primary-hover transition-colors"
             >
               <MessageCircle size={14} /> Ask Us Directly &rarr;
             </Link>

@@ -106,7 +106,7 @@ export default function AdminSettingsPage() {
 
         {isLoading ? (
           <div className="bg-white border border-brand-border rounded-2xl shadow-card p-12 text-center text-brand-gray flex flex-col items-center gap-3">
-            <Loader2 className="animate-spin text-goat-primary" size={40} />
+            <Loader2 className="animate-spin text-primary" size={40} />
             <p className="text-sm font-semibold">Loading settings...</p>
           </div>
         ) : (
@@ -117,7 +117,7 @@ export default function AdminSettingsPage() {
                 onClick={() => setActiveTab("branding")}
                 className={`flex items-center gap-2 px-4 md:px-6 py-4 text-sm font-semibold border-b-2 outline-none whitespace-nowrap transition-colors ${
                   activeTab === "branding"
-                    ? "border-goat-primary text-goat-primary"
+                    ? "border-primary text-primary"
                     : "border-transparent text-brand-gray hover:text-brand-black"
                 }`}
               >
@@ -129,7 +129,7 @@ export default function AdminSettingsPage() {
                 onClick={() => setActiveTab("business")}
                 className={`flex items-center gap-2 px-4 md:px-6 py-4 text-sm font-semibold border-b-2 outline-none whitespace-nowrap transition-colors ${
                   activeTab === "business"
-                    ? "border-goat-primary text-goat-primary"
+                    ? "border-primary text-primary"
                     : "border-transparent text-brand-gray hover:text-brand-black"
                 }`}
               >
@@ -141,7 +141,7 @@ export default function AdminSettingsPage() {
                 onClick={() => setActiveTab("seo")}
                 className={`flex items-center gap-2 px-4 md:px-6 py-4 text-sm font-semibold border-b-2 outline-none whitespace-nowrap transition-colors ${
                   activeTab === "seo"
-                    ? "border-goat-primary text-goat-primary"
+                    ? "border-primary text-primary"
                     : "border-transparent text-brand-gray hover:text-brand-black"
                 }`}
               >
@@ -153,7 +153,7 @@ export default function AdminSettingsPage() {
                 onClick={() => setActiveTab("delivery")}
                 className={`flex items-center gap-2 px-4 md:px-6 py-4 text-sm font-semibold border-b-2 outline-none whitespace-nowrap transition-colors ${
                   activeTab === "delivery"
-                    ? "border-goat-primary text-goat-primary"
+                    ? "border-primary text-primary"
                     : "border-transparent text-brand-gray hover:text-brand-black"
                 }`}
               >
@@ -178,7 +178,7 @@ export default function AdminSettingsPage() {
                         value={settings.farm_name}
                         onChange={(e) => handleChange("farm_name", e.target.value)}
                         placeholder="Lara's Pinnal"
-                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
 
@@ -191,7 +191,7 @@ export default function AdminSettingsPage() {
                         value={settings.tagline}
                         onChange={(e) => handleChange("tagline", e.target.value)}
                         placeholder="Handmade crochet gifts and flowers, made with love..."
-                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
                   </div>
@@ -236,7 +236,7 @@ export default function AdminSettingsPage() {
                         value={settings.contact_phone}
                         onChange={(e) => handleChange("contact_phone", e.target.value)}
                         placeholder="+91 9442379832"
-                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
 
@@ -250,7 +250,7 @@ export default function AdminSettingsPage() {
                         value={settings.contact_whatsapp}
                         onChange={(e) => handleChange("contact_whatsapp", e.target.value)}
                         placeholder="+91 9442379832"
-                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
 
@@ -264,7 +264,7 @@ export default function AdminSettingsPage() {
                         value={settings.contact_email}
                         onChange={(e) => handleChange("contact_email", e.target.value)}
                         placeholder="senthilraguanthan2004@gmail.com"
-                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
 
@@ -278,7 +278,7 @@ export default function AdminSettingsPage() {
                         value={settings.business_hours}
                         onChange={(e) => handleChange("business_hours", e.target.value)}
                         placeholder="Monday - Sunday: 6:00 AM - 8:00 PM"
-                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
 
@@ -292,7 +292,7 @@ export default function AdminSettingsPage() {
                         value={settings.contact_address}
                         onChange={(e) => handleChange("contact_address", e.target.value)}
                         placeholder="2/90 MettuStreet, Therkunam, Villupuram"
-                        className="w-full bg-white border border-brand-border rounded-xl p-3 md:p-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary resize-none"
+                        className="w-full bg-white border border-brand-border rounded-xl p-3 md:p-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary resize-none"
                       ></textarea>
                     </div>
                   </div>
@@ -313,7 +313,7 @@ export default function AdminSettingsPage() {
                         value={settings.seo_title}
                         onChange={(e) => handleChange("seo_title", e.target.value)}
                         placeholder="Lara's Pinnal | Handmade Crochet Gifts & Flowers"
-                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
 
@@ -327,7 +327,7 @@ export default function AdminSettingsPage() {
                         value={settings.seo_description}
                         onChange={(e) => handleChange("seo_description", e.target.value)}
                         placeholder="Shop handmade crochet bouquets, amigurumi, and custom gifts delivered across Tamil Nadu..."
-                        className="w-full bg-white border border-brand-border rounded-xl p-3 md:p-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary resize-none"
+                        className="w-full bg-white border border-brand-border rounded-xl p-3 md:p-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary resize-none"
                       ></textarea>
                     </div>
                   </div>
@@ -347,7 +347,7 @@ export default function AdminSettingsPage() {
                         value={settings.delivery_fee}
                         onChange={(e) => handleChange("delivery_fee", e.target.value)}
                         placeholder="e.g., 50"
-                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                        className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                       />
                       <p className="text-xs text-brand-gray mt-1">
                         The default delivery fee applied to orders.
@@ -360,7 +360,7 @@ export default function AdminSettingsPage() {
                           type="checkbox"
                           checked={settings.is_free_delivery_enabled === "true"}
                           onChange={(e) => handleChange("is_free_delivery_enabled", e.target.checked ? "true" : "false")}
-                          className="w-4 h-4 text-goat-primary border-gray-300 rounded focus:ring-goat-primary"
+                          className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                         />
                         <span className="text-xs font-semibold text-brand-black uppercase tracking-wider">
                           Enable Free Delivery Threshold
@@ -381,7 +381,7 @@ export default function AdminSettingsPage() {
                           value={settings.free_delivery_threshold}
                           onChange={(e) => handleChange("free_delivery_threshold", e.target.value)}
                           placeholder="e.g., 800"
-                          className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                          className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                         />
                         <p className="text-xs text-brand-gray mt-1">
                           Orders with a subtotal greater than or equal to this amount will get free delivery.
@@ -397,7 +397,7 @@ export default function AdminSettingsPage() {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center justify-center gap-2 h-11 px-4 md:px-6 font-semibold text-sm rounded-xl bg-brand-black hover:bg-goat-primary text-white transition-colors disabled:opacity-50"
+                  className="inline-flex items-center justify-center gap-2 h-11 px-4 md:px-6 font-semibold text-sm rounded-xl bg-brand-black hover:bg-primary text-white transition-colors disabled:opacity-50"
                 >
                   {isSaving ? (
                     <>

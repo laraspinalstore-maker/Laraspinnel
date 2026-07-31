@@ -15,7 +15,7 @@ interface FilterBarProps {
   onTagChange: (val: string) => void;
   breeds: string[];
   tags: string[];
-  theme: "goat" | "mutton";
+  theme: "primary" | "secondary";
   searchSuggestions?: string[];
 }
 
@@ -33,7 +33,7 @@ export default function FilterBar({
   theme,
   searchSuggestions = [],
 }: FilterBarProps) {
-  const isGoat = theme === "goat";
+  const isPrimary = theme === "primary";
   const [isTagsExpanded, setIsTagsExpanded] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -57,9 +57,9 @@ export default function FilterBar({
             onChange={(e) => onSearchChange(e.target.value)}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            placeholder={isGoat ? "Search product name..." : "Search packages..."}
+            placeholder={isPrimary ? "Search product name..." : "Search packages..."}
             className={`w-full h-11 pl-10 pr-4 bg-brand-light-gray/50 border border-brand-border rounded-xl text-sm text-brand-black outline-none focus:ring-2 transition-all ${
-              isGoat ? "focus:ring-goat-primary" : "focus:ring-mutton-primary"
+              isPrimary ? "focus:ring-primary" : "focus:ring-secondary"
             }`}
           />
           {/* Search Suggestions Dropdown */}
@@ -84,7 +84,7 @@ export default function FilterBar({
         {/* Dropdowns */}
         <div className="flex w-full lg:w-auto items-center gap-3">
           {/* Breed/Filter Dropdown */}
-          {isGoat && (
+          {isPrimary && (
             <div className="flex-1 min-w-0 lg:flex-none lg:w-44">
               <CustomSelect
                 options={[
@@ -104,7 +104,7 @@ export default function FilterBar({
               options={[
                 { label: "Name (A-Z)", value: "name-asc" },
                 { label: "Name (Z-A)", value: "name-desc" },
-                ...(isGoat
+                ...(isPrimary
                   ? [{ label: "Featured First", value: "featured" }]
                   : [
                       { label: "Price (Low-High)", value: "price-asc" },
@@ -143,9 +143,9 @@ export default function FilterBar({
               onClick={() => onTagChange("All")}
               className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
                 selectedTag === "All"
-                  ? isGoat
-                    ? "bg-goat-tint text-goat-text border-goat-primary/20"
-                    : "bg-mutton-tint text-mutton-text border-mutton-primary/20"
+                  ? isPrimary
+                    ? "bg-primary-tint text-primary-text border-primary/20"
+                    : "bg-secondary-tint text-secondary-text border-secondary/20"
                   : "bg-white text-brand-black border-brand-border hover:bg-brand-light-gray"
               }`}
             >
@@ -159,9 +159,9 @@ export default function FilterBar({
                   onClick={() => onTagChange(tag)}
                   className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
                     isSelected
-                      ? isGoat
-                        ? "bg-goat-tint text-goat-text border-goat-primary/20"
-                        : "bg-mutton-tint text-mutton-text border-mutton-primary/20"
+                      ? isPrimary
+                        ? "bg-primary-tint text-primary-text border-primary/20"
+                        : "bg-secondary-tint text-secondary-text border-secondary/20"
                       : "bg-white text-brand-black border-brand-border hover:bg-brand-light-gray"
                   }`}
                 >

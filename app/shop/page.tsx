@@ -112,8 +112,8 @@ function ShopPageContent() {
       <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full animate-in fade-in">
         {/* Page Header */}
         <div className="space-y-3 pb-6 md:pb-10 text-center">
-          <span className="flex items-center justify-center gap-2 text-xs font-semibold text-goat-text uppercase tracking-wider">
-            <ShoppingBag size={14} className="text-goat-primary" /> Gift Catalog
+          <span className="flex items-center justify-center gap-2 text-xs font-semibold text-primary-text uppercase tracking-wider">
+            <ShoppingBag size={14} className="text-primary" /> Gift Catalog
           </span>
           <h1 className="font-display text-3xl sm:text-5xl text-brand-black tracking-wide uppercase">
             {pageTitle}
@@ -130,7 +130,7 @@ function ShopPageContent() {
             {/* Search */}
             <div>
               <h3 className="flex items-center gap-2 text-xs font-bold text-brand-black uppercase tracking-wider mb-3">
-                <Search size={14} className="text-goat-primary" /> Search
+                <Search size={14} className="text-primary" /> Search
               </h3>
               <form onSubmit={handleSearchSubmit} className="relative">
                 <input
@@ -141,7 +141,7 @@ function ShopPageContent() {
                   onBlur={() => setTimeout(() => setShowDesktopSuggestions(false), 200)}
                   placeholder="Search products..."
                   autoComplete="off"
-                  className="w-full h-11 px-3.5 bg-brand-light-gray/50 border border-brand-border rounded-lg text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                  className="w-full h-11 px-3.5 bg-brand-light-gray/50 border border-brand-border rounded-lg text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
                 <button type="submit" className="sr-only">Search</button>
                 {showDesktopSuggestions && suggestions.length > 0 && (
@@ -163,7 +163,7 @@ function ShopPageContent() {
             {/* Categories */}
             <div>
               <h3 className="flex items-center gap-2 text-xs font-bold text-brand-black uppercase tracking-wider mb-3">
-                <SlidersHorizontal size={14} className="text-goat-primary" /> Categories
+                <SlidersHorizontal size={14} className="text-primary" /> Categories
               </h3>
               <div className="space-y-1">
                 <button
@@ -173,7 +173,7 @@ function ShopPageContent() {
                   }}
                   className={`w-full text-left px-3 py-2 min-h-11 flex items-center rounded-lg text-sm font-semibold transition-colors ${
                     category === "all"
-                      ? "bg-goat-tint text-goat-primary"
+                      ? "bg-primary-tint text-primary"
                       : "text-brand-gray hover:bg-brand-light-gray hover:text-brand-black"
                   }`}
                 >
@@ -188,7 +188,7 @@ function ShopPageContent() {
                     }}
                     className={`w-full text-left px-3 py-2 min-h-11 flex items-center rounded-lg text-sm font-semibold transition-colors ${
                       category === c.slug
-                        ? "bg-goat-tint text-goat-primary"
+                        ? "bg-primary-tint text-primary"
                         : "text-brand-gray hover:bg-brand-light-gray hover:text-brand-black"
                     }`}
                   >
@@ -218,7 +218,7 @@ function ShopPageContent() {
                     onBlur={() => setTimeout(() => setShowMobileSuggestions(false), 200)}
                     placeholder="Search products by name..."
                     autoComplete="off"
-                    className="w-full h-11 pl-10 pr-4 bg-brand-light-gray/50 border border-brand-border rounded-lg md:rounded-xl text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                    className="w-full h-11 pl-10 pr-4 bg-brand-light-gray/50 border border-brand-border rounded-lg md:rounded-xl text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary transition-all"
                   />
                   <button type="submit" className="sr-only">Search</button>
                   {showMobileSuggestions && suggestions.length > 0 && (
@@ -248,7 +248,7 @@ function ShopPageContent() {
                         setCategory(val);
                         updateUrlParams({ category: val });
                       }}
-                      theme="goat"
+                      theme="primary"
                     />
                   </div>
 
@@ -260,7 +260,7 @@ function ShopPageContent() {
                         setSort(val);
                         updateUrlParams({ sort: val });
                       }}
-                      theme="goat"
+                      theme="primary"
                     />
                   </div>
                 </div>
@@ -288,7 +288,7 @@ function ShopPageContent() {
                       setSort(val);
                       updateUrlParams({ sort: val });
                     }}
-                    theme="goat"
+                    theme="primary"
                   />
                 </div>
               </div>
@@ -322,7 +322,7 @@ function ShopPageContent() {
                       tag={product.discountPrice ? `SAVE ₹${product.price - product.discountPrice}` : undefined}
                       image={product.images?.[0]}
                       slug={product.slug}
-                      theme="goat"
+                      theme="primary"
                       stock={product.stock}
                     />
                   </div>
@@ -342,7 +342,7 @@ export default function ShopPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-goat-primary border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <ShopPageContent />

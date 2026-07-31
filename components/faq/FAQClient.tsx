@@ -34,14 +34,14 @@ export default function FAQClient({ faqs }: FAQClientProps) {
               aria-expanded={isOpen}
             >
               <div className="flex items-start gap-4">
-                <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-goat-tint text-goat-primary font-bold text-sm mt-0.5">
+                <span className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-primary-tint text-primary font-bold text-sm mt-0.5">
                   Q
                 </span>
                 <h2 className="text-lg md:text-xl font-bold text-brand-black leading-snug">
                   {faq.question}
                 </h2>
               </div>
-              <div className="flex-shrink-0 ml-4 mt-1 lg:hidden">
+              <div className="shrink-0 ml-4 mt-1 lg:hidden">
                 <ChevronDown
                   className={`w-5 h-5 text-brand-gray transition-transform duration-300 ease-out ${
                     isOpen ? "rotate-180" : "rotate-0"

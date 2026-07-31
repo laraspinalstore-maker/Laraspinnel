@@ -43,7 +43,7 @@ export default function CategoryShowcase({ title, categorySlug, eyebrow }: Categ
         <div className="flex flex-row items-center justify-between pb-4 gap-3">
           <div className="space-y-1 min-w-0">
             {eyebrow && (
-              <div className="flex items-center gap-1.5 text-goat-primary">
+              <div className="flex items-center gap-1.5 text-primary">
                 <Gem size={16} className="animate-pulse text-gold-primary" />
                 <span className="text-[10px] font-bold tracking-widest uppercase text-brand-gray">
                   {eyebrow}
@@ -56,7 +56,7 @@ export default function CategoryShowcase({ title, categorySlug, eyebrow }: Categ
           </div>
           <Link
             href={`/shop?category=${categorySlug}`}
-            className="group inline-flex items-center gap-1 text-sm font-semibold text-goat-primary hover:text-goat-hover transition-colors whitespace-nowrap shrink-0"
+            className="group inline-flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary-hover transition-colors whitespace-nowrap shrink-0"
           >
             <span>View All</span>
             <ArrowRight size={14} className="lg:transition-transform lg:group-hover:translate-x-1" />
@@ -89,7 +89,7 @@ export default function CategoryShowcase({ title, categorySlug, eyebrow }: Categ
                   tag={product.discountPrice ? `SAVE ₹${product.price - product.discountPrice}` : undefined}
                   image={product.images?.[0]}
                   slug={product.slug}
-                  theme="goat"
+                  theme="primary"
                   stock={product.stock}
                 />
               </div>

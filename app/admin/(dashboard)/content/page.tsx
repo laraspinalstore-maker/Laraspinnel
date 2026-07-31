@@ -148,7 +148,7 @@ export default function AdminContentPage() {
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="animate-spin text-goat-primary" size={32} />
+        <Loader2 className="animate-spin text-primary" size={32} />
       </div>
     );
   }
@@ -162,7 +162,7 @@ export default function AdminContentPage() {
       <div className="flex-1 p-3 md:p-6 space-y-6 w-full">
         {/* Intro */}
         <div className="bg-brand-light-gray p-3 md:p-4 rounded-xl border border-brand-border text-brand-black text-sm flex gap-3 items-start">
-          <Info size={18} className="shrink-0 text-goat-primary mt-0.5" />
+          <Info size={18} className="shrink-0 text-primary mt-0.5" />
           <div>
             <p className="font-semibold">Control every public page from here</p>
             <p className="text-xs text-brand-gray mt-0.5">
@@ -202,7 +202,7 @@ export default function AdminContentPage() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-xl bg-brand-black hover:bg-goat-primary text-white text-sm font-bold transition-colors disabled:bg-neutral-400"
+              className="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-xl bg-brand-black hover:bg-primary text-white text-sm font-bold transition-colors disabled:bg-neutral-400"
             >
               {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
               {isSaving ? "Saving..." : "Save Changes"}
@@ -217,7 +217,7 @@ export default function AdminContentPage() {
             options={SECTIONS[activeTab].map((section) => ({ label: section, value: section }))}
             value={activeSection}
             onChange={(val) => setActiveSection(val)}
-            theme="goat"
+            theme="primary"
           />
         </div>
 
@@ -230,7 +230,7 @@ export default function AdminContentPage() {
               onClick={() => setActiveSection(section)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors border ${
                 activeSection === section
-                  ? "bg-goat-tint border-goat-primary/30 text-goat-text"
+                  ? "bg-primary-tint border-primary/30 text-primary-text"
                   : "bg-white border-brand-border text-brand-gray hover:text-brand-black hover:bg-brand-light-gray"
               }`}
             >
@@ -580,7 +580,7 @@ export default function AdminContentPage() {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-brand-black hover:bg-goat-primary text-white text-sm font-bold transition-colors disabled:bg-neutral-400"
+            className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-brand-black hover:bg-primary text-white text-sm font-bold transition-colors disabled:bg-neutral-400"
           >
             {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             {isSaving ? "Saving..." : "Save Changes"}

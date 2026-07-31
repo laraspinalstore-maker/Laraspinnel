@@ -219,7 +219,7 @@ export default function ReelsSection({ settings }: { settings: Record<string, st
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 text-center md:text-left">
             <div className="max-w-xl space-y-2 mx-auto md:mx-0">
               <div className="flex items-center justify-center md:justify-start">
-                <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+                <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
                   BEHIND EVERY STITCH
                 </span>
                 <FloralDoodle />

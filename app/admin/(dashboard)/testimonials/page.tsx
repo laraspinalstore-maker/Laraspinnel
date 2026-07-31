@@ -186,7 +186,7 @@ export default function AdminTestimonialsPage() {
           </div>
           <button
             onClick={handleOpenCreate}
-            className="flex items-center gap-2 bg-brand-black hover:bg-goat-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-colors shadow-xs"
+            className="flex items-center gap-2 bg-brand-black hover:bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-colors shadow-xs"
           >
             <Plus size={18} />
             <span>Add Review</span>
@@ -196,7 +196,7 @@ export default function AdminTestimonialsPage() {
         {/* Content */}
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="animate-spin text-goat-primary" size={32} />
+            <Loader2 className="animate-spin text-primary" size={32} />
           </div>
         ) : testimonials.length === 0 ? (
           <div className="bg-white border border-brand-border rounded-3xl p-12 text-center space-y-4 shadow-3xs">
@@ -227,7 +227,7 @@ export default function AdminTestimonialsPage() {
                 <span className={`self-start text-[10px] font-bold px-2.5 py-1 rounded-full uppercase mb-2 border ${
                   t.imageUrl
                     ? "bg-rose-tint/60 text-rose-text border-rose-primary/20"
-                    : "bg-goat-tint text-goat-text border-goat-primary/20"
+                    : "bg-primary-tint text-primary-text border-primary/20"
                 }`}>
                   {t.imageUrl ? "About page · Image" : "Home page · Chat"}
                 </span>
@@ -270,7 +270,7 @@ export default function AdminTestimonialsPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleOpenEdit(t)}
-                      className="p-2 text-brand-gray hover:text-goat-primary transition-colors bg-brand-light-gray rounded-xl hover:bg-white border border-brand-border/40"
+                      className="p-2 text-brand-gray hover:text-primary transition-colors bg-brand-light-gray rounded-xl hover:bg-white border border-brand-border/40"
                       title="Edit"
                     >
                       <Edit size={15} />
@@ -372,10 +372,10 @@ export default function AdminTestimonialsPage() {
                 ) : (
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full aspect-video rounded-2xl border-2 border-dashed border-brand-border hover:border-goat-primary bg-cream-bg/40 hover:bg-rose-tint/20 flex flex-col items-center justify-center p-6 cursor-pointer transition-colors text-center space-y-2"
+                    className="w-full aspect-video rounded-2xl border-2 border-dashed border-brand-border hover:border-primary bg-cream-bg/40 hover:bg-rose-tint/20 flex flex-col items-center justify-center p-6 cursor-pointer transition-colors text-center space-y-2"
                   >
                     {isUploading ? (
-                      <Loader2 size={24} className="animate-spin text-goat-primary" />
+                      <Loader2 size={24} className="animate-spin text-primary" />
                     ) : (
                       <>
                         <div className="w-12 h-12 rounded-full bg-white text-rose-text flex items-center justify-center border border-brand-border shadow-3xs">
@@ -478,7 +478,7 @@ export default function AdminTestimonialsPage() {
                     checked={currentTestimonial.isActive}
                     onChange={(e) => setCurrentTestimonial({ ...currentTestimonial, isActive: e.target.checked })}
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-goat-primary"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                 </div>
                 <div>
                   <p className="text-sm font-bold text-brand-black">Visible on Website</p>
@@ -497,7 +497,7 @@ export default function AdminTestimonialsPage() {
                 <button
                   type="submit"
                   disabled={isSaving || isUploading}
-                  className="flex items-center gap-2 bg-brand-black hover:bg-goat-primary text-white px-7 h-11 rounded-full text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-70 shadow-xs"
+                  className="flex items-center gap-2 bg-brand-black hover:bg-primary text-white px-7 h-11 rounded-full text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-70 shadow-xs"
                 >
                   {isSaving && <Loader2 size={16} className="animate-spin" />}
                   <span>{isSaving ? "Saving..." : "Save Review"}</span>

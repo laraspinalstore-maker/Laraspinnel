@@ -38,7 +38,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen bg-white flex flex-col justify-between">
         <Navbar />
         <div className="flex-1 flex items-center justify-center py-20">
-          <div className="w-10 h-10 border-4 border-goat-primary border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
         <Footer />
       </div>
@@ -52,7 +52,7 @@ export default function ProductDetailPage() {
         <div className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-20 text-center space-y-4">
           <h2 className="text-xl font-bold text-red-600">Product Not Found</h2>
           <p className="text-sm text-brand-gray">The product you are looking for does not exist or has been disabled.</p>
-          <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-goat-primary hover:underline">
+          <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
             <ArrowLeft size={16} /> Back to Shop
           </Link>
         </div>
@@ -101,7 +101,7 @@ export default function ProductDetailPage() {
         <div className="space-y-4 md:space-y-6">
           {/* Back Link */}
           <div>
-            <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black hover:text-goat-primary transition-colors">
+            <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black hover:text-primary transition-colors">
               <ArrowLeft size={16} /> Back to Catalog
             </Link>
           </div>
@@ -114,16 +114,18 @@ export default function ProductDetailPage() {
             <div className="space-y-4">
             {/* Active Image Frame */}
             <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-brand-light-gray/40 border border-brand-border group">
-              <Image
-                src={product.images[activeImageIdx] || "/placeholder.jpg"}
-                alt={product.name}
-                fill
-                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 500px"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                priority
-              />
+              {product.images[activeImageIdx] && (
+                <Image
+                  src={product.images[activeImageIdx]}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 500px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  priority
+                />
+              )}
               {product.discountPrice && (
-                <span className="absolute top-4 left-4 px-3 py-1 bg-goat-primary text-white text-xs font-bold rounded-full uppercase tracking-wider shadow-md">
+                <span className="absolute top-4 left-4 px-3 py-1 bg-primary text-white text-xs font-bold rounded-full uppercase tracking-wider shadow-md">
                   Offer
                 </span>
               )}
@@ -137,7 +139,7 @@ export default function ProductDetailPage() {
                     key={idx}
                     onClick={() => setActiveImageIdx(idx)}
                     className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 shrink-0 transition-all ${
-                      activeImageIdx === idx ? "border-goat-primary scale-95 shadow-sm" : "border-brand-border hover:border-brand-gray"
+                      activeImageIdx === idx ? "border-primary scale-95 shadow-sm" : "border-brand-border hover:border-brand-gray"
                     }`}
                   >
                     <Image
@@ -160,7 +162,7 @@ export default function ProductDetailPage() {
             <div className="space-y-2">
               <Link
                 href={`/shop?category=${product.category.slug}`}
-                className="text-[10px] font-bold uppercase tracking-widest text-goat-primary hover:underline"
+                className="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline"
               >
                 {product.category.name}
               </Link>
@@ -191,7 +193,7 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <span className="text-brand-gray">Availability:</span>
                 {inStock ? (
-                  <span className="text-goat-primary flex items-center gap-1">
+                  <span className="text-primary flex items-center gap-1">
                     <ShieldCheck size={16} /> In Stock ({product.stock} left)
                   </span>
                 ) : (
@@ -223,7 +225,7 @@ export default function ProductDetailPage() {
                 {/* Custom design instructions */}
                 <div className="space-y-1.5">
                   <div className="flex items-baseline justify-between">
-                    <label htmlFor="customText" className="text-sm font-semibold text-goat-text">
+                    <label htmlFor="customText" className="text-sm font-semibold text-primary-text">
                       Customize Your Order
                     </label>
                     <span className="text-[10px] text-brand-gray">Optional</span>
@@ -235,14 +237,14 @@ export default function ProductDetailPage() {
                     value={customText}
                     onChange={(e) => setCustomText(e.target.value)}
                     placeholder="e.g. Add name 'Priya', change ribbon color to pink..."
-                    className="w-full p-3 bg-goat-tint/20 border border-goat-primary/25 rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all resize-none"
+                    className="w-full p-3 bg-primary-tint/20 border border-primary/25 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
                   />
                 </div>
 
                 {/* Reference image upload */}
                 <div className="space-y-1.5">
                   <div className="flex items-baseline justify-between">
-                    <label className="text-sm font-semibold text-goat-text">
+                    <label className="text-sm font-semibold text-primary-text">
                       Upload Reference Image
                     </label>
                     <span className="text-[10px] text-brand-gray">Optional</span>
@@ -257,11 +259,11 @@ export default function ProductDetailPage() {
 
                 {/* Quantity picker */}
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-goat-text">Quantity:</span>
-                  <div className="flex items-center border border-goat-primary/25 rounded-xl bg-goat-tint/20 h-10 overflow-hidden">
+                  <span className="text-sm font-semibold text-primary-text">Quantity:</span>
+                  <div className="flex items-center border border-primary/25 rounded-xl bg-primary-tint/20 h-10 overflow-hidden">
                     <button
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="px-3 h-full hover:bg-goat-tint transition-colors text-brand-black"
+                      className="px-3 h-full hover:bg-primary-tint transition-colors text-brand-black"
                       aria-label="Decrease quantity"
                     >
                       <Minus size={14} />
@@ -271,7 +273,7 @@ export default function ProductDetailPage() {
                     </span>
                     <button
                       onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                      className="px-3 h-full hover:bg-goat-tint transition-colors text-brand-black"
+                      className="px-3 h-full hover:bg-primary-tint transition-colors text-brand-black"
                       aria-label="Increase quantity"
                     >
                       <Plus size={14} />
@@ -289,7 +291,7 @@ export default function ProductDetailPage() {
                   </button>
                   <button
                     onClick={handleBuyNow}
-                    className="flex-1 bg-brand-black hover:bg-goat-primary text-white font-bold py-3 px-6 rounded-full transition-all flex items-center justify-center gap-2 shadow-md"
+                    className="flex-1 bg-brand-black hover:bg-primary text-white font-bold py-3 px-6 rounded-full transition-all flex items-center justify-center gap-2 shadow-md"
                   >
                     <ShoppingBag size={18} /> Buy Now
                   </button>
@@ -297,7 +299,7 @@ export default function ProductDetailPage() {
 
                 {/* Success alert message */}
                 {successMsg && (
-                  <p className="text-sm text-goat-primary font-semibold text-center mt-2 animate-pulse">
+                  <p className="text-sm text-primary font-semibold text-center mt-2 animate-pulse">
                     {successMsg}
                   </p>
                 )}
@@ -321,7 +323,7 @@ export default function ProductDetailPage() {
                     tag={p.discountPrice ? `SAVE ₹${p.price - p.discountPrice}` : undefined}
                     image={p.images?.[0]}
                     slug={p.slug}
-                    theme="goat"
+                    theme="primary"
                     stock={p.stock}
                   />
                 </div>

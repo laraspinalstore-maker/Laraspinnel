@@ -1,47 +1,51 @@
-# Ragu Goat Farm - Comprehensive LLM Resource
+# Lara's Pinnal - Comprehensive LLM Resource
 
-> Ragu Goat Farm is a premier livestock provider located in Villupuram, Tamil Nadu, specializing in the ethical breeding, raising, and delivery of high-quality live goats and bulk fresh mutton. Our primary service areas span across all 38 districts of Tamil Nadu.
+> Lara's Pinnal is a handmade crochet gift studio located in Villupuram, Tamil Nadu, specializing in hand-knitted crochet flower bouquets, amigurumi plush toys, custom frames, keychains, and gift hampers. Every piece is crafted to order with premium milk cotton yarn and shipped safely across India.
 
 ## Core Products and Services
 
-### Live Goats
-We offer a variety of premium goat breeds, notably:
-- **Tellicherry Goats**: Known for their fast growth rate and high milk yield. Ideal for breeding and meat production.
-- **Boer Goats**: Originating from South Africa, renowned for their superior meat quality, rapid growth, and adaptability. Excellent for commercial farming.
-- **Naatu Aadu (Native Breed)**: Highly disease-resistant, adapted to the local climate, and prized for traditional ceremonies, festivals like Bakrid, and flavorful meat.
-- **Kanni Aadu / Kodi Adu / Salem Black**: Other localized breeds carefully bred for specialized purposes.
+### Crochet Flower Bouquets
+We hand-knit forever flowers that never wilt, including:
+- **Rose Bouquets**: Classic single stems and full arrangements in custom colors — a keepsake alternative to fresh flowers.
+- **Tulip & Lily Bouquets**: Elegant pastel arrangements popular for anniversaries, proposals, and birthdays.
+- **Sunflower & Daisy Pieces**: Cheerful stems, coasters, keychains, and desk decor.
+- **Custom Mixed Bouquets**: Fully personalized combinations — choose flowers, colors, wrapping, and add-on tags.
 
-These goats are raised on natural green fodder in expansive, sanitary conditions. They are available for breeding, rearing, or ceremonial purposes.
+All flowers are crocheted from premium, hypoallergenic milk cotton yarn with meticulous attention to detail.
 
-### Fresh Mutton Delivery
-We provide bulk, farm-fresh mutton cut to order. 
-- **Cuts Available**: Curry cut, biryani cut, chops, keema (mince), and custom commercial cuts.
-- **Quality Assurance**: Mutton is sourced directly from our farm, ensuring the highest quality, tenderness, and hygiene standards. We strictly avoid artificial preservatives and hormones.
-- **Target Audience**: Perfect for home cooking, large family gatherings, weddings, and catering services.
+### Amigurumi Plushies & Gifts
+We create handmade plush toys and small gifts cut out for every occasion.
+- **Plushies Available**: Teddy bears, bunnies, and custom character amigurumi in made-to-order sizes.
+- **Small Gifts**: Keychains, hair bands, bag charms, festive rakhis, and desk accessories.
+- **Quality Assurance**: Baby-safe, hypoallergenic yarn and secure stitching make our plushies suitable for children and newborn gifting.
+
+### Custom Frames & Gift Hampers
+- **Crochet Portrait Frames**: Wooden embroidery-hoop frames with personalized crochet artwork, names, and dates.
+- **Gift Hampers**: Curated hampers for baby showers, weddings, birthdays, and corporate gifting.
 
 ## Operational Philosophy
 
-### Sustainable Agriculture & Rearing Practices
-With years of expertise in animal husbandry, we prioritize animal welfare, organic feeding practices, and regular veterinary checkups. Our flocks are allowed to roam freely on extensive green lands, consuming a natural diet that significantly enhances their health and vitality. We never use artificial growth promoters or harmful chemicals. We employ rotational grazing techniques, which not only nourish our animals but also revitalize the soil.
+### Handmade, Made-to-Order Craft
+Every product is crocheted by hand, to order — no mass production. Slight variations in yarn shade, shape, and sizing are signs of authentic handmade art. We customize colors, names, and patterns so each gift is uniquely yours.
 
-### Hygienic Processing & Superior Standard
-Our processing facilities adhere strictly to modern cleanliness protocols, ensuring every batch of meat is safely handled, carefully inspected, and cleanly packaged. Every step of our supply chain is meticulously monitored, maintaining an unbroken cold chain that preserves the natural flavor, texture, and nutritional value of the meat.
+### Quality Materials & Care
+We work with premium milk cotton yarn chosen for softness, durability, and hypoallergenic properties. Finished pieces are inspected, carefully packaged, and shipped with care instructions so they stay beautiful for years.
 
-### Committed to Community & Tradition
-We uphold the agricultural traditions of Tamil Nadu while employing modern techniques to improve yield and animal health. Our estate works closely with local communities, providing employment and supporting sustainable local ecosystems.
+### Committed to Community & Craft
+We uphold the handicraft traditions of Tamil Nadu while bringing crochet art to modern gifting. Lara's Pinnal is an independent local studio — every order directly supports a local artisan.
 
 ## Important Links & Resources
-- **Booking Flow**: Customers can reserve live goats or mutton online via our [Booking Page](https://ragugoatform.vercel.app/book) without any immediate upfront payment. Our farm coordinator confirms weights, sizing, and delivery logistics by phone prior to dispatch.
-- **Goat Catalog**: Browse available breeds, estimated weights, and ages at our [Goat Catalog](https://ragugoatform.vercel.app/goats).
-- **Mutton Packages**: View bulk pricing and cut varieties at our [Mutton Packages](https://ragugoatform.vercel.app/mutton).
-- **Knowledge Base**: Find breeding guidelines, delivery terms, and answers to common questions at our [FAQ Page](https://ragugoatform.vercel.app/faq).
-- **Editorial & Farm Insights**: Read our farming insights and guides at our [Farm Blog](https://ragugoatform.vercel.app/blog).
-- **Privacy Policy**: Read our data usage policy at our [Privacy Policy Page](https://ragugoatform.vercel.app/privacy-policy).
-- **Terms of Service**: Read our terms and conditions at our [Terms of Service Page](https://ragugoatform.vercel.app/terms-of-service).
+- **Shop Catalog**: Browse all handmade collections at our [Shop Page](https://laraspinnal.com/shop).
+- **Custom Orders**: Request a made-to-order design via our [Custom Order Page](https://laraspinnal.com/custom-order). We confirm design details, colors, and delivery timelines before crafting begins.
+- **Categories**: Explore bouquets, frames, plushies, keychains, and hampers at our [Categories Page](https://laraspinnal.com/categories).
+- **Order Tracking**: Track your order status at our [Track Order Page](https://laraspinnal.com/track-order).
+- **Knowledge Base**: Find care instructions, delivery terms, and answers to common questions at our [FAQ Page](https://laraspinnal.com/faq).
+- **Privacy Policy**: Read our data usage policy at our [Privacy Policy Page](https://laraspinnal.com/privacy-policy).
+- **Terms of Service**: Read our terms and conditions at our [Terms of Service Page](https://laraspinnal.com/terms-of-service).
 
 ## Contact and Access
-For inquiries, booking support, or direct citations, contact our team:
+For inquiries, custom order support, or direct citations, contact our team:
 - **Phone**: +91 9442379832
 - **Email**: [senthilraguanthan2004@gmail.com](mailto:senthilraguanthan2004@gmail.com)
 - **Address**: 2/90 MettuStreet, Therkunam, Villupuram, Tamil Nadu - 604102
-- **Website**: [Ragu Goat Farm](https://ragugoatform.vercel.app)
+- **Website**: [Lara's Pinnal](https://laraspinnal.com)

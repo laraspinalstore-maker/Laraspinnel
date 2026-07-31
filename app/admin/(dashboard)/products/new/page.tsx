@@ -77,7 +77,9 @@ export default function NewProductPage() {
         .filter((img) => img !== "");
 
       if (imagesArr.length === 0) {
-        imagesArr.push("https://images.unsplash.com/photo-1596436889106-be35e843f974?w=800&auto=format&fit=crop&q=60");
+        setError("At least one product image is required");
+        setIsSubmitting(false);
+        return;
       }
 
       const payload = {
@@ -113,7 +115,7 @@ export default function NewProductPage() {
 
       <div className="flex-1 p-3 md:p-6 space-y-6 w-full max-w-none animate-in fade-in">
         <div>
-          <Link href="/admin/products" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black hover:text-goat-primary transition-colors">
+          <Link href="/admin/products" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black hover:text-primary transition-colors">
             <ArrowLeft size={16} /> Back to Products
           </Link>
         </div>
@@ -138,7 +140,7 @@ export default function NewProductPage() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g. Lavender Crochet Bouquet"
-              className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+              className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
             />
           </div>
 
@@ -151,7 +153,7 @@ export default function NewProductPage() {
                   options={categories}
                   value={formData.category}
                   onChange={(val) => setFormData({ ...formData, category: val })}
-                  theme="goat"
+                  theme="primary"
                 />
               )}
             </div>
@@ -166,7 +168,7 @@ export default function NewProductPage() {
                 onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                 placeholder="10"
                 min="0"
-                className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
               />
             </div>
           </div>
@@ -183,7 +185,7 @@ export default function NewProductPage() {
                 placeholder="1299"
                 min="0"
                 step="0.01"
-                className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
               />
             </div>
 
@@ -198,7 +200,7 @@ export default function NewProductPage() {
                 placeholder="e.g. 999 (Leave blank if no discount)"
                 min="0"
                 step="0.01"
-                className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
               />
             </div>
           </div>
@@ -231,7 +233,7 @@ export default function NewProductPage() {
                 id="isFeatured"
                 checked={formData.isFeatured}
                 onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
-                className="w-4.5 h-4.5 text-goat-primary border-brand-border rounded focus:ring-goat-primary"
+                className="w-4.5 h-4.5 text-primary border-brand-border rounded focus:ring-primary"
               />
               <label htmlFor="isFeatured" className="text-sm font-bold text-brand-black uppercase cursor-pointer">
                 Feature Product (Show on Homepage)
@@ -243,7 +245,7 @@ export default function NewProductPage() {
                 id="isActive"
                 checked={formData.isActive}
                 onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                className="w-4.5 h-4.5 text-goat-primary border-brand-border rounded focus:ring-goat-primary"
+                className="w-4.5 h-4.5 text-primary border-brand-border rounded focus:ring-primary"
               />
               <label htmlFor="isActive" className="text-sm font-bold text-brand-black uppercase cursor-pointer">
                 Active & Published
@@ -256,7 +258,7 @@ export default function NewProductPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-brand-black hover:bg-goat-primary text-white font-bold py-2.5 px-6 rounded-xl transition-all flex items-center gap-2 shadow-sm text-sm disabled:bg-neutral-400"
+              className="bg-brand-black hover:bg-primary text-white font-bold py-2.5 px-6 rounded-xl transition-all flex items-center gap-2 shadow-sm text-sm disabled:bg-neutral-400"
             >
               {isSubmitting ? "Saving..." : <><Save size={16} /> Save Product</>}
             </button>

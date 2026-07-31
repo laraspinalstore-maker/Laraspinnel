@@ -97,7 +97,7 @@ export default function TopSellingProducts({ topProducts, customRequests }: Prop
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-3 mb-1">
-                    <span className="text-sm font-semibold text-brand-black truncate group-hover/row:text-goat-primary transition-colors">
+                    <span className="text-sm font-semibold text-brand-black truncate group-hover/row:text-primary transition-colors">
                       {p.name}
                     </span>
                     <span className="shrink-0 text-xs text-brand-gray font-medium tabular-nums">
@@ -140,7 +140,7 @@ export default function TopSellingProducts({ topProducts, customRequests }: Prop
           href="/admin/orders"
           className="mt-5 pt-4 border-t border-brand-border flex items-center gap-2.5 group/custom"
         >
-          <Sparkles size={15} className="text-goat-primary shrink-0" />
+          <Sparkles size={15} className="text-primary shrink-0" />
           <span className="text-xs text-brand-gray flex-1 min-w-0">
             <span className="font-bold text-brand-black">{customRequests.orders}</span> custom order
             {customRequests.orders === 1 ? "" : "s"}
@@ -155,7 +155,7 @@ export default function TopSellingProducts({ topProducts, customRequests }: Prop
           </span>
           <ArrowRight
             size={14}
-            className="text-brand-gray shrink-0 group-hover/custom:translate-x-0.5 group-hover/custom:text-goat-primary transition-all"
+            className="text-brand-gray shrink-0 group-hover/custom:translate-x-0.5 group-hover/custom:text-primary transition-all"
           />
         </Link>
       )}

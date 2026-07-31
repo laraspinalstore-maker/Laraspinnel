@@ -51,7 +51,7 @@ export default function FeaturedProducts() {
           </div>
           <Link
             href="/shop"
-            className="group inline-flex items-center gap-1 text-sm font-semibold text-goat-primary hover:text-goat-hover transition-colors whitespace-nowrap shrink-0"
+            className="group inline-flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary-hover transition-colors whitespace-nowrap shrink-0"
           >
             <span>View All</span>
             <ArrowRight size={14} className="animate-arrow-slide lg:transition-transform lg:group-hover:translate-x-1" />
@@ -88,7 +88,7 @@ export default function FeaturedProducts() {
                   tag={product.discountPrice ? `SAVE ₹${product.price - product.discountPrice}` : undefined}
                   image={product.images?.[0]}
                   slug={product.slug}
-                  theme="goat"
+                  theme="primary"
                   stock={product.stock}
                 />
               </div>

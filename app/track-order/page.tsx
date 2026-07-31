@@ -71,16 +71,16 @@ const StatusTimeline = ({ status, updatedAt }: { status: TrackedOrder["status"];
               <span
                 aria-hidden
                 className={`absolute left-5 top-10 h-[calc(100%-1.25rem)] w-0.5 md:left-[calc(50%+1.5rem)] md:right-auto md:top-5 md:h-0.5 md:w-[calc(100%-3rem)] ${
-                  done ? "bg-goat-primary" : "bg-brand-border"
+                  done ? "bg-primary" : "bg-brand-border"
                 }`}
               />
             )}
             <span
               className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center border-2 shrink-0 transition-colors ${
                 done || current
-                  ? "bg-goat-primary border-goat-primary text-white"
+                  ? "bg-primary border-primary text-white"
                   : "bg-white border-brand-border text-brand-gray/60"
-              } ${current ? "ring-4 ring-goat-primary/15" : ""}`}
+              } ${current ? "ring-4 ring-primary/15" : ""}`}
             >
               <Icon size={17} />
             </span>
@@ -162,8 +162,8 @@ export default function TrackOrderPage() {
       <main className="flex-1 max-w-4xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-10">
         {/* Page Header */}
         <div className="space-y-3 pb-2 text-center mx-auto w-full">
-          <span className="flex items-center justify-center gap-2 text-xs font-semibold text-goat-text uppercase tracking-wider">
-            <PackageSearch size={14} className="text-goat-primary" /> Order Status
+          <span className="flex items-center justify-center gap-2 text-xs font-semibold text-primary-text uppercase tracking-wider">
+            <PackageSearch size={14} className="text-primary" /> Order Status
           </span>
           <h1 className="font-display text-3xl sm:text-5xl text-brand-black tracking-wide uppercase">
             Track Your Order
@@ -193,7 +193,7 @@ export default function TrackOrderPage() {
                   value={orderNumber}
                   onChange={(e) => setOrderNumber(e.target.value)}
                   placeholder="LPO-20260724-1234"
-                  className="w-full h-11 bg-white border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary uppercase placeholder:normal-case"
+                  className="w-full h-11 bg-white border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary uppercase placeholder:normal-case"
                 />
               </div>
             </div>
@@ -212,7 +212,7 @@ export default function TrackOrderPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="10-digit mobile number"
-                  className="w-full h-11 bg-white border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                  className="w-full h-11 bg-white border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -228,7 +228,7 @@ export default function TrackOrderPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-12 bg-goat-primary hover:bg-goat-hover disabled:opacity-60 text-white font-bold uppercase tracking-wider text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+            className="w-full h-12 bg-primary hover:bg-primary-hover disabled:opacity-60 text-white font-bold uppercase tracking-wider text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -261,7 +261,7 @@ export default function TrackOrderPage() {
                     {order.orderType === "custom" && " · Custom order"}
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1.5 bg-goat-tint text-goat-text font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-full border border-goat-primary/10">
+                <span className="inline-flex items-center gap-1.5 bg-primary-tint text-primary-text font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-full border border-primary/10">
                   {order.status === "cancelled" ? "Cancelled" : STEPS.find((s) => s.key === order.status)?.label}
                 </span>
               </div>
@@ -272,7 +272,7 @@ export default function TrackOrderPage() {
             {/* Items & totals */}
             <div className="bg-white border border-brand-border rounded-2xl shadow-card p-5 md:p-8 space-y-5">
               <h3 className="font-bold text-sm text-brand-black uppercase tracking-wider flex items-center gap-2">
-                <ShoppingBag size={15} className="text-goat-primary" /> Items in this order
+                <ShoppingBag size={15} className="text-primary" /> Items in this order
               </h3>
               <ul className="divide-y divide-brand-border/70">
                 {order.items.map((item, i) => (
@@ -282,8 +282,8 @@ export default function TrackOrderPage() {
                         <Image src={item.image} alt={item.name} fill sizes="56px" className="object-cover" />
                       </div>
                     ) : (
-                      <div className="w-14 h-14 rounded-xl bg-goat-tint flex items-center justify-center shrink-0">
-                        <ShoppingBag size={18} className="text-goat-primary" />
+                      <div className="w-14 h-14 rounded-xl bg-primary-tint flex items-center justify-center shrink-0">
+                        <ShoppingBag size={18} className="text-primary" />
                       </div>
                     )}
                     <div className="min-w-0 flex-1">

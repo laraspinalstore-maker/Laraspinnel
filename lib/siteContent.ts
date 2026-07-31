@@ -57,9 +57,9 @@ export const DEFAULT_MARQUEE_ITEMS: string[] = [
 
 /* ---- Home: Promo Showcase rotating cards (below Testimonials) ---- */
 export const PROMO_CARD_COLORS: PromoCardColorOption[] = [
-  { key: "goat", label: "Sage Green", className: "bg-goat-primary" },
+  { key: "sage", label: "Sage Green", className: "bg-primary" },
   { key: "gold", label: "Golden Cream", className: "bg-gold-primary" },
-  { key: "mutton", label: "Terracotta", className: "bg-mutton-primary" },
+  { key: "terracotta", label: "Terracotta", className: "bg-secondary" },
   { key: "rose", label: "Blush Rose", className: "bg-rose-primary" },
   { key: "brown", label: "Cocoa Brown", className: "bg-brown-primary" },
 ];
@@ -75,34 +75,34 @@ export function getPromoCardColorClass(key: string): string {
 // banner's decoration overlay) that need an actual color value rather than a
 // Tailwind background class, e.g. for border/text colors mixed with opacity.
 export const THEME_ACCENT_HEX: Record<string, string> = {
-  goat: "#8FA88A",
+  sage: "#8FA88A",
   gold: "#C9A15A",
-  mutton: "#C1622D",
+  terracotta: "#C1622D",
   rose: "#D98E97",
   brown: "#6B4A2E",
 };
 
 export function getThemeAccentHex(key: string): string {
-  return THEME_ACCENT_HEX[key] ?? THEME_ACCENT_HEX.goat;
+  return THEME_ACCENT_HEX[key] ?? THEME_ACCENT_HEX.sage;
 }
 
 export const DEFAULT_PROMO_CARDS: PromoCard[] = [
   {
-    imageUrl: "/placeholder-goat.jpg",
+    imageUrl: "",
     title: "Crochet Flower Bouquets",
     buttonText: "Buy Now",
     buttonLink: "/shop?category=bouquets",
-    bgColor: "goat",
+    bgColor: "sage",
   },
   {
-    imageUrl: "/placeholder-mutton.jpg",
+    imageUrl: "",
     title: "Custom Crochet Frames",
     buttonText: "Buy Now",
     buttonLink: "/shop?category=customized-frames",
     bgColor: "gold",
   },
   {
-    imageUrl: "/placeholder-goat.jpg",
+    imageUrl: "",
     title: "Amigurumi Gift Hampers",
     buttonText: "Buy Now",
     buttonLink: "/shop?category=hampers",
@@ -133,10 +133,6 @@ export const DEFAULT_CUSTOM_GALLERY: CustomGalleryItem[] = [
   {
     src: "https://ik.imagekit.io/senra6374/laraspinnal/Crochet_teddy_bear_on_white_202607192145-removebg-preview_5cLkpFYkW.png",
     alt: "Cute Teddy Bear Amigurumi — custom handmade by Lara's Pinnal",
-  },
-  {
-    src: "https://ik.imagekit.io/senra6374/ragugoatfarm/Baby_shower_gift_hamper_arrangement_202607191703-removebg-preview_d9iZSHF5O.png",
-    alt: "Baby Shower Warm Hamper — custom handmade by Lara's Pinnal",
   },
   {
     src: "https://ik.imagekit.io/senra6374/laraspinnal/Crochet_flower_bouquet_lavender___202607192146-removebg-preview_O0_IyzOS2.png",

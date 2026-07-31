@@ -8,7 +8,7 @@ interface CustomDatePickerProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  theme?: "goat" | "mutton";
+  theme?: "primary" | "secondary";
   error?: boolean;
   minDate?: Date;
 }
@@ -17,7 +17,7 @@ export default function CustomDatePicker({
   value,
   onChange,
   placeholder = "dd/mm/yyyy",
-  theme = "goat",
+  theme = "primary",
   error = false,
   minDate = new Date(),
 }: CustomDatePickerProps) {
@@ -85,7 +85,7 @@ export default function CustomDatePicker({
         if (isDisabled) {
            dayClasses += "text-brand-gray/30 cursor-not-allowed";
         } else if (isSelected) {
-           dayClasses += theme === "goat" ? "bg-goat-primary text-white font-bold" : "bg-mutton-primary text-white font-bold";
+           dayClasses += theme === "primary" ? "bg-primary text-white font-bold" : "bg-secondary text-white font-bold";
         } else if (!isSameMonth(day, monthStart)) {
            dayClasses += "text-brand-gray/50 hover:bg-brand-light-gray";
         } else {
@@ -121,9 +121,9 @@ export default function CustomDatePicker({
           error ? "border-red-500" : "border-brand-border"
         } rounded-xl pl-10 pr-4 text-sm flex items-center cursor-pointer transition-colors ${
           isOpen
-            ? theme === "goat"
-              ? "ring-2 ring-goat-primary/50 border-goat-primary"
-              : "ring-2 ring-mutton-primary/50 border-mutton-primary"
+            ? theme === "primary"
+              ? "ring-2 ring-primary/50 border-primary"
+              : "ring-2 ring-secondary/50 border-secondary"
             : ""
         }`}
       >

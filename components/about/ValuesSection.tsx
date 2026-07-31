@@ -26,7 +26,7 @@ export default function ValuesSection({ settings }: { settings: Record<string, s
       desc:
         settings.about_why_2_desc ||
         "We use only premium, hypoallergenic milk cotton yarn that is soft to touch, vibrant, and extremely durable.",
-      accentBg: "bg-goat-tint/80 text-goat-primary",
+      accentBg: "bg-primary-tint/80 text-primary",
       cardBg: "bg-gradient-to-b from-[#F5F8F4] to-[#EEF4EC]",
     },
     {
@@ -59,7 +59,7 @@ export default function ValuesSection({ settings }: { settings: Record<string, s
         {/* Section Header */}
         <Reveal className="max-w-2xl mx-auto text-center space-y-2">
           <div className="flex items-center justify-center">
-            <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+            <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
               OUR ARTISAN PROMISE
             </span>
             <FloralDoodle />
@@ -111,7 +111,7 @@ export default function ValuesSection({ settings }: { settings: Record<string, s
                   {/* Bottom Feature Pill */}
                   <div className="pt-6">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 border border-brand-border/40 text-[10px] font-bold uppercase tracking-wider text-brand-black/80 shadow-3xs">
-                      <CheckCircle2 size={12} className="text-goat-primary" />
+                      <CheckCircle2 size={12} className="text-primary" />
                       {v.pill}
                     </span>
                   </div>

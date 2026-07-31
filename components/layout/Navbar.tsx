@@ -69,7 +69,7 @@ export default function Navbar() {
                 full name fits: ~134px at text-base, against the ~144px available on
                 a 320px screen once the logo and the two 44px controls are counted.
                 `truncate` stays only as a fallback for an unusually long farm_name. */}
-            <span className="font-display text-base min-[380px]:text-lg sm:text-2xl md:text-4xl tracking-wide md:tracking-wider text-brand-black group-hover:text-goat-primary transition-colors uppercase truncate min-w-0 leading-none translate-y-0.5">
+            <span className="font-display text-base min-[380px]:text-lg sm:text-2xl md:text-4xl tracking-wide md:tracking-wider text-brand-black group-hover:text-primary transition-colors uppercase truncate min-w-0 leading-none translate-y-0.5">
               {settings.farm_name || "Lara's Pinnal"}
             </span>
           </Link>
@@ -84,13 +84,13 @@ export default function Navbar() {
                   href={link.href}
                   className={`text-sm font-semibold relative py-1 transition-colors ${
                     isActive
-                      ? "text-goat-primary"
-                      : "text-brand-black hover:text-goat-primary"
+                      ? "text-primary"
+                      : "text-brand-black hover:text-primary"
                   }`}
                 >
                   {link.name}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-goat-primary rounded-full animate-in fade-in duration-300"></span>
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full animate-in fade-in duration-300"></span>
                   )}
                 </Link>
               );
@@ -102,7 +102,7 @@ export default function Navbar() {
             {/* Search */}
             <Link
               href="/shop"
-              className="p-2 text-brand-black hover:text-goat-primary hover:bg-brand-light-gray rounded-full transition-all border border-transparent hover:border-brand-border"
+              className="p-2 text-brand-black hover:text-primary hover:bg-brand-light-gray rounded-full transition-all border border-transparent hover:border-brand-border"
               title="Search"
               aria-label="Search"
             >
@@ -125,7 +125,7 @@ export default function Navbar() {
             <Link
               href="/cart"
               aria-label={`View Cart${cartCount > 0 ? ` (${cartCount} items)` : ""}`}
-              className="bg-brand-black hover:bg-goat-primary text-white text-sm font-semibold px-5 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 flex items-center gap-2.5"
+              className="bg-brand-black hover:bg-primary text-white text-sm font-semibold px-5 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 flex items-center gap-2.5"
             >
               <span className="relative">
                 <ShoppingCart size={17} />
@@ -153,8 +153,8 @@ export default function Navbar() {
                     aria-label={link.name}
                     className={`p-2 min-w-11 min-h-11 flex items-center justify-center rounded-full transition-colors ${
                       isActive
-                        ? "text-goat-primary bg-goat-tint"
-                        : "text-brand-black hover:bg-brand-light-gray hover:text-goat-primary"
+                        ? "text-primary bg-primary-tint"
+                        : "text-brand-black hover:bg-brand-light-gray hover:text-primary"
                     }`}
                   >
                     <link.icon size={18} strokeWidth={isActive ? 2.2 : 1.8} />
@@ -165,7 +165,7 @@ export default function Navbar() {
                 href="/shop"
                 title="Search"
                 aria-label="Search"
-                className="p-2 min-w-11 min-h-11 flex items-center justify-center rounded-full text-brand-black hover:bg-brand-light-gray hover:text-goat-primary transition-colors"
+                className="p-2 min-w-11 min-h-11 flex items-center justify-center rounded-full text-brand-black hover:bg-brand-light-gray hover:text-primary transition-colors"
               >
                 <Search size={18} strokeWidth={1.8} />
               </Link>
@@ -211,7 +211,7 @@ export default function Navbar() {
                 href={link.href}
                 className={`flex flex-col items-center justify-center gap-1 flex-1 py-1.5 transition-all duration-200 select-none ${
                   isActive
-                    ? "text-goat-primary"
+                    ? "text-primary"
                     : "text-neutral-500 hover:text-neutral-800"
                 }`}
               >

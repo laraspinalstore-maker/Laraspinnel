@@ -20,8 +20,8 @@ export default function CategoriesPage() {
       <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-12 animate-in fade-in">
         {/* Page Header */}
         <div className="space-y-3 pb-6 text-center mx-auto w-full">
-          <span className="flex items-center justify-center gap-2 text-xs font-semibold text-goat-text uppercase tracking-wider">
-            <Tag size={14} className="text-goat-primary" /> Gift Collections
+          <span className="flex items-center justify-center gap-2 text-xs font-semibold text-primary-text uppercase tracking-wider">
+            <Tag size={14} className="text-primary" /> Gift Collections
           </span>
           <h1 className="font-display text-3xl sm:text-5xl text-brand-black tracking-wide uppercase">
             Browse Categories
@@ -66,7 +66,7 @@ export default function CategoriesPage() {
                 </div>
 
                 {/* Title Text Underneath */}
-                <h3 className="font-semibold text-brand-black text-xs md:text-base leading-tight transition-colors group-hover:text-goat-primary uppercase tracking-wide px-1">
+                <h3 className="font-semibold text-brand-black text-xs md:text-base leading-tight transition-colors group-hover:text-primary uppercase tracking-wide px-1">
                   {category.name}
                 </h3>
               </Link>

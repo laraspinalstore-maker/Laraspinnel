@@ -17,7 +17,7 @@ import {
 } from "@/lib/siteContent";
 
 const BADGE_ICONS = [
-  <ShieldCheck key="0" size={18} className="text-goat-primary shrink-0" />,
+  <ShieldCheck key="0" size={18} className="text-primary shrink-0" />,
   <Sparkles key="1" size={18} className="text-amber-400 shrink-0" />,
   <Heart key="2" size={18} className="text-red-400 shrink-0" />,
   <Lock key="3" size={18} className="text-blue-400 shrink-0" />,

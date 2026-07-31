@@ -31,10 +31,10 @@ export default function MakerSpotlight({ settings }: { settings: Record<string, 
                   </div>
                   <div className="mt-4 flex items-center justify-between px-2">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-brand-black">
-                      <MapPin size={14} className="text-goat-primary" />
+                      <MapPin size={14} className="text-primary" />
                       <span>Villupuram, TN</span>
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-goat-primary bg-goat-tint px-2.5 py-1 rounded-full">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary-tint px-2.5 py-1 rounded-full">
                       Artisan Made
                     </span>
                   </div>
@@ -44,7 +44,7 @@ export default function MakerSpotlight({ settings }: { settings: Record<string, 
               {/* Artisan Note */}
               <div className="lg:col-span-7 space-y-6 text-center lg:text-left order-1 lg:order-2">
                 <div className="space-y-2">
-                  <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+                  <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
                     Artisan Pledge & Studio Vision
                   </p>
                   <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-brand-black tracking-wide text-balance">
@@ -64,7 +64,7 @@ export default function MakerSpotlight({ settings }: { settings: Record<string, 
                     <span className="text-xs font-bold text-brand-black">100% Handcrafted</span>
                   </div>
                   <div className="flex items-center justify-center lg:justify-start gap-2 bg-cream-bg border border-brand-border rounded-2xl p-3 shadow-3xs">
-                    <ShieldCheck size={16} className="text-goat-primary shrink-0" />
+                    <ShieldCheck size={16} className="text-primary shrink-0" />
                     <span className="text-xs font-bold text-brand-black">Milk Cotton Quality</span>
                   </div>
                   <div className="flex items-center justify-center lg:justify-start gap-2 bg-cream-bg border border-brand-border rounded-2xl p-3 shadow-3xs col-span-2 sm:col-span-1">
@@ -75,12 +75,12 @@ export default function MakerSpotlight({ settings }: { settings: Record<string, 
 
                 {/* Sign-off signature & CTAs */}
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                  <p className="font-display italic text-xl md:text-2xl text-goat-primary">
+                  <p className="font-display italic text-xl md:text-2xl text-primary">
                     — The Lara&apos;s Pinnal Family
                   </p>
                   <Link
                     href="/custom-order"
-                    className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-goat-text hover:text-goat-hover transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-black rounded-md px-2 py-1"
+                    className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-text hover:text-primary-hover transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-black rounded-md px-2 py-1"
                   >
                     Custom Gift Inquiry <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                   </Link>

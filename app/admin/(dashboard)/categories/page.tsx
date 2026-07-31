@@ -104,14 +104,14 @@ export default function AdminCategoriesPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search categories by name or info..."
-              className="w-full h-10 pl-9 pr-4 bg-white border border-brand-border rounded-xl text-sm text-brand-black focus:ring-2 focus:ring-goat-primary outline-none transition-all"
+              className="w-full h-10 pl-9 pr-4 bg-white border border-brand-border rounded-xl text-sm text-brand-black focus:ring-2 focus:ring-primary outline-none transition-all"
             />
           </div>
 
           {/* Add New Button */}
           <Link
             href="/admin/categories/new"
-            className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-brand-black hover:bg-goat-primary text-white font-semibold text-sm h-10 px-4 rounded-xl transition-colors duration-200 shadow-sm whitespace-nowrap"
+            className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-brand-black hover:bg-primary text-white font-semibold text-sm h-10 px-4 rounded-xl transition-colors duration-200 shadow-sm whitespace-nowrap"
           >
             <Plus size={16} />
             <span>Add Category</span>
@@ -122,7 +122,7 @@ export default function AdminCategoriesPage() {
         <div className="bg-white border border-brand-border rounded-2xl shadow-card overflow-hidden">
           {isLoading ? (
             <div className="p-12 text-center text-brand-gray flex flex-col items-center gap-3">
-              <div className="animate-spin text-goat-primary">
+              <div className="animate-spin text-primary">
                 <FolderHeart size={40} />
               </div>
               <p className="text-sm font-semibold">Loading categories...</p>
@@ -195,7 +195,7 @@ export default function AdminCategoriesPage() {
                         <div className="flex items-center justify-end gap-2">
                           <Link
                             href={`/admin/categories/${category._id}`}
-                            className="p-1.5 hover:bg-brand-light-gray text-brand-black hover:text-goat-primary rounded transition-colors"
+                            className="p-1.5 hover:bg-brand-light-gray text-brand-black hover:text-primary rounded transition-colors"
                             title="Edit"
                           >
                             <Pencil size={16} />

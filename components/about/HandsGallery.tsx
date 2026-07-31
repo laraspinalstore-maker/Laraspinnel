@@ -132,7 +132,7 @@ export default function HandsGallery({ settings }: { settings: Record<string, st
       <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12">
         <Reveal className="max-w-2xl mx-auto text-center space-y-2">
           <div className="flex items-center justify-center">
-            <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+            <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
               FROM OUR HANDS
             </span>
             <FloralDoodle />

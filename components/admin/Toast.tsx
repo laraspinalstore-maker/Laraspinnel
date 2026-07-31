@@ -37,9 +37,9 @@ const VARIANT_CONFIG: Record<
   { icon: React.ReactNode; accent: string; ring: string; defaultTitle: string }
 > = {
   success: {
-    icon: <CheckCircle2 size={18} className="text-goat-primary" />,
-    accent: "bg-goat-primary",
-    ring: "border-goat-primary/30",
+    icon: <CheckCircle2 size={18} className="text-primary" />,
+    accent: "bg-primary",
+    ring: "border-primary/30",
     defaultTitle: "Success",
   },
   error: {

@@ -99,7 +99,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: [
         {
-          url: "/placeholder-goat.jpg",
+          url: "/logo.png",
           width: 1200,
           height: 630,
           alt: "Lara's Pinnal Handmade Crochet Bouquet",
@@ -175,7 +175,7 @@ export default async function RootLayout({
       "@type": "LocalBusiness",
       "@id": `${BASE_URL}/#localbusiness`,
       "name": farmName,
-      "image": `${BASE_URL}/placeholder-goat.jpg`,
+      "image": `${BASE_URL}/logo.png`,
       "url": BASE_URL,
       "telephone": phone,
       "email": email,
@@ -215,7 +215,7 @@ export default async function RootLayout({
       "@id": `${BASE_URL}/#organization`,
       "name": farmName,
       "url": BASE_URL,
-      "logo": `${BASE_URL}/placeholder-goat.jpg`,
+      "logo": `${BASE_URL}/logo.png`,
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": phone,

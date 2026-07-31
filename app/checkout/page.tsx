@@ -110,8 +110,8 @@ export default function CheckoutPage() {
         <Navbar />
 
         <main className="flex-1 max-w-xl mx-auto px-4 md:px-6 py-20 flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in">
-          <div className="w-20 h-20 rounded-full bg-goat-tint border border-goat-primary/10 flex items-center justify-center shadow-md animate-bounce">
-            <CheckCircle2 size={48} className="text-goat-primary" />
+          <div className="w-20 h-20 rounded-full bg-primary-tint border border-primary/10 flex items-center justify-center shadow-md animate-bounce">
+            <CheckCircle2 size={48} className="text-primary" />
           </div>
 
           <div className="space-y-3">
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
               Order Placed!
             </h1>
             <p className="text-sm font-semibold text-brand-black">
-              Order Number: <span className="text-goat-primary select-all">{placedOrder.orderNumber}</span>
+              Order Number: <span className="text-primary select-all">{placedOrder.orderNumber}</span>
             </p>
             <p className="text-xs text-brand-gray max-w-sm mx-auto leading-relaxed">
               Thank you for supporting handcrafted art! We will contact you shortly on WhatsApp or phone to confirm shipping details and delivery date.
@@ -140,7 +140,7 @@ export default function CheckoutPage() {
               </a>
               <a
                 href={`tel:${contactPhone}`}
-                className="flex-1 bg-brand-black hover:bg-goat-primary text-white font-bold py-3 px-4 rounded-full transition-all flex items-center justify-center gap-2 shadow-sm text-sm"
+                className="flex-1 bg-brand-black hover:bg-primary text-white font-bold py-3 px-4 rounded-full transition-all flex items-center justify-center gap-2 shadow-sm text-sm"
               >
                 <Phone size={16} /> Call Us
               </a>
@@ -150,13 +150,13 @@ export default function CheckoutPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
             <Link
               href={`/track-order?order=${encodeURIComponent(placedOrder.orderNumber)}`}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-goat-primary hover:underline"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
             >
               Track This Order <ChevronRight size={16} />
             </Link>
             <Link
               href="/shop"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-goat-primary hover:underline"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
             >
               <ArrowLeft size={16} /> Continue Shopping
             </Link>
@@ -177,7 +177,7 @@ export default function CheckoutPage() {
           <ShoppingBag className="mx-auto text-neutral-300 animate-pulse" size={56} />
           <h2 className="text-lg font-bold text-brand-black">No Items to Checkout</h2>
           <p className="text-xs text-brand-gray">Your cart is currently empty. Add items before checking out.</p>
-          <Link href="/shop" className="bg-brand-black hover:bg-goat-primary text-white font-bold py-3 px-6 rounded-full transition-all shadow-md">
+          <Link href="/shop" className="bg-brand-black hover:bg-primary text-white font-bold py-3 px-6 rounded-full transition-all shadow-md">
             Browse Shop
           </Link>
         </main>
@@ -206,7 +206,7 @@ export default function CheckoutPage() {
           <form id="checkout-form" onSubmit={handleSubmit} className="lg:col-span-7 space-y-6">
             <div className="bg-white border border-brand-border rounded-2xl p-5 md:p-8 space-y-5 shadow-card">
               <h2 className="text-lg font-bold text-brand-black uppercase tracking-wider pb-3 flex items-center gap-2">
-                <FileText size={18} className="text-goat-primary" /> Delivery Information
+                <FileText size={18} className="text-primary" /> Delivery Information
               </h2>
 
               {/* Name */}
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
                   value={formData.customerName}
                   onChange={handleInputChange}
                   placeholder="Enter your full name"
-                  className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.customerName ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all`}
+                  className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.customerName ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all`}
                 />
                 {errors.customerName && <p className="text-xs font-medium text-red-500">{errors.customerName}</p>}
               </div>
@@ -236,7 +236,7 @@ export default function CheckoutPage() {
                   value={formData.phone}
                   onChange={handleInputChange}
                   placeholder="Enter 10-digit mobile number"
-                  className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.phone ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all`}
+                  className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.phone ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all`}
                 />
                 {errors.phone && <p className="text-xs font-medium text-red-500">{errors.phone}</p>}
               </div>
@@ -254,7 +254,7 @@ export default function CheckoutPage() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="you@example.com — for an order confirmation email"
-                  className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.email ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all`}
+                  className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.email ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all`}
                 />
                 {errors.email && <p className="text-xs font-medium text-red-500">{errors.email}</p>}
               </div>
@@ -269,7 +269,7 @@ export default function CheckoutPage() {
                   value={formData.address}
                   onChange={handleInputChange}
                   placeholder="Enter building number, street name, and area"
-                  className={`w-full p-4 bg-brand-light-gray/30 border ${errors.address ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all resize-none`}
+                  className={`w-full p-4 bg-brand-light-gray/30 border ${errors.address ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all resize-none`}
                 />
                 {errors.address && <p className="text-xs font-medium text-red-500">{errors.address}</p>}
               </div>
@@ -285,7 +285,7 @@ export default function CheckoutPage() {
                     value={formData.city}
                     onChange={handleInputChange}
                     placeholder="Enter city"
-                    className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.city ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all`}
+                    className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.city ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all`}
                   />
                   {errors.city && <p className="text-xs font-medium text-red-500">{errors.city}</p>}
                 </div>
@@ -300,7 +300,7 @@ export default function CheckoutPage() {
                     value={formData.pincode}
                     onChange={handleInputChange}
                     placeholder="6-digit pincode"
-                    className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.pincode ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all`}
+                    className={`w-full h-11 px-4 bg-brand-light-gray/30 border ${errors.pincode ? "border-red-500" : "border-brand-border"} rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all`}
                   />
                   {errors.pincode && <p className="text-xs font-medium text-red-500">{errors.pincode}</p>}
                 </div>
@@ -319,7 +319,7 @@ export default function CheckoutPage() {
                   value={formData.notes}
                   onChange={handleInputChange}
                   placeholder="Specify custom letters, colors, or details here..."
-                  className="w-full p-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all resize-none"
+                  className="w-full p-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
                 />
               </div>
             </div>
@@ -340,12 +340,12 @@ export default function CheckoutPage() {
                       <p className="font-semibold text-brand-black truncate">{item.name}</p>
                       <p className="text-xs text-brand-gray font-medium">Qty: {item.quantity} &times; ₹{item.price}</p>
                       {item.customText && (
-                        <p className="text-xs text-goat-text italic truncate mt-0.5" title={item.customText}>
+                        <p className="text-xs text-primary-text italic truncate mt-0.5" title={item.customText}>
                           Custom: {item.customText}
                         </p>
                       )}
                       {item.customImage && (
-                        <div className="relative w-8 h-8 rounded-md overflow-hidden border border-goat-primary/30 mt-1">
+                        <div className="relative w-8 h-8 rounded-md overflow-hidden border border-primary/30 mt-1">
                           <Image
                             src={item.customImage}
                             alt="Customization reference"
@@ -377,7 +377,7 @@ export default function CheckoutPage() {
                     const deliveryFee = isFreeDelivery || deliveryFeeSetting === 0 ? 0 : deliveryFeeSetting;
 
                     return deliveryFee === 0 ? (
-                      <span className="text-goat-primary font-bold">FREE Delivery</span>
+                      <span className="text-primary font-bold">FREE Delivery</span>
                     ) : (
                       <span className="font-bold text-brand-black">₹{deliveryFee}</span>
                     );
@@ -403,7 +403,7 @@ export default function CheckoutPage() {
                 type="submit"
                 form="checkout-form"
                 disabled={isSubmitting}
-                className="w-full bg-brand-black hover:bg-goat-primary text-white font-bold py-3.5 px-6 rounded-full transition-all flex items-center justify-center gap-2 shadow-md disabled:bg-neutral-400 disabled:cursor-not-allowed text-base"
+                className="w-full bg-brand-black hover:bg-primary text-white font-bold py-3.5 px-6 rounded-full transition-all flex items-center justify-center gap-2 shadow-md disabled:bg-neutral-400 disabled:cursor-not-allowed text-base"
               >
                 {isSubmitting ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -416,7 +416,7 @@ export default function CheckoutPage() {
             {/* Trust Signpost card */}
             <div className="border border-brand-border rounded-2xl p-5 bg-white space-y-3.5 shadow-sm">
               <div className="flex items-center gap-3">
-                <ShieldCheck size={36} className="text-goat-primary shrink-0" />
+                <ShieldCheck size={36} className="text-primary shrink-0" />
                 <div>
                   <h4 className="text-xs font-bold text-brand-black uppercase tracking-wider">Safe & Secure Booking</h4>
                   <p className="text-[10px] text-brand-gray">No advance payment card details needed. Pay after order verification.</p>

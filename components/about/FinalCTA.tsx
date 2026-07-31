@@ -86,14 +86,14 @@ export default function FinalCTA() {
 
               {/* Right Side: Copy & Buttons */}
               <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
-                <p className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+                <p className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
                   <Sparkles size={13} aria-hidden="true" />
                   Made Just for You
                 </p>
 
                 <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-brand-black tracking-wide leading-tight">
                   Have Something Special{" "}
-                  <span className="text-goat-text italic">in Mind?</span>
+                  <span className="text-primary-text italic">in Mind?</span>
                 </h2>
 
                 {/* Thread divider — the site's line · heart · line motif */}
@@ -119,7 +119,7 @@ export default function FinalCTA() {
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-3">
                   <Link
                     href="/custom-order"
-                    className="group/cta inline-flex items-center justify-center gap-2 bg-brand-black hover:bg-goat-primary text-white font-bold text-xs uppercase tracking-wider h-12 px-8 rounded-full transition-colors duration-300 shadow-md w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-goat-primary focus-visible:ring-offset-2"
+                    className="group/cta inline-flex items-center justify-center gap-2 bg-brand-black hover:bg-primary text-white font-bold text-xs uppercase tracking-wider h-12 px-8 rounded-full transition-colors duration-300 shadow-md w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
                     Start a Custom Order
                     <ArrowRight
@@ -130,7 +130,7 @@ export default function FinalCTA() {
 
                   <Link
                     href="/shop"
-                    className="inline-flex items-center justify-center gap-2 border border-goat-primary/40 bg-white/60 hover:bg-goat-tint text-goat-text font-semibold text-xs uppercase tracking-wider h-12 px-7 rounded-full transition-colors duration-300 w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-goat-primary focus-visible:ring-offset-2"
+                    className="inline-flex items-center justify-center gap-2 border border-primary/40 bg-white/60 hover:bg-primary-tint text-primary-text font-semibold text-xs uppercase tracking-wider h-12 px-7 rounded-full transition-colors duration-300 w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
                     Explore Collections <ArrowRight size={14} />
                   </Link>

@@ -55,7 +55,7 @@ export default function ImageUrlDialog({
         <div className="p-3 md:p-6 space-y-4">
           {/* Header */}
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-goat-tint text-goat-primary flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-primary-tint text-primary flex items-center justify-center shrink-0">
               <Link2 size={20} />
             </div>
             <div>
@@ -80,7 +80,7 @@ export default function ImageUrlDialog({
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com/image.jpg"
-                className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                className="w-full h-11 bg-white border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -95,7 +95,7 @@ export default function ImageUrlDialog({
               <button
                 type="submit"
                 disabled={!url.trim()}
-                className="flex-1 h-11 rounded-xl text-sm font-semibold text-white bg-brand-black hover:bg-goat-primary transition-colors disabled:opacity-40"
+                className="flex-1 h-11 rounded-xl text-sm font-semibold text-white bg-brand-black hover:bg-primary transition-colors disabled:opacity-40"
               >
                 Insert Image
               </button>

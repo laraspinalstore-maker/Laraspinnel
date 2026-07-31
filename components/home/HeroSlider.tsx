@@ -78,20 +78,20 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
   const slides = banners.length > 0 ? banners : [
     {
       _id: "default-1",
-      imageUrl: "/placeholder-goat.jpg",
+      imageUrl: "",
       headline: "Handmade Crochet Gifts, Delivered Across India",
       subtext: "Crochet flower bouquets, custom frames, and amigurumi plush — hand-knitted with love.",
       buttonText: "Explore Gifts",
-      buttonLink: "/goats",
+      buttonLink: "/shop",
       buttonTheme: "green" as const,
     },
     {
       _id: "default-2",
-      imageUrl: "/placeholder-mutton.jpg",
+      imageUrl: "",
       headline: "Custom Crochet Frames & Bouquets, Made to Order",
       subtext: "Premium milk cotton yarn, crafted into keepsakes for every occasion.",
       buttonText: "Explore Bouquets",
-      buttonLink: "/mutton",
+      buttonLink: "/shop?category=bouquets",
       buttonTheme: "red" as const,
     }
   ];
@@ -108,7 +108,7 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
             return (
               <div
                 key={slide._id}
-                className="flex-[0_0_100%] min-w-full w-full h-[45vh] min-h-[340px] md:min-h-[480px] md:h-[55vh] xl:h-[65vh] relative bg-brand-black"
+                className="flex-[0_0_100%] min-w-full w-full h-[45vh] min-h-85 md:min-h-120 md:h-[55vh] xl:h-[65vh] relative bg-brand-black"
               >
                 {slide.imageUrl && (
                   <Image
@@ -151,8 +151,8 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
                         <Link
                           href={safeUrl(slide.buttonLink, "/")}
                           className={`inline-flex items-center justify-center px-7 py-3 rounded-full text-sm font-semibold shadow-md transition-all duration-300 hover:scale-102 ${slide.buttonTheme === "red"
-                            ? "bg-mutton-primary text-white hover:bg-mutton-hover"
-                            : "bg-goat-primary text-white hover:bg-goat-hover"
+                            ? "bg-secondary text-white hover:bg-secondary-hover"
+                            : "bg-primary text-white hover:bg-primary-hover"
                             }`}
                         >
                           {slide.buttonText}

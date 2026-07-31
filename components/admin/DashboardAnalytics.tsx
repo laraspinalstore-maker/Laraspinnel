@@ -39,14 +39,14 @@ export default function DashboardAnalytics({
       <div className="lg:col-span-2 bg-white border border-brand-border rounded-2xl shadow-card p-4 md:p-6">
         <div className="flex items-center justify-between gap-3 mb-5">
           <div className="flex items-center gap-2">
-            <TrendingUp size={18} className="text-goat-primary" />
+            <TrendingUp size={18} className="text-primary" />
             <h3 className="font-display text-base md:text-lg text-brand-black tracking-wide">
               Revenue — Last 14 Days
             </h3>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-semibold text-brand-gray uppercase tracking-wide">Total</p>
-            <p className="text-sm font-bold text-goat-text">{inr(trendTotal)}</p>
+            <p className="text-sm font-bold text-primary-text">{inr(trendTotal)}</p>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ export default function DashboardAnalytics({
                   <div className="relative w-full flex items-end justify-center h-full">
                     <div
                       title={`${d.label}: ${inr(d.total)}`}
-                      className="w-full max-w-5.5 rounded-t-md bg-goat-primary/80 group-hover:bg-goat-primary transition-all"
+                      className="w-full max-w-5.5 rounded-t-md bg-primary/80 group-hover:bg-primary transition-all"
                       style={{ height: `${heightPct}%` }}
                     />
                   </div>
@@ -80,7 +80,7 @@ export default function DashboardAnalytics({
       {/* Orders by status */}
       <div className="bg-white border border-brand-border rounded-2xl shadow-card p-4 md:p-6">
         <div className="flex items-center gap-2 mb-5">
-          <PieChart size={18} className="text-goat-primary" />
+          <PieChart size={18} className="text-primary" />
           <h3 className="font-display text-base md:text-lg text-brand-black tracking-wide">
             Orders by Status
           </h3>

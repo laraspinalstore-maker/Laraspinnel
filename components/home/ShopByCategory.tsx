@@ -48,7 +48,7 @@ export default function ShopByCategory({ settings }: { settings: any }) {
               <Link
                 key={category._id}
                 href={`/shop?category=${category.slug}`}
-                className="group flex flex-col items-center text-center gap-3 w-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-goat-primary focus-visible:ring-offset-2"
+                className="group flex flex-col items-center text-center gap-3 w-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 {/* Rounded Square Card with Off-White Background */}
                 <div className="relative aspect-square w-full rounded-2xl md:rounded-4xl overflow-hidden bg-[#F3F4F6] border border-brand-border/40 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
@@ -63,7 +63,7 @@ export default function ShopByCategory({ settings }: { settings: any }) {
                 </div>
 
                 {/* Title Text Underneath */}
-                <h3 className="font-semibold text-brand-black text-xs md:text-base leading-tight transition-colors group-hover:text-goat-primary uppercase tracking-wide px-1">
+                <h3 className="font-semibold text-brand-black text-xs md:text-base leading-tight transition-colors group-hover:text-primary uppercase tracking-wide px-1">
                   {category.name}
                 </h3>
               </Link>

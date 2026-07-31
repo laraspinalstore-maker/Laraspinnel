@@ -29,7 +29,7 @@ export function TextField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+        className="w-full h-11 px-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
       />
       {hint && <p className="text-[10px] text-brand-gray">{hint}</p>}
     </div>
@@ -59,7 +59,7 @@ export function TextAreaField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full p-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all resize-none"
+        className="w-full p-4 bg-brand-light-gray/30 border border-brand-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
       />
       {hint && <p className="text-[10px] text-brand-gray">{hint}</p>}
     </div>
@@ -184,7 +184,7 @@ export function ListEditor<T>({
                   value={item as string}
                   onChange={(e) => update(index, e.target.value as T)}
                   placeholder={hint}
-                  className="lg:col-span-2 w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                  className="lg:col-span-2 w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
               ) : (
                 fields!.map((f) => (
@@ -196,7 +196,7 @@ export function ListEditor<T>({
                       update(index, { ...(item as Record<string, string>), [f.key]: e.target.value } as T)
                     }
                     placeholder={f.placeholder || f.label}
-                    className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                    className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
                   />
                 ))
               )}
@@ -221,7 +221,7 @@ export function ListEditor<T>({
       <button
         type="button"
         onClick={add}
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-goat-primary hover:text-goat-hover border border-dashed border-goat-primary/40 hover:border-goat-primary rounded-lg px-3 py-2 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-hover border border-dashed border-primary/40 hover:border-primary rounded-lg px-3 py-2 transition-colors"
       >
         <Plus size={14} /> {addLabel}
       </button>
@@ -309,7 +309,7 @@ export function GalleryItemListEditor({
                 value={item.alt}
                 onChange={(e) => update(index, { ...item, alt: e.target.value })}
                 placeholder="Image description (alt text), e.g. Pink Lily Bouquet"
-                className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
               />
             </div>
 
@@ -334,7 +334,7 @@ export function GalleryItemListEditor({
       <button
         type="button"
         onClick={add}
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-goat-primary hover:text-goat-hover border border-dashed border-goat-primary/40 hover:border-goat-primary rounded-lg px-3 py-2 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-hover border border-dashed border-primary/40 hover:border-primary rounded-lg px-3 py-2 transition-colors"
       >
         <Plus size={14} /> Add image
       </button>
@@ -478,7 +478,7 @@ export function ReelListEditor({
                     type="button"
                     onClick={() => pickVideo(index)}
                     disabled={uploadingIndex !== null}
-                    className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-red-300 hover:border-goat-primary text-brand-gray hover:text-goat-primary text-xs font-bold transition-colors disabled:opacity-60"
+                    className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-red-300 hover:border-primary text-brand-gray hover:text-primary text-xs font-bold transition-colors disabled:opacity-60"
                   >
                     {uploadingIndex === index ? (
                       <>
@@ -510,14 +510,14 @@ export function ReelListEditor({
                   value={item.title}
                   onChange={(e) => update(index, { ...item, title: e.target.value })}
                   placeholder="Reel title, e.g. Making a Crochet Bouquet"
-                  className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                  className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
                 <input
                   type="text"
                   value={item.duration || ""}
                   onChange={(e) => update(index, { ...item, duration: e.target.value })}
                   placeholder="Duration label, e.g. 0:15 (optional)"
-                  className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                  className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
             </div>
@@ -543,7 +543,7 @@ export function ReelListEditor({
       <button
         type="button"
         onClick={add}
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-goat-primary hover:text-goat-hover border border-dashed border-goat-primary/40 hover:border-goat-primary rounded-lg px-3 py-2 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-hover border border-dashed border-primary/40 hover:border-primary rounded-lg px-3 py-2 transition-colors"
       >
         <Plus size={14} /> Add reel
       </button>
@@ -645,21 +645,21 @@ export function PromoCardListEditor({
                   value={item.title}
                   onChange={(e) => update(index, { ...item, title: e.target.value })}
                   placeholder="Card title, e.g. Crochet Flower Bouquets"
-                  className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                  className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
                 <input
                   type="text"
                   value={item.buttonText}
                   onChange={(e) => update(index, { ...item, buttonText: e.target.value })}
                   placeholder="Button text, e.g. Buy Now"
-                  className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                  className="w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
                 <input
                   type="text"
                   value={item.buttonLink}
                   onChange={(e) => update(index, { ...item, buttonLink: e.target.value })}
                   placeholder="Button link, e.g. /shop?category=bouquets"
-                  className="lg:col-span-2 w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+                  className="lg:col-span-2 w-full h-10 px-3 bg-white border border-brand-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
 
@@ -701,7 +701,7 @@ export function PromoCardListEditor({
       <button
         type="button"
         onClick={add}
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-goat-primary hover:text-goat-hover border border-dashed border-goat-primary/40 hover:border-goat-primary rounded-lg px-3 py-2 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-hover border border-dashed border-primary/40 hover:border-primary rounded-lg px-3 py-2 transition-colors"
       >
         <Plus size={14} /> Add promo card
       </button>

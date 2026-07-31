@@ -14,7 +14,7 @@ interface CustomSelectProps {
   onChange: (value: string) => void;
   placeholder?: string;
   icon?: React.ReactNode;
-  theme?: "goat" | "mutton";
+  theme?: "primary" | "secondary";
   error?: boolean;
 }
 
@@ -24,7 +24,7 @@ export default function CustomSelect({
   onChange,
   placeholder = "Select...",
   icon,
-  theme = "goat",
+  theme = "primary",
   error = false,
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,9 +50,9 @@ export default function CustomSelect({
           error ? "border-red-500" : "border-brand-border"
         } rounded-xl ${icon ? "pl-10" : "pl-4"} pr-10 text-sm flex items-center cursor-pointer transition-colors ${
           isOpen
-            ? theme === "goat"
-              ? "ring-2 ring-goat-primary/50 border-goat-primary"
-              : "ring-2 ring-mutton-primary/50 border-mutton-primary"
+            ? theme === "primary"
+              ? "ring-2 ring-primary/50 border-primary"
+              : "ring-2 ring-secondary/50 border-secondary"
             : ""
         }`}
       >
@@ -86,9 +86,9 @@ export default function CustomSelect({
                   }}
                   className={`px-4 py-2.5 text-sm cursor-pointer flex items-center justify-between transition-colors ${
                     isSelected
-                      ? theme === "goat"
-                        ? "bg-goat-tint text-goat-primary font-bold"
-                        : "bg-mutton-tint text-mutton-primary font-bold"
+                      ? theme === "primary"
+                        ? "bg-primary-tint text-primary font-bold"
+                        : "bg-secondary-tint text-secondary font-bold"
                       : "hover:bg-brand-light-gray"
                   }`}
                 >

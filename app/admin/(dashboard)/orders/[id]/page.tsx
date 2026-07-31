@@ -188,7 +188,7 @@ export default function OrderDetailPage() {
 
       <div className="flex-1 p-3 md:p-6 space-y-6 w-full max-w-none animate-in fade-in">
         <div>
-          <Link href="/admin/orders" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black hover:text-goat-primary transition-colors">
+          <Link href="/admin/orders" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black hover:text-primary transition-colors">
             <ArrowLeft size={16} /> Back to Orders
           </Link>
         </div>
@@ -225,9 +225,9 @@ export default function OrderDetailPage() {
               {/* Products Table Card */}
               {/* Custom request details — shown prominently for custom orders */}
               {order.orderType === "custom" && order.customDetails && (
-                <div className="bg-white border border-goat-primary/40 rounded-2xl shadow-card overflow-hidden">
-                  <div className="px-5 py-4 border-b border-brand-border bg-goat-tint/40 flex items-center gap-2">
-                    <Sparkles size={18} className="text-goat-primary" />
+                <div className="bg-white border border-primary/40 rounded-2xl shadow-card overflow-hidden">
+                  <div className="px-5 py-4 border-b border-brand-border bg-primary-tint/40 flex items-center gap-2">
+                    <Sparkles size={18} className="text-primary" />
                     <h3 className="font-bold text-sm text-brand-black uppercase tracking-wider">
                       Custom Request Details
                     </h3>
@@ -289,7 +289,7 @@ export default function OrderDetailPage() {
                     {order.customDetails.personalization && (
                       <div className="space-y-1.5">
                         <span className="text-[10px] font-bold text-brand-gray uppercase block">Personalization (Name / Text)</span>
-                        <p className="text-sm font-semibold text-goat-text bg-goat-tint border border-goat-primary/20 rounded-xl px-4 py-3 whitespace-pre-line">
+                        <p className="text-sm font-semibold text-primary-text bg-primary-tint border border-primary/20 rounded-xl px-4 py-3 whitespace-pre-line">
                           {order.customDetails.personalization}
                         </p>
                       </div>
@@ -320,7 +320,7 @@ export default function OrderDetailPage() {
 
               <div className="bg-white border border-brand-border rounded-2xl shadow-card overflow-hidden">
                 <div className="px-5 py-4 border-b border-brand-border flex items-center gap-2">
-                  <ShoppingCart size={18} className="text-goat-primary" />
+                  <ShoppingCart size={18} className="text-primary" />
                   <h3 className="font-bold text-sm text-brand-black uppercase tracking-wider">Ordered Products</h3>
                 </div>
 
@@ -340,13 +340,15 @@ export default function OrderDetailPage() {
                         <tr key={idx} className="hover:bg-brand-light-gray/30 transition-colors">
                           <td className="px-4 py-3">
                             <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-brand-border bg-brand-light-gray">
-                              <Image
-                                src={item.image || "/placeholder.jpg"}
-                                alt={item.name}
-                                fill
-                                sizes="40px"
-                                className="object-cover"
-                              />
+                              {item.image && (
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  fill
+                                  sizes="40px"
+                                  className="object-cover"
+                                />
+                              )}
                             </div>
                           </td>
                           {/* max-w + align-top keep a long customization note inside this
@@ -357,7 +359,7 @@ export default function OrderDetailPage() {
                               /* Customers paste unbroken strings, which have no wrap
                                  opportunity — break-all forces one. whitespace-pre-wrap
                                  keeps any line breaks they actually typed. */
-                              <p className="mt-1 text-xs font-medium text-goat-text bg-goat-tint border border-goat-primary/20 rounded-lg px-2 py-1 block max-w-full whitespace-pre-wrap break-all italic">
+                              <p className="mt-1 text-xs font-medium text-primary-text bg-primary-tint border border-primary/20 rounded-lg px-2 py-1 block max-w-full whitespace-pre-wrap break-all italic">
                                 <span className="not-italic font-bold">Customization: </span>
                                 {item.customText}
                               </p>
@@ -371,7 +373,7 @@ export default function OrderDetailPage() {
                                 className="mt-1.5 flex items-center gap-2 group/img text-left cursor-pointer"
                                 title="View reference image"
                               >
-                                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-goat-primary/30 shrink-0 bg-brand-light-gray flex items-center justify-center">
+                                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-primary/30 shrink-0 bg-brand-light-gray flex items-center justify-center">
                                   {brokenImages[item.customImage] ? (
                                     <ImageOff size={16} className="text-brand-gray" />
                                   ) : (
@@ -387,7 +389,7 @@ export default function OrderDetailPage() {
                                     />
                                   )}
                                 </div>
-                                <span className="text-xs font-semibold text-goat-primary group-hover/img:underline">
+                                <span className="text-xs font-semibold text-primary group-hover/img:underline">
                                   {brokenImages[item.customImage] ? "Image unavailable" : "Reference Image"}
                                 </span>
                               </button>
@@ -416,7 +418,7 @@ export default function OrderDetailPage() {
                   <div className="flex justify-between">
                     <span className="text-brand-gray">Delivery Shipping</span>
                     {order.deliveryFee === 0 ? (
-                      <span className="text-goat-primary font-bold">FREE Delivery</span>
+                      <span className="text-primary font-bold">FREE Delivery</span>
                     ) : (
                       <span className="text-brand-black">₹{order.deliveryFee || 0}</span>
                     )}
@@ -432,7 +434,7 @@ export default function OrderDetailPage() {
               {order.referenceImages && order.referenceImages.length > 0 && (
                 <div className="bg-white border border-brand-border rounded-2xl shadow-card overflow-hidden">
                   <div className="px-5 py-4 border-b border-brand-border flex items-center gap-2">
-                    <Images size={18} className="text-goat-primary" />
+                    <Images size={18} className="text-primary" />
                     <h3 className="font-bold text-sm text-brand-black uppercase tracking-wider">
                       Customer Inspiration Images
                     </h3>
@@ -473,7 +475,7 @@ export default function OrderDetailPage() {
               {/* Billing Customer Card */}
               <div className="bg-white border border-brand-border rounded-2xl p-5 space-y-4 shadow-card">
                 <h3 className="font-bold text-sm text-brand-black uppercase tracking-wider border-b border-brand-border pb-3 flex items-center gap-2">
-                  <User size={18} className="text-goat-primary" /> Delivery Client
+                  <User size={18} className="text-primary" /> Delivery Client
                 </h3>
 
                 <div className="space-y-3.5 text-sm">
@@ -483,14 +485,14 @@ export default function OrderDetailPage() {
                   </div>
                   <div className="space-y-1">
                     <span className="text-[10px] font-bold text-brand-gray uppercase block">Mobile Number</span>
-                    <a href={`tel:${order.phone}`} className="font-semibold text-goat-primary hover:underline flex items-center gap-1">
+                    <a href={`tel:${order.phone}`} className="font-semibold text-primary hover:underline flex items-center gap-1">
                       <Phone size={13} /> {order.phone}
                     </a>
                   </div>
                   {order.email && (
                     <div className="space-y-1">
                       <span className="text-[10px] font-bold text-brand-gray uppercase block">Email Address</span>
-                      <a href={`mailto:${order.email}`} className="font-semibold text-goat-primary hover:underline break-all">
+                      <a href={`mailto:${order.email}`} className="font-semibold text-primary hover:underline break-all">
                         {order.email}
                       </a>
                     </div>
@@ -529,7 +531,7 @@ export default function OrderDetailPage() {
               {/* Status Update Card */}
               <div className="bg-white border border-brand-border rounded-2xl p-5 space-y-4 shadow-card">
                 <h3 className="font-bold text-sm text-brand-black uppercase tracking-wider border-b border-brand-border pb-3 flex items-center gap-2">
-                  <Save size={18} className="text-goat-primary" /> Update Status
+                  <Save size={18} className="text-primary" /> Update Status
                 </h3>
 
                 <form onSubmit={handleStatusUpdate} className="space-y-4">
@@ -546,21 +548,21 @@ export default function OrderDetailPage() {
                       ]}
                       value={selectedStatus}
                       onChange={(val) => setSelectedStatus(val as OrderStatus)}
-                      theme="goat"
+                      theme="primary"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={isUpdating}
-                    className="w-full bg-brand-black hover:bg-goat-primary text-white font-bold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm text-sm disabled:bg-neutral-400"
+                    className="w-full bg-brand-black hover:bg-primary text-white font-bold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm text-sm disabled:bg-neutral-400"
                   >
                     {isUpdating ? "Updating..." : <><Save size={16} /> Save Status</>}
                   </button>
                 </form>
 
                 {successMsg && (
-                  <p className="text-xs font-bold text-goat-primary text-center mt-2 animate-pulse">
+                  <p className="text-xs font-bold text-primary text-center mt-2 animate-pulse">
                     {successMsg}
                   </p>
                 )}

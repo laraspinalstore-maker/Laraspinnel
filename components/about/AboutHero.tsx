@@ -42,10 +42,11 @@ const INDICATORS = [
 ];
 
 export default function AboutHero({ settings }: { settings: Record<string, string> }) {
+  // Ignore legacy "/placeholder-*.jpg" values that may still be stored in settings.
   const heroImage =
-    settings.about_intro_image && settings.about_intro_image !== "/placeholder-goat.jpg"
+    settings.about_intro_image && !settings.about_intro_image.startsWith("/placeholder-")
       ? settings.about_intro_image
-      : "https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=1000&auto=format&fit=crop&q=80";
+      : "";
 
   return (
     <section className="bg-[#FFFDF9] relative overflow-hidden pt-8 md:pt-16 pb-16 md:pb-24 border-b border-brand-border/40">
@@ -67,7 +68,7 @@ export default function AboutHero({ settings }: { settings: Record<string, strin
           >
             {/* Eyebrow */}
             <div className="flex items-center justify-center lg:justify-start">
-              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
                 {settings.about_intro_eyebrow || "OUR STORY"}
               </span>
               <FloralDoodle />
@@ -117,14 +118,16 @@ export default function AboutHero({ settings }: { settings: Record<string, strin
           >
             {/* Main Lifestyle Photo Container */}
             <div className="relative aspect-4/3 sm:aspect-16/11 lg:aspect-5/4 rounded-3xl overflow-hidden border border-brand-border bg-white shadow-card">
-              <Image
-                src={heroImage}
-                alt="Hands crafting handmade crochet flowers"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 640px"
-                className="object-cover"
-              />
+              {heroImage && (
+                <Image
+                  src={heroImage}
+                  alt="Hands crafting handmade crochet flowers"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 640px"
+                  className="object-cover"
+                />
+              )}
             </div>
 
           </motion.div>

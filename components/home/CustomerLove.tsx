@@ -46,9 +46,6 @@ const SHOP_REPLIES = [
   "This made our day! 🧶 Thank you for trusting Lara's Pinnal ✨",
 ];
 
-const DEMO_PHOTO =
-  "https://images.unsplash.com/photo-1596436889106-be35e843f974?w=600&auto=format&fit=crop&q=80";
-
 /* Placeholder content shown ONLY while no approved reviews exist in the database.
    Clearly marked as sample stories in the UI — never shipped as real feedback. */
 const DEMO_REVIEWS: ChatReview[] = [
@@ -60,10 +57,9 @@ const DEMO_REVIEWS: ChatReview[] = [
     bubbles: [
       { kind: "in", text: "Hii! I received the bouquet today 😍 It's so pretty and delicate.", time: "10:42 AM" },
       { kind: "out", text: SHOP_REPLIES[0], time: "10:45 AM" },
-      { kind: "photo", src: DEMO_PHOTO, alt: "Customer photo of a crochet rose bouquet", time: "10:46 AM" },
       { kind: "in", text: "It made my day extra special 🥹💖", time: "10:47 AM" },
     ],
-    product: { name: "Crochet Rose Bouquet", image: DEMO_PHOTO },
+    product: { name: "Crochet Rose Bouquet" },
     isDemo: true,
   },
   {
@@ -647,7 +643,7 @@ export default function CustomerLove() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12">
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center space-y-3">
-          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
             {settings.home_testimonials_eyebrow || "Customer Love"}
           </p>
           <h2 className="font-display text-3xl md:text-4xl text-brand-black tracking-wide uppercase">
@@ -683,7 +679,7 @@ export default function CustomerLove() {
           {hasMore && (
             <button
               onClick={() => setShowAll(true)}
-              className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-goat-text hover:text-goat-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-black rounded-md px-2 py-1"
+              className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-text hover:text-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-black rounded-md px-2 py-1"
             >
               See More Customer Stories
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -693,7 +689,7 @@ export default function CustomerLove() {
             Bought from us?{" "}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="font-bold text-brand-black underline underline-offset-2 hover:text-goat-hover transition-colors"
+              className="font-bold text-brand-black underline underline-offset-2 hover:text-primary-hover transition-colors"
             >
               Add your review
             </button>

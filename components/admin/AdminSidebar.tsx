@@ -146,7 +146,7 @@ export default function AdminSidebar() {
           <div className="p-3 md:p-4 flex items-center justify-between border-b border-neutral-800 h-16">
             {!isCollapsed && (
               <Link href="/admin" className="flex items-center gap-2">
-                <span className="font-display text-base tracking-wider text-goat-primary truncate uppercase">
+                <span className="font-display text-base tracking-wider text-primary truncate uppercase">
                   LARA'S PINNAL
                 </span>
                 <span className="bg-neutral-800 text-[10px] text-neutral-400 px-1.5 py-0.5 rounded font-mono shrink-0">
@@ -155,7 +155,7 @@ export default function AdminSidebar() {
               </Link>
             )}
             {isCollapsed && (
-              <Link href="/admin" className="mx-auto text-xl font-display text-goat-primary">
+              <Link href="/admin" className="mx-auto text-xl font-display text-primary">
                 L
               </Link>
             )}
@@ -183,24 +183,24 @@ export default function AdminSidebar() {
                   href={item.href}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors group relative ${
                     isActive
-                      ? "bg-white/10 text-white font-medium border-l-4 border-goat-primary pl-2"
+                      ? "bg-white/10 text-white font-medium border-l-4 border-primary pl-2"
                       : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
                   }`}
                 >
-                  <div className={isActive ? "text-goat-primary" : "text-neutral-400 group-hover:text-white shrink-0"}>
+                  <div className={isActive ? "text-primary" : "text-neutral-400 group-hover:text-white shrink-0"}>
                     {item.icon}
                   </div>
                   {!isCollapsed && <span className="truncate flex-1">{item.name}</span>}
                   
                   {/* Badge */}
                   {item.badge !== undefined && item.badge > 0 && !isCollapsed && (
-                    <span className="bg-mutton-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-5 text-center">
+                    <span className="bg-secondary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-5 text-center">
                       {item.badge}
                     </span>
                   )}
                   
                   {item.badge !== undefined && item.badge > 0 && isCollapsed && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-mutton-primary rounded-full"></span>
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary rounded-full"></span>
                   )}
 
                   {/* Tooltip for collapsed state */}

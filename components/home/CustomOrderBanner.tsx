@@ -67,7 +67,7 @@ export default function CustomOrderBanner({
   );
 
   const Eyebrow = (
-    <p className="text-center text-[11px] sm:text-xs min-[744px]:max-lg:text-sm font-semibold uppercase tracking-[0.24em] text-goat-primary">
+    <p className="text-center text-[11px] sm:text-xs min-[744px]:max-lg:text-sm font-semibold uppercase tracking-[0.24em] text-primary">
       {eyebrow}
     </p>
   );
@@ -113,7 +113,7 @@ export default function CustomOrderBanner({
           >
             <span
               aria-hidden="true"
-              className="w-12 h-12 min-[744px]:max-lg:w-14 min-[744px]:max-lg:h-14 rounded-full bg-goat-tint border border-goat-primary/10 flex items-center justify-center text-goat-primary shrink-0"
+              className="w-12 h-12 min-[744px]:max-lg:w-14 min-[744px]:max-lg:h-14 rounded-full bg-primary-tint border border-primary/10 flex items-center justify-center text-primary shrink-0"
             >
               <Icon size={20} strokeWidth={1.5} />
             </span>
@@ -130,7 +130,7 @@ export default function CustomOrderBanner({
     <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-4 pt-4">
       <Link
         href={primaryLink}
-        className="group/cta inline-flex items-center justify-center gap-2 h-13 px-8 rounded-full bg-brand-black hover:bg-goat-primary text-white font-bold text-sm shadow-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-goat-primary focus-visible:ring-offset-2"
+        className="group/cta inline-flex items-center justify-center gap-2 h-13 px-8 rounded-full bg-brand-black hover:bg-primary text-white font-bold text-sm shadow-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
         {primaryText}
         <ArrowRight
@@ -140,7 +140,7 @@ export default function CustomOrderBanner({
       </Link>
       <Link
         href={secondaryLink}
-        className="inline-flex items-center min-h-11 text-sm font-semibold text-brand-black hover:text-goat-primary transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-goat-primary focus-visible:ring-offset-2 rounded-sm"
+        className="inline-flex items-center min-h-11 text-sm font-semibold text-brand-black hover:text-primary transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
       >
         {secondaryText}
       </Link>

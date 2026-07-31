@@ -74,7 +74,7 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
       onConfirm={handleImageUrlConfirm}
       onCancel={() => setImageDialogOpen(false)}
     />
-    <div className="border border-brand-border rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-goat-primary transition-all">
+    <div className="border border-brand-border rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary transition-all">
       {/* Toolbar */}
       <div className="bg-brand-light-gray border-b border-brand-border p-2 flex flex-wrap gap-1">
         {/* Bold */}
@@ -235,7 +235,7 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
           margin-bottom: 0.75rem;
         }
         .ProseMirror blockquote {
-          border-left: 4px solid var(--color-goat-primary, #1e8a4c);
+          border-left: 4px solid var(--color-primary, #1e8a4c);
           padding-left: 1rem;
           font-style: italic;
           color: #4b5563;

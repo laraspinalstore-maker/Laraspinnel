@@ -195,7 +195,7 @@ export default function AdminMessagesPage() {
           <div className="flex-1 overflow-y-auto divide-y divide-brand-border">
             {isLoading ? (
               <div className="p-3 md:p-8 text-center text-brand-gray flex flex-col items-center gap-3">
-                <Loader2 className="animate-spin text-goat-primary" size={24} />
+                <Loader2 className="animate-spin text-primary" size={24} />
                 <p className="text-xs">Loading messages...</p>
               </div>
             ) : error ? (
@@ -214,7 +214,7 @@ export default function AdminMessagesPage() {
                   onClick={() => selectMessage(msg)}
                   className={`p-3 md:p-4 cursor-pointer hover:bg-brand-light-gray/50 transition-colors text-left relative ${
                     activeMessage?._id === msg._id ? "bg-brand-light-gray" : ""
-                  } ${msg.status === "new" ? "border-l-4 border-goat-primary" : ""}`}
+                  } ${msg.status === "new" ? "border-l-4 border-primary" : ""}`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className={`text-sm truncate ${msg.status === "new" ? "font-bold text-brand-black" : "text-neutral-600"}`}>
@@ -284,7 +284,7 @@ export default function AdminMessagesPage() {
                   </div>
                   <div>
                     <span className="text-xs text-brand-gray block">Phone Number</span>
-                    <a href={`tel:${activeMessage.phone}`} className="font-semibold text-goat-primary hover:underline flex items-center gap-1.5 mt-0.5">
+                    <a href={`tel:${activeMessage.phone}`} className="font-semibold text-primary hover:underline flex items-center gap-1.5 mt-0.5">
                       <Phone size={14} />
                       <span>{activeMessage.phone}</span>
                     </a>
@@ -346,7 +346,7 @@ export default function AdminMessagesPage() {
                   {!isReplying ? (
                     <button
                       onClick={() => setIsReplying(true)}
-                      className="inline-flex items-center gap-2 bg-brand-black hover:bg-goat-primary text-white font-semibold text-sm h-11 px-4 md:px-6 rounded-xl transition-colors duration-200 shadow-sm"
+                      className="inline-flex items-center gap-2 bg-brand-black hover:bg-primary text-white font-semibold text-sm h-11 px-4 md:px-6 rounded-xl transition-colors duration-200 shadow-sm"
                     >
                       <span>Reply via Email</span>
                       <ArrowRight size={14} />
@@ -367,13 +367,13 @@ export default function AdminMessagesPage() {
                         onChange={(e) => setReplyText(e.target.value)}
                         placeholder="Type your reply here... (Will be sent directly to their email)"
                         rows={4}
-                        className="w-full bg-brand-light-gray border border-brand-border rounded-xl p-3 text-sm text-brand-black focus:ring-2 focus:ring-goat-primary outline-none resize-none"
+                        className="w-full bg-brand-light-gray border border-brand-border rounded-xl p-3 text-sm text-brand-black focus:ring-2 focus:ring-primary outline-none resize-none"
                       />
                       <div className="flex justify-end">
                         <button
                           onClick={handleSendReply}
                           disabled={isSendingReply || !replyText.trim()}
-                          className="inline-flex items-center gap-2 bg-goat-primary hover:bg-goat-hover text-white font-semibold text-sm h-10 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold text-sm h-10 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {isSendingReply ? (
                             <>

@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-hover border border-brand-border p-3 md:p-8 space-y-6">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center space-y-3">
-          <div className="w-16 h-16 rounded-full bg-goat-tint text-goat-text flex items-center justify-center border border-goat-primary/10">
+          <div className="w-16 h-16 rounded-full bg-primary-tint text-primary-text flex items-center justify-center border border-primary/10">
             <Horse size={36} weight="duotone" />
           </div>
           <div>
@@ -87,7 +87,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-12 bg-white border border-brand-border rounded-xl pl-11 pr-4 text-sm text-brand-black placeholder-brand-gray focus:ring-2 focus:ring-goat-primary focus:border-transparent outline-none transition-all"
+                className="w-full h-12 bg-white border border-brand-border rounded-xl pl-11 pr-4 text-sm text-brand-black placeholder-brand-gray focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                 placeholder="admin@laraspinnal.com"
               />
             </div>
@@ -107,7 +107,7 @@ export default function AdminLoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-12 bg-white border border-brand-border rounded-xl pl-11 pr-11 text-sm text-brand-black placeholder-brand-gray focus:ring-2 focus:ring-goat-primary focus:border-transparent outline-none transition-all"
+                className="w-full h-12 bg-white border border-brand-border rounded-xl pl-11 pr-11 text-sm text-brand-black placeholder-brand-gray focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                 placeholder="••••••••"
               />
               <button
@@ -125,7 +125,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full h-12 bg-brand-black hover:bg-goat-primary text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-transparent shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow"
+            className="w-full h-12 bg-brand-black hover:bg-primary text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-transparent shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow"
           >
             {isLoading ? (
               <>

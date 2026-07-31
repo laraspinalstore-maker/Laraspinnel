@@ -60,7 +60,7 @@ export default function AdminTopbar({ title }: AdminTopbarProps) {
           <Bell size={20} />
           {/* Badge indicator if there are notifications */}
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 w-4 h-4 bg-mutton-primary rounded-full ring-2 ring-white text-[9px] text-white font-bold flex items-center justify-center">
+            <span className="absolute top-1 right-1 w-4 h-4 bg-secondary rounded-full ring-2 ring-white text-[9px] text-white font-bold flex items-center justify-center">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
@@ -72,7 +72,7 @@ export default function AdminTopbar({ title }: AdminTopbarProps) {
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex items-center gap-2 text-sm font-medium text-brand-black hover:bg-brand-light-gray px-3 py-2 rounded-lg transition-colors border border-transparent hover:border-brand-border"
           >
-            <div className="w-8 h-8 rounded-full bg-goat-tint text-goat-text flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-full bg-primary-tint text-primary-text flex items-center justify-center font-bold">
               {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "A"}
             </div>
             <span className="hidden sm:inline-block">

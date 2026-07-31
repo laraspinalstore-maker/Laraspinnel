@@ -48,7 +48,7 @@ export default function SwipeButton({ onSwipeComplete, text = "Slide to Review" 
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-12 bg-goat-primary rounded-full flex items-center justify-center overflow-hidden shadow-sm"
+      className="relative w-full h-12 bg-primary rounded-full flex items-center justify-center overflow-hidden shadow-sm"
     >
       <span className="text-white/70 font-bold uppercase tracking-widest text-xs z-0 pointer-events-none pl-6">
         {text}
@@ -64,7 +64,7 @@ export default function SwipeButton({ onSwipeComplete, text = "Slide to Review" 
           animate={controls}
           className="absolute left-1 top-1 w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing z-10 shadow-sm"
         >
-          <ChevronRight size={18} className="text-goat-primary ml-0.5" />
+          <ChevronRight size={18} className="text-primary ml-0.5" />
         </motion.div>
       )}
     </div>

@@ -13,7 +13,7 @@ interface PremiumCardProps {
   tag?: string;
   image?: string;
   slug: string;
-  theme?: "goat" | "mutton";
+  theme?: "primary" | "secondary";
   stock?: number;
 }
 
@@ -24,7 +24,7 @@ export default function PremiumCard({
   tag,
   image,
   slug,
-  theme = "goat",
+  theme = "primary",
   stock,
 }: PremiumCardProps) {
   const url = `/shop/${slug}`;
@@ -120,7 +120,7 @@ export default function PremiumCard({
           <span className="block truncate text-[8px] sm:text-[9px] font-bold tracking-widest text-brand-gray uppercase">
             {tag ? "Special Offer" : "Handcrafted"}
           </span>
-          <h3 className="truncate text-xs sm:text-sm font-display font-extrabold text-brand-black tracking-wide leading-snug group-hover:text-goat-primary transition-colors">
+          <h3 className="truncate text-xs sm:text-sm font-display font-extrabold text-brand-black tracking-wide leading-snug group-hover:text-primary transition-colors">
             {name}
           </h3>
         </div>
@@ -128,7 +128,7 @@ export default function PremiumCard({
         {/* Price and Add to Cart Row */}
         <div className="flex items-center justify-between gap-1.5 mt-auto pt-2 border-t border-brand-border/40">
           <div className="flex flex-col">
-            <span className="text-sm sm:text-base font-bold text-goat-primary">
+            <span className="text-sm sm:text-base font-bold text-primary">
               {price}
             </span>
           </div>
@@ -141,21 +141,21 @@ export default function PremiumCard({
               <span>Sold Out</span>
             </button>
           ) : quantityInCart > 0 ? (
-            <div className="w-16 sm:w-20 h-9 sm:h-10 flex items-center justify-between rounded-full border border-goat-primary/30 bg-goat-tint overflow-hidden shrink-0">
+            <div className="w-16 sm:w-20 h-9 sm:h-10 flex items-center justify-between rounded-full border border-primary/30 bg-primary-tint overflow-hidden shrink-0">
               <button
                 onClick={handleDecrement}
                 aria-label="Decrease quantity"
-                className="h-full px-1 sm:px-1.5 flex items-center justify-center text-goat-primary hover:bg-goat-primary/10 transition-colors cursor-pointer"
+                className="h-full px-1 sm:px-1.5 flex items-center justify-center text-primary hover:bg-primary/10 transition-colors cursor-pointer"
               >
                 <Minus size={10} className="sm:w-3 sm:h-3" />
               </button>
-              <span className="h-full w-4 sm:w-5 flex items-center justify-center text-xs sm:text-sm font-bold text-goat-primary">
+              <span className="h-full w-4 sm:w-5 flex items-center justify-center text-xs sm:text-sm font-bold text-primary">
                 {quantityInCart}
               </span>
               <button
                 onClick={handleIncrement}
                 aria-label="Increase quantity"
-                className="h-full px-1 sm:px-1.5 flex items-center justify-center text-goat-primary hover:bg-goat-primary/10 transition-colors cursor-pointer"
+                className="h-full px-1 sm:px-1.5 flex items-center justify-center text-primary hover:bg-primary/10 transition-colors cursor-pointer"
               >
                 <Plus size={10} className="sm:w-3 sm:h-3" />
               </button>
@@ -163,7 +163,7 @@ export default function PremiumCard({
           ) : (
             <button
               onClick={handleAddToCart}
-              className="w-16 sm:w-20 h-9 sm:h-10 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1 shadow-xs border bg-goat-primary text-white border-transparent hover:bg-goat-hover cursor-pointer"
+              className="w-16 sm:w-20 h-9 sm:h-10 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1 shadow-xs border bg-primary text-white border-transparent hover:bg-primary-hover cursor-pointer"
             >
               <ShoppingCart size={10} className="sm:w-3 sm:h-3" />
               <span>Add</span>

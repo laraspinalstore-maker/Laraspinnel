@@ -17,21 +17,21 @@ const seedData = [
   {
     name: "Ramesh Kumar",
     location: "Coimbatore, TN",
-    review: "Ordered 15 live goats for a family celebration. The breed quality was exceptional, and they arrived right on time in excellent health. Best farm service in Tamil Nadu!",
+    review: "Ordered a crochet rose bouquet for our anniversary. The craftsmanship was exceptional, and it arrived right on time, beautifully packaged. Best handmade gift I've found in Tamil Nadu!",
     initial: "R",
     isActive: true,
   },
   {
     name: "Revathi S.",
     location: "Villupuram, TN",
-    review: "Ragu Goat Farm is our default source for bulk mutton. The cuts are fresh, clean, and delivered in hygienic food-grade packages. Highly recommend their weekly family packs.",
+    review: "Lara's Pinnal is our go-to for baby gifts. The amigurumi plushies are soft, safe, and finished with so much care. Highly recommend their custom hampers.",
     initial: "R",
     isActive: true,
   },
   {
     name: "Mohamed Asif",
     location: "Tiruppur, TN",
-    review: "Purchased Boer goats for festival breeding. The farm team helped us select the right weight classes and guided us on care. Very professional, honest farm pricing.",
+    review: "Ordered a custom crochet frame with our names for a wedding gift. The team helped us pick colors and design, and the result was stunning. Very professional, honest pricing.",
     initial: "M",
     isActive: true,
   }

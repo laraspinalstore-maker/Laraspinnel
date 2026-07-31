@@ -35,7 +35,7 @@ export default function InstagramBridge({ settings }: { settings: Record<string,
     <section className="bg-white border-t border-brand-border/60">
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-14 md:py-16 space-y-8">
         <Reveal className="text-center space-y-2">
-          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+          <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
             Follow the Making
           </p>
           {handle && (
@@ -55,7 +55,7 @@ export default function InstagramBridge({ settings }: { settings: Record<string,
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${t.alt} — open Instagram`}
-                  className={`relative w-20 h-20 md:w-24 md:h-24 shrink-0 rounded-2xl overflow-hidden border border-brand-border bg-goat-tint/60 hover:-translate-y-0.5 transition-transform duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-black ${
+                  className={`relative w-20 h-20 md:w-24 md:h-24 shrink-0 rounded-2xl overflow-hidden border border-brand-border bg-primary-tint/60 hover:-translate-y-0.5 transition-transform duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-black ${
                     i % 2 === 1 ? "md:translate-y-2" : ""
                   }`}
                 >
@@ -71,7 +71,7 @@ export default function InstagramBridge({ settings }: { settings: Record<string,
             href={instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-goat-text hover:text-goat-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-black rounded-md px-2 py-1"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-text hover:text-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-black rounded-md px-2 py-1"
           >
             <FaInstagram size={15} /> Follow on Instagram <ExternalLink size={12} />
           </a>

@@ -61,7 +61,7 @@ export default function BlogListContainer({ initialPosts }: BlogListContainerPro
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search blog articles by title or keyword..."
-            className="w-full h-11 pl-10 pr-4 bg-brand-light-gray/50 border border-brand-border rounded-xl text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary transition-all"
+            className="w-full h-11 pl-10 pr-4 bg-brand-light-gray/50 border border-brand-border rounded-xl text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary transition-all"
           />
         </div>
 
@@ -71,7 +71,7 @@ export default function BlogListContainer({ initialPosts }: BlogListContainerPro
               <button
                 onClick={() => setSelectedTag("All")}
                 className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${selectedTag === "All"
-                    ? "bg-goat-tint text-goat-text border-goat-primary/20"
+                    ? "bg-primary-tint text-primary-text border-primary/20"
                     : "bg-white text-brand-black border-brand-border hover:bg-brand-light-gray"
                   }`}
               >
@@ -82,7 +82,7 @@ export default function BlogListContainer({ initialPosts }: BlogListContainerPro
                   key={tag}
                   onClick={() => setSelectedTag(tag)}
                   className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${selectedTag === tag
-                      ? "bg-goat-tint text-goat-text border-goat-primary/20"
+                      ? "bg-primary-tint text-primary-text border-primary/20"
                       : "bg-white text-brand-black border-brand-border hover:bg-brand-light-gray"
                     }`}
                 >
@@ -147,7 +147,7 @@ export default function BlogListContainer({ initialPosts }: BlogListContainerPro
                   </div>
                 )}
                 {post.tags?.[0] && (
-                  <span className="absolute top-3.5 left-3.5 bg-goat-tint text-goat-text text-[10px] uppercase font-bold px-2 py-0.5 rounded border border-goat-primary/10 shadow-sm">
+                  <span className="absolute top-3.5 left-3.5 bg-primary-tint text-primary-text text-[10px] uppercase font-bold px-2 py-0.5 rounded border border-primary/10 shadow-sm">
                     {post.tags[0]}
                   </span>
                 )}
@@ -156,7 +156,7 @@ export default function BlogListContainer({ initialPosts }: BlogListContainerPro
               {/* Text details */}
               <div className="p-3 md:p-5 space-y-3 flex-1 flex flex-col justify-between">
                 <div className="space-y-2">
-                  <h3 className="font-semibold text-brand-black text-lg group-hover:text-goat-primary transition-colors leading-snug line-clamp-2">
+                  <h3 className="font-semibold text-brand-black text-lg group-hover:text-primary transition-colors leading-snug line-clamp-2">
                     {post.title}
                   </h3>
                   <p className="text-xs text-brand-gray line-clamp-2 leading-relaxed">

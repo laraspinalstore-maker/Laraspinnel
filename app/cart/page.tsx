@@ -61,7 +61,7 @@ export default function CartPage() {
             <div className="pt-2">
               <Link
                 href="/shop"
-                className="bg-brand-black hover:bg-goat-primary text-white font-bold py-3 px-6 rounded-full transition-all inline-flex items-center gap-2 shadow-md"
+                className="bg-brand-black hover:bg-primary text-white font-bold py-3 px-6 rounded-full transition-all inline-flex items-center gap-2 shadow-md"
               >
                 <ShoppingBag size={18} /> Continue Shopping
               </Link>
@@ -90,13 +90,15 @@ export default function CartPage() {
                       {/* Product Detail */}
                       <div className="col-span-1 md:col-span-6 flex gap-4 items-start">
                         <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-brand-light-gray shrink-0 border border-brand-border">
-                          <Image
-                            src={item.image || "/placeholder.jpg"}
-                            alt={item.name}
-                            fill
-                            sizes="80px"
-                            className="object-cover"
-                          />
+                          {item.image && (
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              fill
+                              sizes="80px"
+                              className="object-cover"
+                            />
+                          )}
                         </div>
                         <div className="space-y-1 min-w-0 flex-1">
                           <h3 className="font-semibold text-brand-black text-sm md:text-base truncate">
@@ -111,7 +113,7 @@ export default function CartPage() {
                                 rows={2}
                                 maxLength={300}
                                 placeholder="e.g. Add name 'Priya', change ribbon color to pink..."
-                                className="w-full p-2 bg-goat-tint/20 border border-goat-primary/25 rounded-lg text-xs outline-none focus:ring-2 focus:ring-goat-primary transition-all resize-none"
+                                className="w-full p-2 bg-primary-tint/20 border border-primary/25 rounded-lg text-xs outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
                               />
                               <ImageUploadDropzone
                                 value={draftImage ? [draftImage] : []}
@@ -122,7 +124,7 @@ export default function CartPage() {
                               <div className="flex items-center gap-2 pt-1">
                                 <button
                                   onClick={() => saveEditing(item)}
-                                  className="text-xs font-semibold text-white bg-goat-primary hover:bg-goat-hover px-3 py-1.5 rounded-full transition-colors"
+                                  className="text-xs font-semibold text-white bg-primary hover:bg-primary-hover px-3 py-1.5 rounded-full transition-colors"
                                 >
                                   Save
                                 </button>
@@ -137,12 +139,12 @@ export default function CartPage() {
                           ) : (
                             <>
                               {item.customText && (
-                                <p className="text-xs text-goat-text bg-goat-tint border border-goat-primary/20 rounded-lg px-2 py-1 italic truncate" title={item.customText}>
+                                <p className="text-xs text-primary-text bg-primary-tint border border-primary/20 rounded-lg px-2 py-1 italic truncate" title={item.customText}>
                                   Custom: {item.customText}
                                 </p>
                               )}
                               {item.customImage && (
-                                <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-goat-primary/30 shrink-0">
+                                <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-primary/30 shrink-0">
                                   <Image
                                     src={item.customImage}
                                     alt="Customization reference"
@@ -155,7 +157,7 @@ export default function CartPage() {
                               <div className="flex items-center gap-3 mt-0.5">
                                 <button
                                   onClick={() => startEditing(item)}
-                                  className="text-xs font-semibold text-goat-primary hover:text-goat-hover transition-colors flex items-center gap-1 min-h-11 py-2"
+                                  className="text-xs font-semibold text-primary hover:text-primary-hover transition-colors flex items-center gap-1 min-h-11 py-2"
                                 >
                                   <Pencil size={13} /> Edit
                                 </button>
@@ -255,7 +257,7 @@ export default function CartPage() {
                     const deliveryFee = isFreeDelivery || deliveryFeeSetting === 0 ? 0 : deliveryFeeSetting;
 
                     return deliveryFee === 0 ? (
-                      <span className="text-goat-primary font-bold">FREE Delivery</span>
+                      <span className="text-primary font-bold">FREE Delivery</span>
                     ) : (
                       <span className="font-bold text-brand-black">₹{deliveryFee}</span>
                     );
@@ -280,7 +282,7 @@ export default function CartPage() {
               <div className="pt-2">
                 <Link
                   href="/checkout"
-                  className="w-full bg-brand-black hover:bg-goat-primary text-white font-bold py-3.5 px-6 rounded-full transition-all flex items-center justify-center gap-2 shadow-md text-base"
+                  className="w-full bg-brand-black hover:bg-primary text-white font-bold py-3.5 px-6 rounded-full transition-all flex items-center justify-center gap-2 shadow-md text-base"
                 >
                   Proceed to Checkout <ArrowRight size={18} />
                 </Link>

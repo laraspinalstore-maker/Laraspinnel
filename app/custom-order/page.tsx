@@ -39,16 +39,16 @@ const COLOR_PRESETS = [
 const MAX_IMAGES = 4;
 
 const inputClass =
-  "w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary transition-shadow";
+  "w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl px-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary transition-shadow";
 const textareaClass =
-  "w-full bg-brand-light-gray/40 border border-brand-border rounded-xl p-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary transition-shadow resize-none";
+  "w-full bg-brand-light-gray/40 border border-brand-border rounded-xl p-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary transition-shadow resize-none";
 const labelClass = "text-[11px] font-bold text-brand-black uppercase tracking-wider block";
 
 /* Section title in the reference style: "TELL US YOUR IDEA ♡" */
 const PanelTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-goat-text">
+  <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-primary-text">
     {children}
-    <Heart size={13} className="text-goat-primary fill-goat-primary/40" aria-hidden />
+    <Heart size={13} className="text-primary fill-primary/40" aria-hidden />
   </h2>
 );
 
@@ -65,8 +65,8 @@ const Step = ({
   children: React.ReactNode;
 }) => (
   <div className="relative flex gap-4">
-    {!isLast && <span className="absolute left-4 top-9 bottom-0 w-px bg-goat-primary/20" aria-hidden />}
-    <div className="relative z-10 w-8 h-8 rounded-full bg-goat-tint border border-goat-primary/40 text-goat-text text-[11px] font-bold flex items-center justify-center shrink-0">
+    {!isLast && <span className="absolute left-4 top-9 bottom-0 w-px bg-primary/20" aria-hidden />}
+    <div className="relative z-10 w-8 h-8 rounded-full bg-primary-tint border border-primary/40 text-primary-text text-[11px] font-bold flex items-center justify-center shrink-0">
       {number}
     </div>
     <div className={`flex-1 min-w-0 ${isLast ? "" : "pb-8"}`}>
@@ -220,7 +220,7 @@ export default function CustomOrderPage() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16">
           {/* Page intro */}
           <div className="max-w-2xl mx-auto text-center mb-10">
-            <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-goat-primary">
+            <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-primary">
               Custom Made · Just For You
             </p>
             <h1 className="font-display text-3xl md:text-4xl text-brand-black tracking-wide uppercase mt-3">
@@ -233,7 +233,7 @@ export default function CustomOrderPage() {
 
           {status === "success" ? (
             <div className="max-w-lg mx-auto bg-white rounded-3xl border border-brand-border shadow-card p-8 text-center space-y-4">
-              <div className="w-16 h-16 bg-goat-tint text-goat-primary rounded-full flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 bg-primary-tint text-primary rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 size={32} />
               </div>
               <h3 className="text-2xl font-display uppercase tracking-wide text-brand-black">Request Received!</h3>
@@ -300,14 +300,14 @@ export default function CustomOrderPage() {
                                 aria-pressed={colors.includes(c.name)}
                                 className={`w-7 h-7 rounded-full border-2 transition-all ${
                                   colors.includes(c.name)
-                                    ? "border-goat-primary scale-110 shadow-sm"
+                                    ? "border-primary scale-110 shadow-sm"
                                     : "border-white hover:scale-105"
                                 }`}
                                 style={{ backgroundColor: c.hex }}
                               />
                             ))}
                             <label
-                              className="w-7 h-7 rounded-full border border-dashed border-brand-gray/50 bg-white flex items-center justify-center text-brand-gray cursor-pointer hover:border-goat-primary hover:text-goat-primary transition-colors"
+                              className="w-7 h-7 rounded-full border border-dashed border-brand-gray/50 bg-white flex items-center justify-center text-brand-gray cursor-pointer hover:border-primary hover:text-primary transition-colors"
                               title="Add a custom color"
                             >
                               <Plus size={13} />
@@ -371,7 +371,7 @@ export default function CustomOrderPage() {
                         onDragLeave={() => setDragOver(false)}
                         onDrop={(e) => { e.preventDefault(); setDragOver(false); uploadFiles(e.dataTransfer.files); }}
                         className={`relative flex-1 min-w-52 min-h-28 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-1 px-4 py-5 text-center transition-colors ${
-                          dragOver ? "border-goat-primary bg-goat-tint/60" : "border-brand-border bg-brand-light-gray/40"
+                          dragOver ? "border-primary bg-primary-tint/60" : "border-brand-border bg-brand-light-gray/40"
                         }`}
                       >
                         <UploadCloud size={22} className="text-brand-gray" />
@@ -388,7 +388,7 @@ export default function CustomOrderPage() {
                         />
                         {uploading && (
                           <span className="absolute inset-0 bg-white/70 rounded-2xl flex items-center justify-center">
-                            <Loader2 size={20} className="animate-spin text-goat-primary" />
+                            <Loader2 size={20} className="animate-spin text-primary" />
                           </span>
                         )}
                       </div>
@@ -476,7 +476,7 @@ export default function CustomOrderPage() {
                       <button
                         type="submit"
                         disabled={status === "loading" || uploading}
-                        className="lg:hidden w-full h-12 bg-goat-primary text-white font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-goat-hover disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
+                        className="lg:hidden w-full h-12 bg-primary text-white font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-primary-hover disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
                       >
                         {status === "loading" ? (
                           <><Loader2 size={16} className="animate-spin" /> Sending…</>
@@ -501,7 +501,7 @@ export default function CustomOrderPage() {
                         <Image src={selectedCategory.image} alt={selectedCategory.name} fill sizes="64px" className="object-cover" />
                       </div>
                     ) : (
-                      <div className="w-16 h-16 rounded-2xl bg-goat-tint text-goat-text flex items-center justify-center shrink-0">
+                      <div className="w-16 h-16 rounded-2xl bg-primary-tint text-primary-text flex items-center justify-center shrink-0">
                         <Package size={22} />
                       </div>
                     )}
@@ -576,7 +576,7 @@ export default function CustomOrderPage() {
                     type="submit"
                     form="custom-order-form"
                     disabled={status === "loading" || uploading}
-                    className="hidden lg:flex w-full h-12 bg-goat-primary text-white font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-goat-hover disabled:opacity-60 transition-colors items-center justify-center gap-2"
+                    className="hidden lg:flex w-full h-12 bg-primary text-white font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-primary-hover disabled:opacity-60 transition-colors items-center justify-center gap-2"
                   >
                     {status === "loading" ? (
                       <><Loader2 size={16} className="animate-spin" /> Sending…</>
@@ -586,7 +586,7 @@ export default function CustomOrderPage() {
                   </button>
 
                   <p className="flex items-center justify-center gap-1.5 text-xs text-brand-gray">
-                    <ShieldCheck size={14} className="text-goat-primary" />
+                    <ShieldCheck size={14} className="text-primary" />
                     We&apos;ll get back to you within 24 hours
                   </p>
                 </div>

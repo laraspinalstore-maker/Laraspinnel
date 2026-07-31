@@ -85,7 +85,7 @@ export default function ImageUploadDropzone({
       {/* Dropzone container */}
       <div
         onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed border-brand-border hover:border-goat-primary rounded-xl p-3 md:p-8 text-center cursor-pointer transition-colors flex flex-col items-center justify-center bg-brand-light-gray/50 hover:bg-goat-tint/10 ${
+        className={`border-2 border-dashed border-brand-border hover:border-primary rounded-xl p-3 md:p-8 text-center cursor-pointer transition-colors flex flex-col items-center justify-center bg-brand-light-gray/50 hover:bg-primary-tint/10 ${
           isUploading ? "pointer-events-none opacity-60" : ""
         }`}
       >
@@ -100,7 +100,7 @@ export default function ImageUploadDropzone({
 
         {isUploading ? (
           <div className="space-y-2 flex flex-col items-center">
-            <Loader2 size={36} className="animate-spin text-goat-primary" />
+            <Loader2 size={36} className="animate-spin text-primary" />
             <p className="text-sm font-semibold text-brand-black">Uploading images...</p>
           </div>
         ) : (

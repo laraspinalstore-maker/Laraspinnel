@@ -84,8 +84,8 @@ export default function ContactPage() {
       <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-12">
         {/* Page Header */}
         <div className="space-y-3 pb-6 text-center mx-auto w-full">
-          <span className="flex items-center justify-center gap-2 text-xs font-semibold text-goat-text uppercase tracking-wider">
-            <Phone size={14} className="text-goat-primary" /> Get in touch
+          <span className="flex items-center justify-center gap-2 text-xs font-semibold text-primary-text uppercase tracking-wider">
+            <Phone size={14} className="text-primary" /> Get in touch
           </span>
           <h1 className="font-display text-3xl sm:text-5xl text-brand-black tracking-wide uppercase">
             Contact Lara's Pinnal
@@ -131,7 +131,7 @@ export default function ContactPage() {
                       type="text"
                       {...register("name")}
                       placeholder="Ramesh Kumar"
-                      className="w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                      className="w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                   {errors.name && (
@@ -155,7 +155,7 @@ export default function ContactPage() {
                       type="tel"
                       {...register("phone")}
                       placeholder="9442379832"
-                      className="w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                      className="w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                   {errors.phone && (
@@ -180,7 +180,7 @@ export default function ContactPage() {
                     type="email"
                     {...register("email")}
                     placeholder="ramesh@gmail.com"
-                    className="w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                    className="w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 {errors.email && (
@@ -204,7 +204,7 @@ export default function ContactPage() {
                     type="text"
                     {...register("subject")}
                     placeholder="e.g. Custom Crochet Bouquet Query"
-                    className="w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary"
+                    className="w-full h-11 bg-brand-light-gray/40 border border-brand-border rounded-xl pl-10 pr-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 {errors.subject && (
@@ -223,7 +223,7 @@ export default function ContactPage() {
                 <textarea
                   {...register("message")}
                   placeholder="Tell us what you need in detail..."
-                  className="w-full flex-1 bg-brand-light-gray/40 border border-brand-border rounded-xl p-3 md:p-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-goat-primary resize-none min-h-30"
+                  className="w-full flex-1 bg-brand-light-gray/40 border border-brand-border rounded-xl p-3 md:p-4 text-sm text-brand-black outline-none focus:ring-2 focus:ring-primary resize-none min-h-30"
                 ></textarea>
                 {errors.message && (
                   <p className="text-xs text-red-600 font-semibold flex items-center gap-1">
@@ -237,7 +237,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-11 bg-brand-black hover:bg-goat-primary text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-transparent disabled:opacity-50 mt-auto"
+                className="w-full h-11 bg-brand-black hover:bg-primary text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-transparent disabled:opacity-50 mt-auto"
               >
                 {isSubmitting ? (
                   <>
@@ -262,7 +262,7 @@ export default function ContactPage() {
               </h2>
               <div className="bg-brand-light-gray border border-brand-border rounded-2xl p-3 md:p-6 space-y-5 text-sm select-none">
                 <div className="flex items-start gap-3">
-                  <MapPin size={18} className="text-goat-primary shrink-0 mt-0.5" />
+                  <MapPin size={18} className="text-primary shrink-0 mt-0.5" />
                   <div>
                     <span className="text-[10px] text-brand-gray font-bold uppercase tracking-wider block">Studio Location</span>
                     <span className="font-semibold text-brand-black block mt-0.5">{address}</span>
@@ -270,27 +270,27 @@ export default function ContactPage() {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Phone size={18} className="text-goat-primary shrink-0 mt-0.5" />
+                  <Phone size={18} className="text-primary shrink-0 mt-0.5" />
                   <div>
                     <span className="text-[10px] text-brand-gray font-bold uppercase tracking-wider block">Phone Line</span>
-                    <a href={`tel:${phone}`} className="font-semibold text-brand-black hover:text-goat-primary transition-colors block mt-0.5">
+                    <a href={`tel:${phone}`} className="font-semibold text-brand-black hover:text-primary transition-colors block mt-0.5">
                       {phone}
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Mail size={18} className="text-goat-primary shrink-0 mt-0.5" />
+                  <Mail size={18} className="text-primary shrink-0 mt-0.5" />
                   <div>
                     <span className="text-[10px] text-brand-gray font-bold uppercase tracking-wider block">Email Inbox</span>
-                    <a href={`mailto:${email}`} className="font-semibold text-brand-black hover:text-goat-primary transition-colors block mt-0.5">
+                    <a href={`mailto:${email}`} className="font-semibold text-brand-black hover:text-primary transition-colors block mt-0.5">
                       Email Us
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Clock size={18} className="text-goat-primary shrink-0 mt-0.5" />
+                  <Clock size={18} className="text-primary shrink-0 mt-0.5" />
                   <div>
                     <span className="text-[10px] text-brand-gray font-bold uppercase tracking-wider block">Studio Hours</span>
                     <span className="font-semibold text-brand-black block mt-0.5">{businessHours}</span>
