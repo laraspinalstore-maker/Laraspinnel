@@ -63,13 +63,12 @@ export default function Navbar() {
                 className="h-8 md:h-10 w-auto object-contain shrink-0"
               />
             )}
-            {/* The name previously sat at text-xl behind `truncate max-w-[130px]`.
-                At that size it needs ~174px, so on anything narrower than ~375px it
-                rendered as "LARA'S PI…". Scaling the type down instead means the
-                full name fits: ~134px at text-base, against the ~144px available on
-                a 320px screen once the logo and the two 44px controls are counted.
-                `truncate` stays only as a fallback for an unusually long farm_name. */}
-            <span className="font-display text-base min-[380px]:text-lg sm:text-2xl md:text-4xl tracking-wide md:tracking-wider text-brand-black group-hover:text-primary transition-colors uppercase truncate min-w-0 leading-none translate-y-0.5">
+            {/* Mobile type scale: text-lg needs ~150px against the ~144px available
+                on a 320px screen (logo + two 44px controls counted), so the very
+                narrowest devices may show a slight ellipsis — from 360px up the full
+                name fits comfortably. `truncate` stays as the fallback for that and
+                for an unusually long farm_name. */}
+            <span className="font-display text-lg min-[380px]:text-xl sm:text-2xl md:text-4xl tracking-wide md:tracking-wider text-brand-black group-hover:text-primary transition-colors uppercase truncate min-w-0 leading-none translate-y-0.5">
               {settings.farm_name || "Lara's Pinnal"}
             </span>
           </Link>
