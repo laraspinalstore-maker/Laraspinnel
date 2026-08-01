@@ -75,7 +75,7 @@ export default function ImageUploader({
         // Single-image mode keeps only the most recent upload.
         onChange(multiple ? [...images, ...uploadedUrls] : [uploadedUrls[uploadedUrls.length - 1]]);
       }
-    } catch (err) {
+    } catch {
       setUploadError("Failed to upload image");
     } finally {
       setIsUploading(false);

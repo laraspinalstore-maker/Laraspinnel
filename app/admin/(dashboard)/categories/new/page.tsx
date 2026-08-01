@@ -42,7 +42,7 @@ export default function NewCategoryPage() {
       } else {
         setError(data.error || "Failed to create category");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to create category");
     } finally {
       setIsSubmitting(false);

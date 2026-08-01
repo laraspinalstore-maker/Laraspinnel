@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -10,7 +10,7 @@ export default function NotFound() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 flex flex-col items-center justify-center min-h-[70vh] bg-brand-light-gray/30 px-6 py-20 text-center">
+      <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col items-center justify-center min-h-[70vh] bg-brand-light-gray/30 px-6 py-20 text-center">
         <div className="max-w-xl mx-auto space-y-8 animate-in fade-in zoom-in-95 duration-700">
           {/* Icon Container */}
           <div className="relative w-32 h-32 mx-auto">
@@ -25,7 +25,7 @@ export default function NotFound() {
             <h1 className="font-display text-7xl md:text-8xl text-brand-black tracking-tight drop-shadow-sm">
               404
             </h1>
-            <h2 className="font-display text-2xl md:text-2xl md:text-3xl text-brand-black">
+            <h2 className="font-display text-2xl md:text-3xl text-brand-black">
               Oops! This thread came unravelled.
             </h2>
             <p className="text-base text-brand-gray/80 font-medium max-w-md mx-auto leading-relaxed">

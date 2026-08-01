@@ -970,10 +970,10 @@ const settingsData = {
   about_stat_1_label: "Hand-Knitted",
   about_stat_2_val: "5,000+",
   about_stat_2_label: "Stitches Per Piece",
-  about_stat_3_val: "4.9 ★",
-  about_stat_3_label: "Customer Rating",
-  about_stat_4_val: "1,500+",
-  about_stat_4_label: "Gifts Delivered",
+  about_stat_3_val: "Milk Cotton",
+  about_stat_3_label: "Premium Yarn",
+  about_stat_4_val: "Pan-India",
+  about_stat_4_label: "Delivery",
   contact_phone: "+91 9442379832",
   contact_whatsapp: "+91 9442379832",
   contact_email: "senthilragunathan2004@gmail.com",
@@ -999,23 +999,23 @@ async function seed() {
     try {
       await mongoose.connection.db.dropCollection("bookings");
       console.log("Dropped collection: bookings");
-    } catch (e) {}
+    } catch {}
     try {
       await mongoose.connection.db.dropCollection("festivalbookings");
       console.log("Dropped collection: festivalbookings");
-    } catch (e) {}
+    } catch {}
     try {
       await mongoose.connection.db.dropCollection("blogposts");
       console.log("Dropped collection: blogposts");
-    } catch (e) {}
+    } catch {}
     try {
       await mongoose.connection.db.dropCollection("faqs");
       console.log("Dropped collection: faqs");
-    } catch (e) {}
+    } catch {}
     try {
       await mongoose.connection.db.dropCollection("galleryimages");
       console.log("Dropped collection: galleryimages");
-    } catch (e) {}
+    } catch {}
 
     // Seed Banners
     console.log("Seeding banners...");
@@ -1040,7 +1040,9 @@ async function seed() {
       if (!catId) {
         throw new Error(`Category not found for slug: ${p.categorySlug}`);
       }
-      const { categorySlug, ...rest } = p;
+      const rest = { ...p };
+      // The seed data keys products by category slug; the document stores an id.
+      delete rest.categorySlug;
       return {
         ...rest,
         category: catId

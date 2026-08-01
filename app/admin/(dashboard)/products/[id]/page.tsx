@@ -46,9 +46,10 @@ export default function EditProductPage() {
 
         if (prodRes.ok && catRes.ok) {
           const prodData = await prodRes.json();
-          const catData = await catRes.json();
+          // Only the two fields the category dropdown needs.
+          const catData: { _id: string; name: string }[] = await catRes.json();
 
-          setCategories(catData.map((c: any) => ({ label: c.name, value: c._id })));
+          setCategories(catData.map((c) => ({ label: c.name, value: c._id })));
           
           setFormData({
             name: prodData.name,
@@ -64,7 +65,7 @@ export default function EditProductPage() {
         } else {
           setError("Failed to load product details");
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load product details");
       } finally {
         setIsLoading(false);
@@ -134,7 +135,7 @@ export default function EditProductPage() {
       } else {
         setError(data.error || "Failed to update product");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to update product");
     } finally {
       setIsSubmitting(false);

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { User, LogOut, ChevronDown, Bell, Menu } from "lucide-react";
+import { LogOut, ChevronDown, Bell, Menu } from "lucide-react";
 import useSWR from "swr";
 import Link from "next/link";
 import { useAdminSidebar } from "./AdminSidebarContext";

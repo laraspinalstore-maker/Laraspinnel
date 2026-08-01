@@ -13,7 +13,6 @@ interface PremiumCardProps {
   tag?: string;
   image?: string;
   slug: string;
-  theme?: "primary" | "secondary";
   stock?: number;
 }
 
@@ -24,7 +23,6 @@ export default function PremiumCard({
   tag,
   image,
   slug,
-  theme = "primary",
   stock,
 }: PremiumCardProps) {
   const url = `/shop/${slug}`;

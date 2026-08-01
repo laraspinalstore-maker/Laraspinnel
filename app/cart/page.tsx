@@ -40,7 +40,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-white flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16 w-full space-y-8 animate-in fade-in">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16 w-full space-y-8 animate-in fade-in">
         {/* Page Header */}
         <div className="space-y-3 pb-6">
           <h1 className="font-display text-3xl sm:text-5xl text-brand-black tracking-wide uppercase">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
 
 type ToastVariant = "success" | "error" | "info";
@@ -114,13 +114,14 @@ function ToastViewport({
   toasts: ToastItem[];
   onDismiss: (id: number) => void;
 }) {
-  // Avoid rendering an empty fixed container.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  if (!mounted || toasts.length === 0) return null;
+  // Nothing to show until a toast exists, which also covers the server render —
+  // the queue is always empty there. A `mounted` state flag set from an effect used
+  // to guard this too; it was redundant with the length check below and cost every
+  // admin page an extra render pass on mount.
+  if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2.5 w-[calc(100vw-2rem)] sm:w-auto pointer-events-none">
+    <div className="fixed top-4 right-4 z-100 flex flex-col gap-2.5 w-[calc(100vw-2rem)] sm:w-auto pointer-events-none">
       {toasts.map((toast) => (
         <div key={toast.id} className="pointer-events-auto">
           <ToastCard toast={toast} onDismiss={onDismiss} />

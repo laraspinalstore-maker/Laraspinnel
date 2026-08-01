@@ -26,7 +26,7 @@ export default function AboutPage() {
       <Navbar />
 
       <MotionConfig reducedMotion="user">
-        <main className="flex-1 bg-white">
+        <main id="main-content" tabIndex={-1} className="flex-1 bg-white">
           {/* Accessible H1 Heading for SEO */}
           <h1 className="sr-only">About Lara&apos;s Pinnal — Handmade Crochet Gifts & Flowers, Villupuram</h1>
 

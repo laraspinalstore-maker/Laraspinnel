@@ -5,6 +5,7 @@ import { connectToDatabase } from "@/lib/db";
 import Product from "@/models/Product";
 import { productSchema } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
+import { revalidateCatalog } from "@/lib/data/revalidate";
 
 export async function GET() {
   try {
@@ -72,6 +73,10 @@ export async function POST(req: NextRequest) {
       isFeatured,
       isActive,
     });
+
+    // The new product has to appear on the ISR listing and in the sitemap now,
+    // not on the next revalidation window.
+    revalidateCatalog(slug);
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {

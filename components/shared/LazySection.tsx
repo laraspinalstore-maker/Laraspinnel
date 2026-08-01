@@ -33,8 +33,12 @@ export default function LazySection({
     const el = ref.current;
     if (!el) return;
     if (typeof IntersectionObserver === "undefined") {
-      setVisible(true);
-      return;
+      // No observer support: show everything. Queued rather than set inline —
+      // a synchronous setState here would render twice before the first paint,
+      // and this branch cannot be resolved during render because the server has
+      // no IntersectionObserver either, which would flip the initial HTML.
+      const id = setTimeout(() => setVisible(true), 0);
+      return () => clearTimeout(id);
     }
     const io = new IntersectionObserver(
       (entries) => {

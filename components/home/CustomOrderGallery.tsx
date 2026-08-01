@@ -93,7 +93,11 @@ export default function CustomOrderGallery({
 
   if (orientation === "horizontal") {
     return (
-      <div className="relative overflow-hidden" aria-label="Showcase of custom handmade creations">
+      <div
+        role="group"
+        aria-label="Showcase of custom handmade creations"
+        className="relative overflow-hidden"
+      >
         {/* Edge fades blend into the cream banner background */}
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-linear-to-r from-cream-bg to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-linear-to-l from-cream-bg to-transparent" />
@@ -115,8 +119,9 @@ export default function CustomOrderGallery({
 
   return (
     <div
-      className="relative h-full overflow-hidden"
+      role="group"
       aria-label="Showcase of custom handmade creations"
+      className="relative h-full overflow-hidden"
     >
       {/* Top/bottom fades — cards drift in and out of the visible area.
           Colors match the banner's right-side blush background. */}

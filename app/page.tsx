@@ -18,60 +18,59 @@ import BelowFoldSections from "@/components/home/BelowFoldSections";
 import { connectToDatabase } from "@/lib/db";
 import Banner from "@/models/Banner";
 import SiteSettings from "@/models/SiteSettings";
+import type { BannerDTO } from "@/lib/data/types";
+import type { Types } from "mongoose";
+
+/**
+ * The banner fields this page reads, as a `.lean()` document. `_id` is an
+ * ObjectId and the optional fields are genuinely absent on older rows, which is
+ * why every one of them is defaulted below before being handed to a client
+ * component.
+ */
+interface LeanBanner {
+  _id: Types.ObjectId;
+  imageUrl: string;
+  headline: string;
+  subtext?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  buttonTheme?: string;
+}
+
+import JsonLd from "@/lib/seo/JsonLd";
+import { buildMetadata } from "@/lib/seo/metadata";
+import { webPageNode } from "@/lib/seo/schema";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
-export const metadata: Metadata = {
-  title: "Lara's Pinnal | Handcrafted Crochet Gifts & Flowers in Tamil Nadu",
-  description:
-    "Buy beautiful handcrafted crochet flower bouquets, custom frames, baby amigurumi plushies, keychains, and gift hampers from Lara's Pinnal, Tamil Nadu.",
-  keywords: [
-    "crochet bouquet online India",
-    "handmade gifts Chennai",
-    "crochet flowers Tamil Nadu",
-    "customized frames gifts",
-    "personalized amigurumi plushies",
-    "crochet keychain online buy",
-    "handmade hampers birthday",
-    "crochet Rakhi online",
-    "gifts under 999 online",
-    "crochet corner Tamil Nadu",
-  ],
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "Lara's Pinnal | Handcrafted Crochet Gifts & Flowers",
-    description:
-      "Order premium milk cotton yarn crochet gifts, hand-knitted with love. Unique flower bouquets, plushies, keychains, and custom hampers. Delivery across Tamil Nadu.",
-    type: "website",
-    locale: "en_IN",
-    siteName: "Lara's Pinnal",
-    url: "/",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1596436889106-be35e843f974?w=1200&auto=format&fit=crop&q=80",
-        width: 1200,
-        height: 630,
-        alt: "Lara's Pinnal Crochet Bouquet",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Lara's Pinnal | Handcrafted Crochet Gifts & Flowers",
-    description:
-      "Buy original handmade crochet items and customized gifts from Lara's Pinnal, Tamil Nadu.",
-  },
-};
+const DESCRIPTION =
+  "Buy beautiful handcrafted crochet flower bouquets, custom frames, baby amigurumi plushies, keychains, and gift hampers from Lara's Pinnal, Tamil Nadu.";
+
+export const metadata: Metadata = buildMetadata({
+  // `titleAbsolute` because this title already leads with the brand; letting the
+  // root template append " | Lara's Pinnal" would say it twice.
+  titleAbsolute: "Lara's Pinnal | Handcrafted Crochet Gifts & Flowers in Tamil Nadu",
+  description: DESCRIPTION,
+  path: "/",
+  ogDescription:
+    "Order premium milk cotton yarn crochet gifts, hand-knitted with love. Unique flower bouquets, plushies, keychains, and custom hampers. Shipped across India.",
+  twitterDescription:
+    "Buy original handmade crochet items and customized gifts from Lara's Pinnal, Tamil Nadu.",
+  // No `images`: the OG image comes from app/opengraph-image.tsx. This used to
+  // point at an images.unsplash.com stock photo — a third-party URL representing
+  // the brand in every social share, which would also break the moment Unsplash
+  // changed it.
+});
 
 export default async function HomePage() {
   await connectToDatabase();
 
-  let initialBanners: any[] = [];
+  let initialBanners: BannerDTO[] = [];
   try {
-    const dbBanners = await Banner.find({ isActive: true }).sort({ order: 1, createdAt: -1 }).lean();
-    initialBanners = dbBanners.map((b: any) => ({
+    const dbBanners = await Banner.find({ isActive: true })
+      .sort({ order: 1, createdAt: -1 })
+      .lean<LeanBanner[]>();
+    initialBanners = dbBanners.map((b) => ({
       _id: b._id.toString(),
       imageUrl: b.imageUrl,
       headline: b.headline,
@@ -84,11 +83,11 @@ export default async function HomePage() {
     console.error("Failed to load initial banners", err);
   }
 
-  let allSettings: Record<string, string> = {};
+  const allSettings: Record<string, string> = {};
   try {
-    const settingsList = await SiteSettings.find({}).lean();
-    settingsList.forEach((s: any) => {
-      allSettings[s.key] = s.value;
+    const settingsList = await SiteSettings.find({}).lean<{ key: string; value?: string }[]>();
+    settingsList.forEach((s) => {
+      allSettings[s.key] = s.value ?? "";
     });
   } catch (err) {
     console.error("Failed to load settings", err);
@@ -99,13 +98,14 @@ export default async function HomePage() {
       {/* Scroll-aware sticky Navbar */}
       <Navbar />
 
-      <main className="flex-1">
-        {/* Visually hidden H1 for SEO */}
-        <h1 className="sr-only">Lara's Pinnal - Handcrafted Crochet Gifts & Flowers</h1>
-        
+      <main id="main-content" tabIndex={-1} className="flex-1">
+        {/* The page's <h1> is the first HeroSlider headline — the largest text on
+            the page and the thing the page is actually about. An sr-only <h1>
+            used to sit here, which meant the dominant headline was only an <h2>. */}
+
         {/* Visually hidden data table for AI Citability & SEO structured extraction */}
         <table className="sr-only">
-          <caption>Lara's Pinnal Services & Offerings</caption>
+          <caption>Lara&apos;s Pinnal Services & Offerings</caption>
           <thead>
             <tr>
               <th scope="col">Product / Category</th>
@@ -117,7 +117,11 @@ export default async function HomePage() {
             <tr>
               <td>Crochet Flower Bouquets</td>
               <td>Lavender, Rose, Lily, Sunflower forever bouquets</td>
-              <td>All Districts in Tamil Nadu</td>
+              {/* Was "All Districts in Tamil Nadu", which contradicted the
+                  Pan-India claim on the next row and everywhere else on the
+                  site. Checkout accepts any Indian PIN code, so Pan-India is the
+                  accurate one. */}
+              <td>Pan-India Shipping Available</td>
             </tr>
             <tr>
               <td>Personalized Frames & Hampers</td>
@@ -164,6 +168,16 @@ export default async function HomePage() {
 
       {/* Footer block */}
       <Footer />
+
+      <JsonLd
+        graph={[
+          webPageNode({
+            path: "/",
+            name: "Lara's Pinnal — Handcrafted Crochet Gifts & Flowers",
+            description: DESCRIPTION,
+          }),
+        ]}
+      />
     </div>
   );
 }

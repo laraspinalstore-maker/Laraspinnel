@@ -10,6 +10,7 @@ import { useSettings } from "@/hooks/useSettings";
 import { ShoppingBag, ChevronRight, ArrowLeft, Phone, ShieldCheck, Heart, FileText, CheckCircle2 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
 import AlertCard from "@/components/ui/AlertCard";
+import { toErrorMessage } from "@/lib/errorMessage";
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
@@ -98,8 +99,8 @@ export default function CheckoutPage() {
 
       setPlacedOrder({ orderNumber: data.orderNumber, id: data.id });
       clearCart();
-    } catch (err: any) {
-      setAlertMessage(err.message || "An error occurred while placing order.");
+    } catch (err) {
+      setAlertMessage(toErrorMessage(err, "An error occurred while placing order."));
     } finally {
       setIsSubmitting(false);
     }
@@ -111,7 +112,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-white flex flex-col justify-between">
         <Navbar />
 
-        <main className="flex-1 max-w-xl mx-auto px-4 md:px-6 py-20 flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in">
+        <main id="main-content" tabIndex={-1} className="flex-1 max-w-xl mx-auto px-4 md:px-6 py-20 flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in">
           <div className="w-20 h-20 rounded-full bg-primary-tint border border-primary/10 flex items-center justify-center shadow-md animate-bounce">
             <CheckCircle2 size={48} className="text-primary" />
           </div>
@@ -175,9 +176,11 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col justify-between">
         <Navbar />
-        <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-20 text-center space-y-4 flex flex-col items-center justify-center">
+        <main id="main-content" tabIndex={-1} className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-20 text-center space-y-4 flex flex-col items-center justify-center">
           <ShoppingBag className="mx-auto text-neutral-300 animate-pulse" size={56} />
-          <h2 className="text-lg font-bold text-brand-black">No Items to Checkout</h2>
+          {/* An <h1>, not an <h2>: this branch renders the entire page, so an
+              <h2> left the document with no top-level heading at all. */}
+          <h1 className="text-lg font-bold text-brand-black">No Items to Checkout</h1>
           <p className="text-xs text-brand-gray">Your cart is currently empty. Add items before checking out.</p>
           <Link href="/shop" className="bg-brand-black hover:bg-primary text-white font-bold py-3 px-6 rounded-full transition-all shadow-md">
             Browse Shop
@@ -198,7 +201,7 @@ export default function CheckoutPage() {
         onClose={() => setAlertMessage(null)}
       />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16 w-full space-y-8 animate-in fade-in">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16 w-full space-y-8 animate-in fade-in">
         {/* Page Header */}
         <div className="space-y-3 pb-6">
           <h1 className="font-display text-3xl sm:text-5xl text-brand-black tracking-wide uppercase">

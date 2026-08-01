@@ -3,6 +3,7 @@ import { requireAdmin, isDenied, serverError, readJsonBody } from "@/lib/securit
 import { connectToDatabase } from "@/lib/db";
 import Banner from "@/models/Banner";
 import { bannerSchema } from "@/lib/validations";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -48,6 +49,10 @@ export async function POST(req: NextRequest) {
       order,
       isActive,
     });
+
+    // The homepage hero is ISR (revalidate = 60), so a new banner needs an
+    // explicit purge to show up straight away.
+    revalidatePath("/");
 
     return NextResponse.json(banner, { status: 201 });
   } catch (error) {

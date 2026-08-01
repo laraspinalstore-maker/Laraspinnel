@@ -37,25 +37,44 @@ export default function AdminBannersPage() {
   const [order, setOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
 
-  const fetchBanners = async () => {
-    setIsLoading(true);
+  /**
+   * The network half, with no state in it — so the mount effect below can apply
+   * results only after an `await`. Setting state synchronously inside an effect
+   * costs a render pass before first paint (`react-hooks/set-state-in-effect`).
+   */
+  const loadBanners = async (): Promise<Banner[] | null> => {
     try {
       const res = await fetch("/api/admin/banners");
-      if (res.ok) {
-        const data = await res.json();
-        setBanners(data);
-      } else {
-        setError("Failed to fetch banners");
-      }
-    } catch (err) {
-      setError("Failed to fetch banners");
-    } finally {
-      setIsLoading(false);
+      if (!res.ok) return null;
+      return (await res.json()) as Banner[];
+    } catch {
+      return null;
     }
   };
 
+  /** Refetch after a mutation — the spinner is wanted here, unlike on mount. */
+  const fetchBanners = async () => {
+    setIsLoading(true);
+    const data = await loadBanners();
+    if (data) setBanners(data);
+    else setError("Failed to fetch banners");
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    fetchBanners();
+    let active = true;
+    (async () => {
+      const data = await loadBanners();
+      // The admin can navigate away mid-request; without this the response would
+      // update a component that is no longer mounted.
+      if (!active) return;
+      if (data) setBanners(data);
+      else setError("Failed to fetch banners");
+      setIsLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const openAddForm = () => {
@@ -103,7 +122,7 @@ export default function AdminBannersPage() {
       } else {
         setError("Failed to delete banner");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to delete banner");
     }
   };
@@ -146,7 +165,7 @@ export default function AdminBannersPage() {
         const data = await res.json();
         setError(data.error || "Failed to save banner.");
       }
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setIsSaving(false);
@@ -354,7 +373,7 @@ export default function AdminBannersPage() {
                 className="bg-white border border-brand-border rounded-2xl shadow-card overflow-hidden flex flex-col justify-between"
               >
                 {/* Banner Preview */}
-                <div className="relative aspect-[16/7] bg-brand-light-gray">
+                <div className="relative aspect-16/7 bg-brand-light-gray">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={banner.imageUrl}

@@ -80,6 +80,7 @@ const PUBLIC_KEYS = new Set([
   "terms_of_service_content",
   "refund_policy_content",
   "editorial_policy_content",
+  "shipping_policy_content",
 ]);
 
 export function isPublicSettingKey(key: string): boolean {
@@ -112,6 +113,11 @@ export const RICH_TEXT_SETTING_KEYS = new Set([
   "terms_of_service_content",
   "refund_policy_content",
   "editorial_policy_content",
+  // Must be listed here as well as in PUBLIC_KEYS. PUBLIC_KEYS only makes the
+  // value readable; membership here is what causes it to be sanitized on write
+  // and again on read. A rich-text key present in one list but not the other is
+  // stored and re-served unsanitized.
+  "shipping_policy_content",
 ]);
 
 /**

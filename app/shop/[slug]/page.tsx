@@ -1,309 +1,256 @@
-"use client";
-
-import React, { useState } from "react";
-import useSWR from "swr";
-import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
+import React from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PremiumCard from "@/components/home/PremiumCard";
-import ImageUploadDropzone from "@/components/admin/ImageUploadDropzone";
-import StickyBox from "@/components/shared/StickyBox";
-import { useCart } from "@/hooks/useCart";
+import ProductGallery from "@/components/shop/ProductGallery";
+import ProductPurchasePanel from "@/components/shop/ProductPurchasePanel";
+import { getProductBySlug, getRelatedProducts } from "@/lib/data/products";
 import { sortInStockFirst } from "@/lib/utils";
-import { ShoppingCart, ShoppingBag, Plus, Minus, ArrowLeft, Heart, ShieldCheck } from "lucide-react";
+import JsonLd from "@/lib/seo/JsonLd";
+import { buildMetadata } from "@/lib/seo/metadata";
+import { productOgImage } from "@/lib/seo/url";
+import {
+  breadcrumbNode,
+  productNode,
+  returnPolicyNode,
+  shippingDetailsNode,
+  toPlainText,
+} from "@/lib/seo/schema";
+import { getDeliverySettings } from "@/lib/seo/settings";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+/**
+ * Product detail.
+ *
+ * Was a client component that fetched through SWR with no seed data, so the
+ * server-rendered HTML for every product was a spinner: no H1, no price, no
+ * description, no availability, no images. The metadata and Product JSON-LD were
+ * served from a sibling layout as a workaround, which also meant the same product
+ * was queried twice per request.
+ *
+ * Now the page itself is a server component. It owns `generateMetadata`, the
+ * JSON-LD, and all the SEO-critical body copy; two small client islands keep the
+ * gallery and the purchase controls interactive. `app/shop/[slug]/layout.tsx` has
+ * been deleted — with the page able to export metadata there was nothing left for
+ * it to do, and a second segment declaring `revalidate` is a trap, since the
+ * lowest value across layout and page governs the whole route.
+ *
+ * ## Returning a real 404
+ *
+ * `generateStaticParams` returning an empty array is load-bearing, not
+ * decoration. `app/loading.tsx` is a ROOT loading boundary, so it wraps this
+ * segment too; a fully dynamic render therefore starts streaming as soon as that
+ * fallback renders, and once the response body has begun streaming the status is
+ * already sent — `notFound()` can then only inject a noindex meta tag, leaving
+ * the response a 200. Declaring `generateStaticParams` makes the route
+ * statically generated with ISR, so the render is buffered into a cache entry and
+ * the 404 status can still be set.
+ *
+ * Returning `[]` rather than every slug is also deliberate: next.config.ts
+ * documents a build out-of-memory caused by mongoose loading in each page-data
+ * worker, and per-slug prerendering would reintroduce that pressure for no gain
+ * beyond a faster first hit.
+ *
+ * `dynamicParams` must stay true, or an empty param list would 404 every product.
+ */
 
-export default function ProductDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const slug = params.slug as string;
-  const { addItem } = useCart();
+export const revalidate = 300;
+export const dynamicParams = true;
 
-  const [quantity, setQuantity] = useState(1);
-  const [activeImageIdx, setActiveImageIdx] = useState(0);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [customText, setCustomText] = useState("");
-  const [customImage, setCustomImage] = useState("");
+export async function generateStaticParams() {
+  return [];
+}
 
-  const { data, isLoading, error } = useSWR(
-    slug ? `/api/products/${slug}` : null,
-    fetcher
-  );
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  // Request-cached, so this is the same query the page body and the JSON-LD use.
+  const product = await getProductBySlug(slug);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col justify-between">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center py-20">
-          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-        </div>
-        <Footer />
-      </div>
-    );
+  if (!product) {
+    return buildMetadata({
+      title: "Product Not Found",
+      description: "This product does not exist or is no longer available.",
+      // Explicit rather than omitted: metadata is shallow-merged root to leaf and
+      // an absent field is INHERITED, so leaving this out previously meant the
+      // not-found branch silently adopted the shop layout's canonical.
+      path: `/shop/${slug}`,
+      robots: "noindex",
+    });
   }
 
-  if (error || !data || !data.product) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col justify-between">
-        <Navbar />
-        <div className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-20 text-center space-y-4">
-          <h2 className="text-xl font-bold text-red-600">Product Not Found</h2>
-          <p className="text-sm text-brand-gray">The product you are looking for does not exist or has been disabled.</p>
-          <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
-            <ArrowLeft size={16} /> Back to Shop
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  const description = toPlainText(product.description).slice(0, 158);
+  const ogImage = productOgImage(product.images?.[0], product.name);
 
-  const { product, relatedProducts: rawRelatedProducts = [] } = data;
+  return buildMetadata({
+    title: product.name,
+    description,
+    path: `/shop/${product.slug}`,
+    // A real product photo beats the generated site card, so this is one of the
+    // few places that overrides app/opengraph-image.tsx.
+    ...(ogImage ? { images: [ogImage] } : {}),
+  });
+}
+
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
+  if (!product) notFound();
+
+  const [relatedRaw, delivery] = await Promise.all([
+    // A product whose category document was deleted has no category to relate
+    // against, and querying with a null id would match nothing anyway.
+    product.category
+      ? getRelatedProducts(product.category._id, slug)
+      : Promise.resolve([]),
+    getDeliverySettings(),
+  ]);
+
   // Out-of-stock items fall to the end; they return to their normal spot once restocked.
-  const relatedProducts = sortInStockFirst(rawRelatedProducts);
+  const relatedProducts = sortInStockFirst(relatedRaw);
   const inStock = product.stock > 0;
   const currentPrice = product.discountPrice || product.price;
+  const isRichText = /<[a-z][\s\S]*>/i.test(product.description);
 
-  const handleAddToCart = () => {
-    addItem({
-      productId: product._id,
-      name: product.name,
-      price: currentPrice,
-      image: product.images[0] || "",
-      customText: customText.trim() || undefined,
-      customImage: customImage || undefined,
-    }, quantity);
-
-    setSuccessMsg("Added to cart successfully!");
-    setTimeout(() => setSuccessMsg(""), 3000);
-  };
-
-  const handleBuyNow = () => {
-    addItem({
-      productId: product._id,
-      name: product.name,
-      price: currentPrice,
-      image: product.images[0] || "",
-      customText: customText.trim() || undefined,
-      customImage: customImage || undefined,
-    }, quantity);
-    router.push("/cart");
-  };
+  const crumbs = product.category
+    ? [
+        { name: "Home", path: "/" },
+        { name: "Shop", path: "/shop" },
+        { name: product.category.name, path: `/shop?category=${product.category.slug}` },
+        { name: product.name },
+      ]
+    : [{ name: "Home", path: "/" }, { name: "Shop", path: "/shop" }, { name: product.name }];
 
   return (
     <div className="min-h-screen bg-white flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-9 w-full space-y-16 animate-in fade-in">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-9 w-full space-y-16 animate-in fade-in">
         <div className="space-y-4 md:space-y-6">
+          {/* Breadcrumb trail. sr-only so the visual design is unchanged while the
+              full Home > Shop > Category > Product path is present in the HTML —
+              the same approach app/page.tsx already uses for its AI-citability
+              table. The matching BreadcrumbList node is emitted below. */}
+          <nav aria-label="Breadcrumb" className="sr-only">
+            <ol>
+              {crumbs.map((crumb) => (
+                <li key={crumb.name}>
+                  {crumb.path ? (
+                    <Link href={crumb.path}>{crumb.name}</Link>
+                  ) : (
+                    <span aria-current="page">{crumb.name}</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
+
           {/* Back Link */}
           <div>
-            <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black hover:text-primary transition-colors">
-              <ArrowLeft size={16} /> Back to Catalog
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black hover:text-primary transition-colors"
+            >
+              <ArrowLeft size={16} aria-hidden="true" /> Back to Catalog
             </Link>
           </div>
 
           {/* Product Details Section */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
-          {/* Gallery Column — mirrors the desktop layout from tablet width up */}
-          <div className="order-1 md:order-1 md:col-span-5 md:row-span-2 relative">
-          <StickyBox topOffset={112} enableFrom={768}>
-            <div className="space-y-4">
-            {/* Active Image Frame */}
-            <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-brand-light-gray/40 border border-brand-border group">
-              {product.images[activeImageIdx] && (
-                <Image
-                  src={product.images[activeImageIdx]}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 500px"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  priority
-                />
-              )}
-              {product.discountPrice && (
-                <span className="absolute top-4 left-4 px-3 py-1 bg-primary text-white text-xs font-bold rounded-full uppercase tracking-wider shadow-md">
-                  Offer
+            <ProductGallery
+              name={product.name}
+              images={product.images}
+              hasDiscount={Boolean(product.discountPrice)}
+            />
+
+            {/* Info: title, price, description — all server-rendered */}
+            <div className="order-2 md:order-2 md:col-span-7 space-y-4">
+              <div className="space-y-2">
+                {product.category && (
+                  <Link
+                    href={`/shop?category=${product.category.slug}`}
+                    className="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline"
+                  >
+                    {product.category.name}
+                  </Link>
+                )}
+                <h1 className="font-display text-2xl md:text-4xl text-brand-black uppercase leading-tight">
+                  {product.name}
+                </h1>
+              </div>
+
+              {/* Price section */}
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-extrabold text-brand-black">
+                  ₹{currentPrice}
                 </span>
-              )}
-            </div>
-
-            {/* Thumbnails Row */}
-            {product.images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-1">
-                {product.images.map((img: string, idx: number) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIdx(idx)}
-                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 shrink-0 transition-all ${
-                      activeImageIdx === idx ? "border-primary scale-95 shadow-sm" : "border-brand-border hover:border-brand-gray"
-                    }`}
-                  >
-                    <Image
-                      src={img}
-                      alt={`${product.name} thumbnail ${idx + 1}`}
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-            </div>
-          </StickyBox>
-          </div>
-
-          {/* Info: title, price, description */}
-          <div className="order-2 md:order-2 md:col-span-7 space-y-4">
-            <div className="space-y-2">
-              <Link
-                href={`/shop?category=${product.category.slug}`}
-                className="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline"
-              >
-                {product.category.name}
-              </Link>
-              <h1 className="font-display text-2xl md:text-4xl text-brand-black uppercase leading-tight">
-                {product.name}
-              </h1>
-            </div>
-
-            {/* Price section */}
-            <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-extrabold text-brand-black">
-                ₹{currentPrice}
-              </span>
-              {product.discountPrice && (
-                <>
-                  <span className="text-lg text-brand-gray line-through">
-                    ₹{product.price}
-                  </span>
-                  <span className="text-sm font-bold text-red-600">
-                    ({Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF)
-                  </span>
-                </>
-              )}
-            </div>
-
-            {/* Stock status & Description */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <span className="text-brand-gray">Availability:</span>
-                {inStock ? (
-                  <span className="text-primary flex items-center gap-1">
-                    <ShieldCheck size={16} /> In Stock ({product.stock} left)
-                  </span>
-                ) : (
-                  <span className="text-red-600 font-bold">Out of Stock</span>
-                )}
-              </div>
-              
-              {/\<[a-z][\s\S]*>/i.test(product.description) ? (
-                // Rich-text description (written with the formatting editor).
-                // Already sanitized server-side by /api/products/[slug] — see the
-                // note there. Do NOT sanitize here: that would ship sanitize-html
-                // to the browser and make the guarantee client-side.
-                <div
-                  className="prose text-sm leading-relaxed text-brand-gray text-justify"
-                  dangerouslySetInnerHTML={{ __html: product.description }}
-                />
-              ) : (
-                // Legacy plain-text description saved before rich formatting was added
-                <div className="text-sm leading-relaxed text-brand-gray whitespace-pre-line text-justify">
-                  {product.description}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Purchase: quantity + Add to Cart / Buy Now */}
-          {inStock && (
-            <div className="order-3 md:order-3 md:col-span-7 space-y-4">
-                {/* Custom design instructions */}
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline justify-between">
-                    <label htmlFor="customText" className="text-sm font-semibold text-primary-text">
-                      Customize Your Order
-                    </label>
-                    <span className="text-[10px] text-brand-gray">Optional</span>
-                  </div>
-                  <textarea
-                    id="customText"
-                    rows={4}
-                    maxLength={300}
-                    value={customText}
-                    onChange={(e) => setCustomText(e.target.value)}
-                    placeholder="e.g. Add name 'Priya', change ribbon color to pink..."
-                    className="w-full p-3 bg-primary-tint/20 border border-primary/25 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
-                  />
-                </div>
-
-                {/* Reference image upload */}
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline justify-between">
-                    <label className="text-sm font-semibold text-primary-text">
-                      Upload Reference Image
-                    </label>
-                    <span className="text-[10px] text-brand-gray">Optional</span>
-                  </div>
-                  <ImageUploadDropzone
-                    value={customImage ? [customImage] : []}
-                    onChange={(urls) => setCustomImage(urls[urls.length - 1] || "")}
-                    maxFiles={1}
-                    endpoint="/api/customer-upload"
-                  />
-                </div>
-
-                {/* Quantity picker */}
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-primary-text">Quantity:</span>
-                  <div className="flex items-center border border-primary/25 rounded-xl bg-primary-tint/20 h-10 overflow-hidden">
-                    <button
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="px-3 h-full hover:bg-primary-tint transition-colors text-brand-black"
-                      aria-label="Decrease quantity"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="w-10 text-center text-sm font-bold text-brand-black">
-                      {quantity}
+                {product.discountPrice && (
+                  <>
+                    <span className="text-lg text-brand-gray line-through">
+                      ₹{product.price}
                     </span>
-                    <button
-                      onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                      className="px-3 h-full hover:bg-primary-tint transition-colors text-brand-black"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Checkout buttons */}
-                <div className="flex flex-col lg:flex-row gap-3 pt-2">
-                  <button
-                    onClick={handleAddToCart}
-                    className="flex-1 bg-white hover:bg-brand-light-gray text-brand-black border border-brand-border font-bold py-3 px-6 rounded-full transition-all flex items-center justify-center gap-2 shadow-sm"
-                  >
-                    <ShoppingCart size={18} /> Add to Cart
-                  </button>
-                  <button
-                    onClick={handleBuyNow}
-                    className="flex-1 bg-brand-black hover:bg-primary text-white font-bold py-3 px-6 rounded-full transition-all flex items-center justify-center gap-2 shadow-md"
-                  >
-                    <ShoppingBag size={18} /> Buy Now
-                  </button>
-                </div>
-
-                {/* Success alert message */}
-                {successMsg && (
-                  <p className="text-sm text-primary font-semibold text-center mt-2 animate-pulse">
-                    {successMsg}
-                  </p>
+                    <span className="text-sm font-bold text-red-600">
+                      (
+                      {Math.round(
+                        ((product.price - product.discountPrice) / product.price) * 100
+                      )}
+                      % OFF)
+                    </span>
+                  </>
                 )}
               </div>
+
+              {/* Stock status & Description */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <span className="text-brand-gray">Availability:</span>
+                  {inStock ? (
+                    <span className="text-primary flex items-center gap-1">
+                      <ShieldCheck size={16} aria-hidden="true" /> In Stock ({product.stock}{" "}
+                      left)
+                    </span>
+                  ) : (
+                    <span className="text-red-600 font-bold">Out of Stock</span>
+                  )}
+                </div>
+
+                {isRichText ? (
+                  // Rich-text description written with the formatting editor.
+                  // Already sanitized in lib/data/products.ts, on the server — the
+                  // sanitizer must never move into a client component, both
+                  // because the guarantee would then be client-side and because
+                  // sanitize-html is ~200KB of browser bundle.
+                  <div
+                    className="prose text-sm leading-relaxed text-brand-gray text-justify"
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  />
+                ) : (
+                  // Legacy plain-text description saved before rich formatting existed.
+                  <div className="text-sm leading-relaxed text-brand-gray whitespace-pre-line text-justify">
+                    {product.description}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {inStock && (
+              <ProductPurchasePanel
+                productId={product._id}
+                name={product.name}
+                price={currentPrice}
+                image={product.images[0] || ""}
+                stock={product.stock}
+              />
             )}
           </div>
         </div>
@@ -315,15 +262,17 @@ export default function ProductDetailPage() {
               Explore Products
             </h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-              {relatedProducts.map((p: any) => (
+              {relatedProducts.map((p) => (
                 <div key={p._id}>
+                  {/* Deliberately no `id` prop, matching the previous call site.
+                      PremiumCard falls back to the slug as the cart key, and
+                      visitors' saved carts already contain lines keyed that way. */}
                   <PremiumCard
                     name={p.name}
                     price={p.discountPrice ? `₹${p.discountPrice}` : `₹${p.price}`}
                     tag={p.discountPrice ? `SAVE ₹${p.price - p.discountPrice}` : undefined}
                     image={p.images?.[0]}
                     slug={p.slug}
-                    theme="primary"
                     stock={p.stock}
                   />
                 </div>
@@ -334,6 +283,26 @@ export default function ProductDetailPage() {
       </main>
 
       <Footer />
+
+      <JsonLd
+        graph={[
+          productNode({
+            name: product.name,
+            slug: product.slug,
+            description: toPlainText(product.description),
+            images: product.images,
+            price: product.price,
+            discountPrice: product.discountPrice,
+            stock: product.stock,
+            categoryName: product.category?.name,
+            updatedAt: product.updatedAt,
+          }),
+          // Referenced by the Offer above via @id, so both must be in this graph.
+          returnPolicyNode(),
+          shippingDetailsNode(delivery.fee),
+          breadcrumbNode(crumbs, `/shop/${product.slug}`),
+        ]}
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/db";
 import Category from "@/models/Category";
 import { categorySchema } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
+import { revalidateCatalog } from "@/lib/data/revalidate";
 
 export async function GET() {
   try {
@@ -56,6 +57,8 @@ export async function POST(req: NextRequest) {
       image,
       isActive,
     });
+
+    revalidateCatalog();
 
     return NextResponse.json(category, { status: 201 });
   } catch (error) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import AdminTopbar from "@/components/admin/AdminTopbar";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
@@ -19,42 +19,65 @@ interface Category {
 export default function AdminCategoriesPage() {
   const { showToast } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  const fetchCategories = async () => {
-    setIsLoading(true);
+  /**
+   * The network half, with no state in it. Keeping the fetch and the state
+   * updates separate is what lets the mount effect below apply its results only
+   * after an `await` — setting state synchronously inside an effect forces a
+   * second render pass before the browser paints, which is what
+   * `react-hooks/set-state-in-effect` reports.
+   */
+  const loadCategories = async (): Promise<Category[] | null> => {
     try {
       const res = await fetch("/api/admin/categories");
-      if (res.ok) {
-        const data = await res.json();
-        setCategories(data);
-        setFilteredCategories(data);
-      } else {
-        setError("Failed to fetch categories");
-      }
-    } catch (err) {
-      setError("Failed to fetch categories");
-    } finally {
-      setIsLoading(false);
+      if (!res.ok) return null;
+      return (await res.json()) as Category[];
+    } catch {
+      return null;
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  /** Refetch after a mutation. The spinner is wanted here, unlike on mount. */
+  const fetchCategories = async () => {
+    setIsLoading(true);
+    const data = await loadCategories();
+    if (data) setCategories(data);
+    else setError("Failed to fetch categories");
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const results = categories.filter(
-      (cat) =>
-        cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cat.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredCategories(results);
-  }, [searchTerm, categories]);
+    let active = true;
+    (async () => {
+      const data = await loadCategories();
+      // The admin can navigate away mid-request; without this the resolved
+      // response would update a component that is no longer mounted.
+      if (!active) return;
+      if (data) setCategories(data);
+      else setError("Failed to fetch categories");
+      setIsLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Derived, not stored. This was a second piece of state kept in sync by an
+  // effect, which meant every keystroke rendered twice — once with the stale
+  // list, then again with the filtered one.
+  const filteredCategories = useMemo(
+    () =>
+      categories.filter(
+        (cat) =>
+          cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          cat.description.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [categories, searchTerm]
+  );
 
   const handleDeleteClick = (id: string) => {
     setConfirmDeleteId(id);
@@ -73,7 +96,7 @@ export default function AdminCategoriesPage() {
       } else {
         showToast(data.error || "Failed to delete category", { variant: "error" });
       }
-    } catch (err) {
+    } catch {
       showToast("Failed to delete category", { variant: "error" });
     }
   };

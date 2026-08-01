@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/db";
 import Banner from "@/models/Banner";
 import { bannerSchema } from "@/lib/validations";
 import { deleteImageByUrl } from "@/lib/imagekit";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -49,6 +50,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Banner not found" }, { status: 404 });
     }
 
+    // Banners are the homepage hero, and the homepage is ISR (revalidate = 60) —
+    // without this the admin sees the old slide for up to a minute after saving.
+    revalidatePath("/");
+
     return NextResponse.json(updatedBanner);
   } catch (error) {
     return serverError("Admin Banners PUT error:", error, "Failed to update banner");
@@ -70,6 +75,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     if (!banner) {
       return NextResponse.json({ error: "Banner not found" }, { status: 404 });
     }
+
+    revalidatePath("/");
 
     // Free up ImageKit storage — best-effort, never blocks the delete response.
     if (banner.imageUrl) {

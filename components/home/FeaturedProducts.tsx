@@ -88,7 +88,6 @@ export default function FeaturedProducts() {
                   tag={product.discountPrice ? `SAVE ₹${product.price - product.discountPrice}` : undefined}
                   image={product.images?.[0]}
                   slug={product.slug}
-                  theme="primary"
                   stock={product.stock}
                 />
               </div>

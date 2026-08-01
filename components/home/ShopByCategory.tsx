@@ -4,11 +4,21 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import useSWR from "swr";
+import type { CategoryDTO } from "@/lib/data/types";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function ShopByCategory({ settings }: { settings: any }) {
-  const { data: categories = [], isLoading } = useSWR("/api/categories", fetcher);
+export default function ShopByCategory({
+  settings,
+}: {
+  /** Admin-editable site settings, keyed by setting name. Values are always
+   *  strings — SiteSettings stores every value as text. */
+  settings: Record<string, string>;
+}) {
+  const { data: categories = [], isLoading } = useSWR<CategoryDTO[]>(
+    "/api/categories",
+    fetcher
+  );
 
   return (
     <section className="pt-5 pb-16 md:py-20 bg-brand-light-gray">
@@ -44,7 +54,7 @@ export default function ShopByCategory({ settings }: { settings: any }) {
           </div>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6">
-            {categories.map((category: any) => (
+            {categories.map((category) => (
               <Link
                 key={category._id}
                 href={`/shop?category=${category.slug}`}

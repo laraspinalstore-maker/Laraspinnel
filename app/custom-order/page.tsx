@@ -21,6 +21,7 @@ import {
   Package,
   ArrowRight,
 } from "lucide-react";
+import { toErrorMessage } from "@/lib/errorMessage";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -147,8 +148,8 @@ export default function CustomOrderPage() {
         if (!res.ok) throw new Error(data.error || "Upload failed");
         setImages((prev) => (prev.length < MAX_IMAGES ? [...prev, data.url] : prev));
       }
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to upload image. Please try again.");
+    } catch (err) {
+      setErrorMessage(toErrorMessage(err, "Failed to upload image. Please try again."));
       setStatus("error");
     } finally {
       setUploading(false);
@@ -216,7 +217,7 @@ export default function CustomOrderPage() {
     <div className="min-h-screen bg-white flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 bg-white">
+      <main id="main-content" tabIndex={-1} className="flex-1 bg-white">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16">
           {/* Page intro */}
           <div className="max-w-2xl mx-auto text-center mb-10">

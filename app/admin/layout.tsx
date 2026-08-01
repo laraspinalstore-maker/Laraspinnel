@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import "../globals.css";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-// Static metadata — no per-navigation DB call. Admin pages must never be
-// indexed (they sit behind auth), so robots is noindex/nofollow.
-export const metadata: Metadata = {
-  title: "Admin | Lara's Pinnal",
+// Static metadata — no per-navigation DB call. Admin pages sit behind auth and
+// must never be indexed, so noindex/nofollow, and `path: null` so no canonical
+// is emitted for a URL that should not be in the index at all.
+// next.config.ts additionally sends X-Robots-Tag: noindex, nofollow, noarchive
+// on /admin/:path* as defence in depth.
+export const metadata: Metadata = buildMetadata({
+  title: "Admin",
   description: "Lara's Pinnal admin dashboard.",
-  robots: { index: false, follow: false },
-};
+  path: null,
+  robots: "noindex-nofollow",
+});
 
 import { Providers } from "@/components/Providers";
 import AdminSidebar from "@/components/admin/AdminSidebar";

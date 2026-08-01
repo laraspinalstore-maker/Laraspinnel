@@ -6,6 +6,7 @@ import Product from "@/models/Product";
 import { categorySchema } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
 import { deleteImageByUrl } from "@/lib/imagekit";
+import { revalidateAllProductPages, revalidateCatalog } from "@/lib/data/revalidate";
 
 export async function GET(
   req: NextRequest,
@@ -80,6 +81,12 @@ export async function PUT(
       return NextResponse.json({ error: "Category not found" }, { status: 404 });
     }
 
+    // A category rename changes /shop?category=<slug>, the category tiles on the
+    // homepage, and the sitemap. Product pages carry the category name in their
+    // breadcrumb and Product schema, so they are purged too.
+    revalidateCatalog();
+    revalidateAllProductPages();
+
     return NextResponse.json(category);
   } catch (error) {
     // The slug uniqueness check above is a read-then-write: two concurrent
@@ -120,6 +127,10 @@ export async function DELETE(
     if (!category) {
       return NextResponse.json({ error: "Category not found" }, { status: 404 });
     }
+
+    // Deleting is only allowed with zero associated products (checked above), so
+    // product pages cannot be affected — only the listings and the sitemap.
+    revalidateCatalog();
 
     // Free up ImageKit storage — best-effort, never blocks the delete response.
     if (category.image) {

@@ -6,6 +6,7 @@ import Product from "@/models/Product";
 import { productSchema } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
 import { deleteImageByUrl } from "@/lib/imagekit";
+import { revalidateCatalog } from "@/lib/data/revalidate";
 
 export async function GET(
   req: NextRequest,
@@ -77,6 +78,11 @@ export async function PUT(
       );
     }
 
+    // Captured before the write: a rename leaves a cached page under the old
+    // /shop/<slug>, which would keep serving the previous content at a URL that no
+    // longer resolves. Both slugs get purged below.
+    const previous = await Product.findById(id).select("slug").lean<{ slug?: string }>();
+
     const product = await Product.findByIdAndUpdate(
       id,
       { name, slug, category, price, discountPrice, description, images, stock, isFeatured, isActive },
@@ -86,6 +92,8 @@ export async function PUT(
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
+
+    revalidateCatalog(slug, previous?.slug);
 
     return NextResponse.json(product);
   } catch (error) {
@@ -118,6 +126,10 @@ export async function DELETE(
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
+
+    // Drop the cached product page immediately, so the deleted URL starts
+    // answering 404 instead of serving its stale ISR entry for another 5 minutes.
+    revalidateCatalog(product.slug);
 
     // Free up ImageKit storage — best-effort, never blocks the delete response.
     await Promise.all(

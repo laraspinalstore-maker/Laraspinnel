@@ -88,28 +88,56 @@ export default function OrderDetailPage() {
   /** URLs that failed to load, so a missing file shows a message not a broken icon. */
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
-  const fetchOrderDetails = async () => {
-    setIsLoading(true);
+  /**
+   * The network half, with no state in it. Two reasons, both reported by lint on
+   * the previous version: an effect must not set state synchronously (it forces a
+   * render pass before first paint), and an effect calling a component function
+   * that sets state cannot satisfy `exhaustive-deps` without either re-running on
+   * every render or suppressing the rule.
+   */
+  const loadOrder = async (orderId: string): Promise<Order | null> => {
     try {
-      const res = await fetch(`/api/admin/orders/${id}`);
-      if (res.ok) {
-        const data = await res.json();
+      const res = await fetch(`/api/admin/orders/${orderId}`);
+      if (!res.ok) return null;
+      return (await res.json()) as Order;
+    } catch {
+      return null;
+    }
+  };
+
+  /** Refetch after a status change or a note edit. */
+  const fetchOrderDetails = async () => {
+    if (!id) return;
+    setIsLoading(true);
+    const data = await loadOrder(id);
+    if (data) {
+      setOrder(data);
+      setSelectedStatus(data.status);
+    } else {
+      setError("Failed to fetch order details.");
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (!id) return;
+    let active = true;
+    (async () => {
+      const data = await loadOrder(id);
+      // The admin can navigate away mid-request; without this the response would
+      // update a component that is no longer mounted.
+      if (!active) return;
+      if (data) {
         setOrder(data);
         setSelectedStatus(data.status);
       } else {
         setError("Failed to fetch order details.");
       }
-    } catch (err) {
-      setError("Failed to fetch order details.");
-    } finally {
       setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (id) {
-      fetchOrderDetails();
-    }
+    })();
+    return () => {
+      active = false;
+    };
   }, [id]);
 
   // Escape closes the image viewer, and the page behind it stops scrolling while
@@ -154,7 +182,7 @@ export default function OrderDetailPage() {
       } else {
         setError(data.error || "Failed to update status");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to update status");
     } finally {
       setIsUpdating(false);
@@ -174,7 +202,7 @@ export default function OrderDetailPage() {
         const data = await res.json().catch(() => ({}));
         showToast(data.error || "Failed to delete order.", { variant: "error" });
       }
-    } catch (err) {
+    } catch {
       showToast("Failed to delete order.", { variant: "error" });
     } finally {
       setIsDeleting(false);
@@ -522,7 +550,7 @@ export default function OrderDetailPage() {
                   {order.notes && (
                     <div className="space-y-1 pt-1.5 border-t border-brand-border/60">
                       <span className="text-[10px] font-bold text-brand-gray uppercase flex items-center gap-1"><FileText size={10} /> Client Notes</span>
-                      <span className="text-xs text-brand-gray whitespace-pre-line italic">"{order.notes}"</span>
+                      <span className="text-xs text-brand-gray whitespace-pre-line italic">&quot;{order.notes}&quot;</span>
                     </div>
                   )}
                 </div>

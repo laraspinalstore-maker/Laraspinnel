@@ -28,7 +28,6 @@ interface Product {
 export default function AdminProductsPage() {
   const { showToast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{ label: string; value: string }[]>([]);
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,38 +39,67 @@ export default function AdminProductsPage() {
   const [confirmBulk, setConfirmBulk] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
-  const fetchProductsAndCategories = async () => {
-    setIsLoading(true);
+  /**
+   * The network half, with no state in it — so the mount effect below can apply
+   * results only after an `await`. Setting state synchronously inside an effect
+   * costs a render pass before first paint (`react-hooks/set-state-in-effect`).
+   */
+  const loadProductsAndCategories = async (): Promise<{
+    products: Product[];
+    // Only the two fields the filter dropdown needs; the route returns more.
+    categories: { _id: string; name: string }[];
+  } | null> => {
     try {
       const [prodRes, catRes] = await Promise.all([
         fetch("/api/admin/products"),
         fetch("/api/admin/categories")
       ]);
-
-      if (prodRes.ok && catRes.ok) {
-        const prodData = await prodRes.json();
-        const catData = await catRes.json();
-        setProducts(prodData);
-        setFilteredProducts(prodData);
-        setCategories([
-          { label: "All Categories", value: "all" },
-          ...catData.map((c: any) => ({ label: c.name, value: c._id }))
-        ]);
-      } else {
-        setError("Failed to fetch product metrics");
-      }
-    } catch (err) {
-      setError("Failed to fetch product metrics");
-    } finally {
-      setIsLoading(false);
+      if (!prodRes.ok || !catRes.ok) return null;
+      return {
+        products: (await prodRes.json()) as Product[],
+        categories: (await catRes.json()) as { _id: string; name: string }[],
+      };
+    } catch {
+      return null;
     }
   };
 
-  useEffect(() => {
-    fetchProductsAndCategories();
-  }, []);
+  const applyLoaded = (data: { products: Product[]; categories: { _id: string; name: string }[] }) => {
+    setProducts(data.products);
+    setCategories([
+      { label: "All Categories", value: "all" },
+      ...data.categories.map((c) => ({ label: c.name, value: c._id }))
+    ]);
+  };
+
+  /** Refetch after a mutation — the spinner is wanted here, unlike on mount. */
+  const fetchProductsAndCategories = async () => {
+    setIsLoading(true);
+    const data = await loadProductsAndCategories();
+    if (data) applyLoaded(data);
+    else setError("Failed to fetch product metrics");
+    setIsLoading(false);
+  };
 
   useEffect(() => {
+    let active = true;
+    (async () => {
+      const data = await loadProductsAndCategories();
+      // The admin can navigate away mid-request; without this the response would
+      // update a component that is no longer mounted.
+      if (!active) return;
+      if (data) applyLoaded(data);
+      else setError("Failed to fetch product metrics");
+      setIsLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Derived, not stored. This was a second state field kept in sync by an effect,
+  // so every keystroke in the search box rendered twice.
+  const filteredProducts = useMemo(() => {
     let results = products.filter(
       (p) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -82,7 +110,7 @@ export default function AdminProductsPage() {
       results = results.filter((p) => p.category?._id === categoryFilter);
     }
 
-    setFilteredProducts(results);
+    return results;
   }, [searchTerm, categoryFilter, products]);
 
   const handleDeleteClick = (id: string) => {
@@ -130,7 +158,7 @@ export default function AdminProductsPage() {
       } else {
         showToast(data.error || "Failed to delete product", { variant: "error" });
       }
-    } catch (err) {
+    } catch {
       showToast("Failed to delete product", { variant: "error" });
     } finally {
       setIsDeletingSingle(false);
@@ -142,7 +170,8 @@ export default function AdminProductsPage() {
   const toggleOne = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };

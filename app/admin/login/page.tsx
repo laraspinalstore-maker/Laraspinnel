@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Loader2, Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Horse } from "@phosphor-icons/react";
 
@@ -37,7 +38,7 @@ export default function AdminLoginPage() {
         router.push("/admin");
         router.refresh();
       }
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
@@ -58,7 +59,7 @@ export default function AdminLoginPage() {
               Welcome Back
             </h2>
             <p className="text-sm text-brand-gray mt-1 font-medium">
-              Sign in to manage LARA'S PINNAL dashboard
+              Sign in to manage LARA&apos;S PINNAL dashboard
             </p>
           </div>
         </div>
@@ -140,12 +141,12 @@ export default function AdminLoginPage() {
 
         {/* Public Site Escape Link */}
         <div className="text-center">
-          <a
+          <Link
             href="/"
             className="text-xs font-semibold text-brand-gray hover:text-brand-black transition-colors"
           >
             ← Back to Public Website
-          </a>
+          </Link>
         </div>
       </div>
     </div>

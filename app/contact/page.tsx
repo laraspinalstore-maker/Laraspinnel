@@ -8,6 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useSettings } from "@/hooks/useSettings";
 import { contactMessageSchema } from "@/lib/validations";
+import type { z } from "zod";
 import {
   User,
   Phone,
@@ -22,12 +23,13 @@ import {
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
 
+type ContactMessageInput = z.infer<typeof contactMessageSchema>;
+
 export default function ContactPage() {
   const { settings } = useSettings();
   const [success, setSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  const farmName = settings.farm_name || "Lara's Pinnal";
   const phone = settings.contact_phone || "+91 9442379832";
   const whatsapp = settings.contact_whatsapp || "+91 9442379832";
   const email = settings.contact_email || "senthilraguanthan2004@gmail.com";
@@ -54,7 +56,9 @@ export default function ContactPage() {
     },
   });
 
-  const onSubmit = async (data: any) => {
+  // Inferred from the same zod schema the resolver validates against, so the
+  // payload shape and the validation rules can never drift apart.
+  const onSubmit = async (data: ContactMessageInput) => {
     setSubmitError("");
     setSuccess(false);
 
@@ -72,7 +76,7 @@ export default function ContactPage() {
         const result = await res.json();
         setSubmitError(result.error || "Failed to submit message.");
       }
-    } catch (err) {
+    } catch {
       setSubmitError("Network error. Please try again.");
     }
   };
@@ -81,14 +85,14 @@ export default function ContactPage() {
     <div className="min-h-screen bg-white flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-12">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-12">
         {/* Page Header */}
         <div className="space-y-3 pb-6 text-center mx-auto w-full">
           <span className="flex items-center justify-center gap-2 text-xs font-semibold text-primary-text uppercase tracking-wider">
             <Phone size={14} className="text-primary" /> Get in touch
           </span>
           <h1 className="font-display text-3xl sm:text-5xl text-brand-black tracking-wide uppercase">
-            Contact Lara's Pinnal
+            Contact Lara&apos;s Pinnal
           </h1>
           <p className="text-sm font-medium text-brand-gray">
             Have questions about custom crochet orders, flower bouquets, gift hampers, or bulk enquiries? Fill out the form or chat with us on WhatsApp.

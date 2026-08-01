@@ -173,11 +173,15 @@ export const DEFAULT_CUSTOM_GALLERY: CustomGalleryItem[] = [
 ];
 
 /* ---- Footer link columns ---- */
+// These are DEFAULTS: they only apply while the `footer_quicklinks` setting is
+// blank. A store that has already saved a custom list will not pick up additions
+// here, which is why /faq is also hardcoded into the Footer's bottom bar.
 export const DEFAULT_FOOTER_QUICKLINKS: LinkItem[] = [
   { label: "Home", href: "/" },
   { label: "Shop Catalog", href: "/shop" },
   { label: "Categories", href: "/categories" },
   { label: "About Us", href: "/about" },
+  { label: "FAQ", href: "/faq" },
   { label: "Enquiry", href: "/contact" },
   { label: "Track Order", href: "/track-order" },
   { label: "Shopping Cart", href: "/cart" },
@@ -257,7 +261,12 @@ export const CONTENT_PLACEHOLDERS: Record<string, string> = {
   home_testimonials_title: "Kind Words From Happy Customers",
   home_testimonials_subtitle:
     "Real messages from customers who made their special moments a little more memorable with Lara's Pinnal.",
-  home_stat_1: "500+ Happy Customers",
+  // Craft claims, not social-proof counts. This slot previously read
+  // "500+ Happy Customers" while seed-commerce.js said "1,500+ Gifts
+  // Delivered" and app/about/layout.tsx's OG description said "3500+" — three
+  // mutually contradictory numbers, none of them derived from the Order
+  // collection. Keep these verifiable and about the craft.
+  home_stat_1: "100% Handmade to Order",
   home_stat_2: "Ships Across India",
   home_stat_3: "Handmade Quality Guaranteed",
   about_intro_title: "About Lara's Pinnal",
@@ -278,12 +287,14 @@ export const CONTENT_PLACEHOLDERS: Record<string, string> = {
   about_why_2_desc: "Describe your second key strength.",
   about_why_3_title: "Safe Pan-India Delivery",
   about_why_3_desc: "Describe your third key strength.",
-  about_stat_1_val: "500+",
-  about_stat_1_label: "Gifts Handmade",
-  about_stat_2_val: "100%",
-  about_stat_2_label: "Handcrafted",
-  about_stat_3_val: "4.9★",
-  about_stat_3_label: "Happy Customers",
+  about_stat_1_val: "100%",
+  about_stat_1_label: "Hand-Knitted",
+  about_stat_2_val: "Made to Order",
+  about_stat_2_label: "Every Piece",
+  // Was "4.9★ / Happy Customers" — a rating claim with no review data behind
+  // it anywhere in the app. Replaced with a material fact.
+  about_stat_3_val: "Milk Cotton",
+  about_stat_3_label: "Premium Yarn",
   about_stat_4_val: "Pan-India",
   about_stat_4_label: "Delivery",
   contact_phone: "+91 9442379832",

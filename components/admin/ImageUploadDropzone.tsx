@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useRef } from "react";
-import { UploadCloud, Image as ImageIcon, X, Loader2 } from "lucide-react";
+import { UploadCloud, X, Loader2 } from "lucide-react";
 
 interface ImageUploadDropzoneProps {
   value: string[];
@@ -52,7 +52,7 @@ export default function ImageUploadDropzone({
         } else {
           setError(data.error || "Failed to upload image.");
         }
-      } catch (err) {
+      } catch {
         setError("Network error. Failed to upload image.");
       }
     }

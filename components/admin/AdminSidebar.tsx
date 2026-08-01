@@ -44,10 +44,17 @@ export default function AdminSidebar() {
     return () => window.removeEventListener('toggle-admin-sidebar', handleToggle);
   }, []);
 
-  // Close sidebar on route change for mobile
-  useEffect(() => {
+  // Close the mobile drawer on route change.
+  //
+  // Done by comparing the previous pathname during render — React's documented way
+  // to reset state when a value changes — rather than from an effect. An effect
+  // would leave the drawer covering the new page for one painted frame, and it is
+  // what `react-hooks/set-state-in-effect` flags.
+  const [pathAtOpen, setPathAtOpen] = useState(pathname);
+  if (pathAtOpen !== pathname) {
+    setPathAtOpen(pathname);
     setIsMobileOpen(false);
-  }, [pathname]);
+  }
 
   // Fetch metrics counts
   const { data: counts } = useSWR("/api/admin/counts", fetcher, {
@@ -147,7 +154,7 @@ export default function AdminSidebar() {
             {!isCollapsed && (
               <Link href="/admin" className="flex items-center gap-2">
                 <span className="font-display text-base tracking-wider text-primary truncate uppercase">
-                  LARA'S PINNAL
+                  LARA&apos;S PINNAL
                 </span>
                 <span className="bg-neutral-800 text-[10px] text-neutral-400 px-1.5 py-0.5 rounded font-mono shrink-0">
                   ADMIN

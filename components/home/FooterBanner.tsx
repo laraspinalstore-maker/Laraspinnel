@@ -5,13 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSettings } from "@/hooks/useSettings";
 import { getThemeAccentHex } from "@/lib/siteContent";
-import { hexToRgba } from "@/lib/utils";
 import FloatingPaper from "./FloatingPaper";
 import Sprinkles from "./Sprinkles";
 import { motion } from "framer-motion";
 
 const CARD_CLASSES =
-  "relative w-full overflow-hidden rounded-[2rem] bg-brand-light-gray ring-1 ring-primary/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-700 ease-out group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)]";
+  "relative w-full overflow-hidden rounded-4xl bg-brand-light-gray ring-1 ring-primary/15 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-700 ease-out group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)]";
 
 function CardDecoration({ colorHex }: { colorHex: string }) {
   return (
@@ -97,7 +96,7 @@ export default function FooterBanner() {
         <Sprinkles colorHex={decorationColor} />
         
         {/* Tablet — 4:3, admin-uploaded image (mobile shows TrackOrderCard instead) */}
-      <div className={`aspect-[4/3] ${CARD_CLASSES}`}>
+      <div className={`aspect-4/3 ${CARD_CLASSES}`}>
         <Image
           src={tabletImageUrl}
           alt="Promotional banner"

@@ -265,14 +265,23 @@ export default function Footer() {
             <span className="hidden sm:inline"> | </span> 
             Content Last Updated: <time dateTime="2026-07-19" className="font-medium text-neutral-400">Jul 2026</time>
           </p>
-          <div className="flex items-center gap-3 text-neutral-400">
+          {/* Hardcoded rather than admin-editable, so these always render even
+              when a store has overridden footer_quicklinks. /faq and
+              /editorial-policy are listed here because this is the guaranteed
+              path — /editorial-policy previously had zero inbound links anywhere
+              on the site. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-neutral-400">
+            <Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
+            <span aria-hidden="true">|</span>
             <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <span>|</span>
+            <span aria-hidden="true">|</span>
             <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
-            <span>|</span>
+            <span aria-hidden="true">|</span>
             <Link href="/shipping-policy" className="hover:text-white transition-colors">Shipping Policy</Link>
-            <span>|</span>
+            <span aria-hidden="true">|</span>
             <Link href="/refund-policy" className="hover:text-white transition-colors">Refund Policy</Link>
+            <span aria-hidden="true">|</span>
+            <Link href="/editorial-policy" className="hover:text-white transition-colors">Editorial Policy</Link>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">

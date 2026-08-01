@@ -80,7 +80,13 @@ const SECTIONS: Record<TabId, string[]> = {
   footer: ["Quick Links column", "Popular Categories column", "Trust Badges", "Disclaimer & note"],
   about: ["Hero (top of page)", "Our Story", "Behind Every Stitch — reels videos", "Why Choose section", "Stats (4)"],
   contact: ["Contact details", "Social links"],
-  policies: ["Privacy Policy", "Terms of Service", "Editorial Policy", "Refund Policy"],
+  policies: [
+    "Privacy Policy",
+    "Terms of Service",
+    "Editorial Policy",
+    "Shipping Policy",
+    "Refund Policy",
+  ],
 };
 
 export default function AdminContentPage() {
@@ -108,7 +114,7 @@ export default function AdminContentPage() {
         } else {
           showToast("Failed to load site content.", { variant: "error" });
         }
-      } catch (err) {
+      } catch {
         showToast("Failed to load site content.", { variant: "error" });
       } finally {
         setIsLoading(false);
@@ -138,7 +144,7 @@ export default function AdminContentPage() {
         const data = await res.json().catch(() => ({}));
         showToast(data.error || "Failed to save content.", { variant: "error" });
       }
-    } catch (err) {
+    } catch {
       showToast("Network error. Please try again.", { variant: "error" });
     } finally {
       setIsSaving(false);
@@ -566,6 +572,10 @@ export default function AdminContentPage() {
               <Section activeSection={activeSection} title="Editorial Policy">
                 <p className="text-[10px] text-brand-gray -mt-1">Leave blank to use the built-in default.</p>
                 <TiptapEditor value={val("editorial_policy_content")} onChange={(v) => setVal("editorial_policy_content", v)} />
+              </Section>
+              <Section activeSection={activeSection} title="Shipping Policy">
+                <p className="text-[10px] text-brand-gray -mt-1">Leave blank to use the built-in default policy. The delivery charge shown on that page is read from Settings, not from this text, so it always matches checkout.</p>
+                <TiptapEditor value={val("shipping_policy_content")} onChange={(v) => setVal("shipping_policy_content", v)} />
               </Section>
               <Section activeSection={activeSection} title="Refund Policy">
                 <p className="text-[10px] text-brand-gray -mt-1">Leave blank to use the built-in default policy.</p>

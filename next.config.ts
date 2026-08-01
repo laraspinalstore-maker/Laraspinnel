@@ -95,6 +95,21 @@ const nextConfig: NextConfig = {
         destination: "https://laraspinal.in/:path*",
         permanent: true,
       },
+      // www and apex would otherwise both serve the full site: two crawlable
+      // hostnames for identical content, and every canonical points at the apex
+      // anyway. 308 to the apex so the duplicate host cannot be indexed.
+      //
+      // This is a code-level fallback, not the primary mechanism — the redirect
+      // belongs in the DNS/Vercel domain config, where it costs no function
+      // invocation. It is here so the behaviour holds even if that config is
+      // missing, which is exactly how the www duplicate appeared in the first
+      // place. See the deployment notes in the final report.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.laraspinal.in" }],
+        destination: "https://laraspinal.in/:path*",
+        permanent: true,
+      },
     ];
   },
 

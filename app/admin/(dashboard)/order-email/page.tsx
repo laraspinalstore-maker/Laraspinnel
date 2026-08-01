@@ -68,7 +68,7 @@ export default function AdminOrderEmailSettingsPage() {
         } else {
           setError("Failed to load settings.");
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load settings.");
       } finally {
         setIsLoading(false);
@@ -121,7 +121,7 @@ export default function AdminOrderEmailSettingsPage() {
         const data = await res.json();
         setError(data.error || "Failed to save the email template.");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setIsSaving(false);
@@ -154,7 +154,7 @@ export default function AdminOrderEmailSettingsPage() {
 
       <div className="flex-1 p-3 md:p-6 space-y-6 w-full max-w-none animate-in fade-in">
         <p className="text-sm text-brand-gray max-w-2xl">
-          Customize the emails sent to customers who provide an email address at checkout. Only the text below is editable — the layout is generated automatically so it can't be broken by a typo.
+          Customize the emails sent to customers who provide an email address at checkout. Only the text below is editable — the layout is generated automatically so it can&apos;t be broken by a typo.
         </p>
 
         {error && (

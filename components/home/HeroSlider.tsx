@@ -3,21 +3,28 @@
 import React, { useState, useEffect, useCallback } from "react";
 import useSWR from "swr";
 import Link from "next/link";
-import useEmblaCarousel from "embla-carousel-react";
+import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { safeUrl } from "@/lib/security/url";
+import type { BannerDTO } from "@/lib/data/types";
 
-interface Banner {
-  _id: string;
-  imageUrl: string;
-  headline: string;
-  subtext?: string;
-  buttonText?: string;
-  buttonLink?: string;
-  buttonTheme: "green" | "red";
-}
+/**
+ * Banner shape, shared with the server render in app/page.tsx via
+ * `lib/data/types.ts` rather than declared twice. `buttonTheme` is a plain string
+ * there because the value comes from the database: the admin form only offers
+ * "green" and "red", but an older or hand-edited row can hold anything, and the
+ * button below treats everything that is not "red" as the default theme.
+ */
+type Banner = BannerDTO;
+
+/**
+ * The carousel instance, as handed to Embla's event callbacks. The hook returns
+ * `[ref, api | undefined]`, so the api type is the second tuple member with the
+ * `undefined` stripped — the callbacks below only ever run with a live instance.
+ */
+type EmblaApi = NonNullable<UseEmblaCarouselType[1]>;
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -56,20 +63,39 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
     return () => clearTimeout(t);
   }, []);
 
-  const onInit = useCallback((emblaApi: any) => {
-    setScrollSnaps(emblaApi.scrollSnapList());
+  const onInit = useCallback((api: EmblaApi) => {
+    setScrollSnaps(api.scrollSnapList());
   }, []);
 
-  const onSelect = useCallback((emblaApi: any) => {
-    setSelectedIndex(emblaApi.selectedScrollSnap());
+  const onSelect = useCallback((api: EmblaApi) => {
+    setSelectedIndex(api.selectedScrollSnap());
   }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
-    onInit(emblaApi);
-    onSelect(emblaApi);
+
     emblaApi.on("reInit", onInit);
+    emblaApi.on("reInit", onSelect);
     emblaApi.on("select", onSelect);
+
+    // The first read of the snap list is queued rather than run inline. Embla has
+    // the values ready immediately, but setting state in the body of an effect
+    // renders again before the browser paints (`react-hooks/set-state-in-effect`)
+    // — and this only populates the pagination dots, which are below the LCP
+    // image and not worth a synchronous pass.
+    const id = setTimeout(() => {
+      onInit(emblaApi);
+      onSelect(emblaApi);
+    }, 0);
+
+    // The previous version never unsubscribed, so every remount left its
+    // listeners attached to the carousel instance.
+    return () => {
+      clearTimeout(id);
+      emblaApi.off("reInit", onInit);
+      emblaApi.off("reInit", onSelect);
+      emblaApi.off("select", onSelect);
+    };
   }, [emblaApi, onInit, onSelect]);
 
   const scrollPrev = useCallback(() => {
@@ -116,9 +142,14 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
       <div className="relative overflow-hidden rounded-2xl" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide, index) => {
-            // The page's single <h1> is the sr-only heading in app/page.tsx.
-            // Carousel slide headlines are <h2> so there is exactly one H1.
-            const Heading = "h2";
+            // The first slide's headline is the page's <h1>: it is the visually
+            // dominant text on the page and it is what the page is about, so it
+            // should carry the top heading level rather than a hidden duplicate.
+            // Only slide 0 gets it — Embla keeps every slide mounted, so a
+            // per-slide <h1> would mean several <h1>s in one document, and the
+            // <h1> never disappears as the carousel advances.
+            // Paired with app/page.tsx, which no longer renders an sr-only <h1>.
+            const Heading = index === 0 ? "h1" : "h2";
             return (
               <div
                 key={slide._id}

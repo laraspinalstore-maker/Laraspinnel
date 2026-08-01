@@ -7,7 +7,7 @@ import { FaInstagram } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { parseList, DEFAULT_CUSTOM_GALLERY, CONTENT_DEFAULTS } from "@/lib/siteContent";
 import Reveal from "./Reveal";
-import { FloralDoodle } from "./AboutHero";
+import { FloralDoodle } from "./FloralDoodle";
 
 export interface AboutReel {
   title: string;
@@ -51,13 +51,11 @@ const DEFAULT_REELS: AboutReel[] = [
 
 function ReelCard({
   reel,
-  index,
   instagram,
   onPlayingChange,
   allowInstagramFallback = false,
 }: {
   reel: AboutReel;
-  index: number;
   instagram?: string;
   onPlayingChange?: (playing: boolean) => void;
   /** Only the built-in placeholder cards link out to Instagram; admin reels must play in place */
@@ -268,7 +266,6 @@ export default function ReelsSection({ settings }: { settings: Record<string, st
                 <ReelCard
                   key={`${reel.title}-${i}`}
                   reel={reel}
-                  index={i}
                   instagram={instagram}
                   onPlayingChange={handlePlayingChange}
                   allowInstagramFallback={configured.length === 0}

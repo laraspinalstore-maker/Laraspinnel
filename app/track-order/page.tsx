@@ -107,11 +107,20 @@ export default function TrackOrderPage() {
   const [error, setError] = useState("");
   const [order, setOrder] = useState<TrackedOrder | null>(null);
 
-  // Prefill from ?order=… (checkout success links here). Read from
-  // window.location instead of useSearchParams to avoid a Suspense boundary.
+  // Prefill from ?order=… (the checkout success screen links here with the order
+  // number attached). Read from `window.location` rather than `useSearchParams()`,
+  // which would opt this route into client-side rendering unless wrapped in a
+  // Suspense boundary.
+  //
+  // Queued instead of set inline: a synchronous setState in an effect renders
+  // twice before paint. Reading the query in the `useState` initializer instead
+  // is not an option — it would run during hydration and put a value in the input
+  // that the server-rendered HTML does not have, which is a hydration mismatch.
   useEffect(() => {
     const fromQuery = new URLSearchParams(window.location.search).get("order");
-    if (fromQuery) setOrderNumber(fromQuery.toUpperCase());
+    if (!fromQuery) return;
+    const id = setTimeout(() => setOrderNumber(fromQuery.toUpperCase()), 0);
+    return () => clearTimeout(id);
   }, []);
 
   const whatsapp = settings.contact_whatsapp || "+91 9442379832";
@@ -159,7 +168,7 @@ export default function TrackOrderPage() {
     <div className="min-h-screen bg-white flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 max-w-4xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-10">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-4xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-10">
         {/* Page Header */}
         <div className="space-y-3 pb-2 text-center mx-auto w-full">
           <span className="flex items-center justify-center gap-2 text-xs font-semibold text-primary-text uppercase tracking-wider">

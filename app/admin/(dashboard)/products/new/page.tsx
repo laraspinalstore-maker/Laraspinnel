@@ -38,8 +38,9 @@ export default function NewProductPage() {
       try {
         const res = await fetch("/api/admin/categories");
         if (res.ok) {
-          const data = await res.json();
-          setCategories(data.map((c: any) => ({ label: c.name, value: c._id })));
+          // Only the two fields the category dropdown needs.
+          const data: { _id: string; name: string }[] = await res.json();
+          setCategories(data.map((c) => ({ label: c.name, value: c._id })));
           if (data.length > 0) {
             setFormData((prev) => ({ ...prev, category: data[0]._id }));
           }
@@ -110,7 +111,7 @@ export default function NewProductPage() {
       } else {
         setError(data.error || "Failed to create product");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to create product");
     } finally {
       setIsSubmitting(false);

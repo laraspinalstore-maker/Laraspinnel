@@ -38,7 +38,7 @@ export default function EditCategoryPage() {
         } else {
           setError("Failed to load category details");
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load category details");
       } finally {
         setIsLoading(false);
@@ -73,7 +73,7 @@ export default function EditCategoryPage() {
       } else {
         setError(data.error || "Failed to update category");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to update category");
     } finally {
       setIsSubmitting(false);

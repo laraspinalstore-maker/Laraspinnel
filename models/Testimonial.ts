@@ -39,7 +39,11 @@ TestimonialSchema.index({ isActive: 1, createdAt: -1 });
 TestimonialSchema.index({ createdAt: -1 });
 
 if (mongoose.models.Testimonial) {
-  delete (mongoose.models as any).Testimonial;
+  // Dropped so the schema below is re-registered after a hot reload, which is what
+  // keeps a newly added field from being silently ignored in development.
+  // `mongoose.models` is typed as a readonly record, so the delete goes through
+  // Reflect rather than a cast to `any`.
+  Reflect.deleteProperty(mongoose.models, "Testimonial");
 }
 
 const Testimonial: Model<ITestimonial> =

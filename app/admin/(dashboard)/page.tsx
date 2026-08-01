@@ -1,4 +1,5 @@
 import React from "react";
+import type { Types } from "mongoose";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -21,6 +22,18 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   delivered: "Delivered",
   cancelled: "Cancelled",
 };
+
+/** The order fields the "Recent Orders" table reads, as a `.lean()` document. */
+interface LeanRecentOrder {
+  _id: Types.ObjectId;
+  orderNumber: string;
+  customerName: string;
+  phone: string;
+  items: { quantity: number }[];
+  totalAmount: number;
+  status: OrderStatus;
+  createdAt: Date;
+}
 
 async function getDashboardData() {
   await connectToDatabase();
@@ -65,10 +78,10 @@ async function getDashboardData() {
     createdAt: { $gte: start14 },
   })
     .select("totalAmount createdAt")
-    .lean();
+    .lean<{ totalAmount: number; createdAt: Date }[]>();
 
   const trendMap = new Map<string, number>();
-  for (const o of trendOrders as any[]) {
+  for (const o of trendOrders) {
     const k = istKey(new Date(o.createdAt));
     trendMap.set(k, (trendMap.get(k) || 0) + o.totalAmount);
   }
@@ -80,10 +93,12 @@ async function getDashboardData() {
   const revenueToday = revenueTrend[revenueTrend.length - 1]?.total || 0;
 
   // ---- Analytics: orders grouped by status ----
-  const statusRaw = await Order.aggregate([
+  // `aggregate` is untyped by design — the pipeline decides the output shape — so
+  // the generic states what this specific $group stage produces.
+  const statusRaw = await Order.aggregate<{ _id: string; count: number }>([
     { $group: { _id: "$status", count: { $sum: 1 } } },
   ]);
-  const statusCountMap = new Map<string, number>(statusRaw.map((s: any) => [s._id, s.count]));
+  const statusCountMap = new Map<string, number>(statusRaw.map((s) => [s._id, s.count]));
   const ordersByStatus = (Object.keys(STATUS_LABELS) as OrderStatus[]).map((status) => ({
     status,
     label: STATUS_LABELS[status],
@@ -179,14 +194,14 @@ async function getDashboardData() {
   const recentOrdersRaw = await Order.find()
     .sort({ createdAt: -1 })
     .limit(5)
-    .lean();
+    .lean<LeanRecentOrder[]>();
 
-  const recentOrders = recentOrdersRaw.map((o: any) => ({
+  const recentOrders = recentOrdersRaw.map((o) => ({
     id: o._id.toString(),
     orderNumber: o.orderNumber,
     customerName: o.customerName,
     phone: o.phone,
-    itemsCount: o.items.reduce((acc: number, item: any) => acc + item.quantity, 0),
+    itemsCount: o.items.reduce((acc, item) => acc + item.quantity, 0),
     totalAmount: o.totalAmount,
     status: o.status as OrderStatus,
     createdAt: o.createdAt.toLocaleDateString("en-IN", {
@@ -262,7 +277,7 @@ export default async function AdminDashboardPage() {
               Welcome back, {session.user?.name || "Admin"}!
             </h2>
             <p className="text-brand-gray text-sm mt-1">
-              Here is a summary of Lara's Pinnal orders and messaging activities.
+              Here is a summary of Lara&apos;s Pinnal orders and messaging activities.
             </p>
           </div>
           <Link

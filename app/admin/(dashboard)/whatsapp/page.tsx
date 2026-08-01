@@ -40,7 +40,7 @@ export default function AdminWhatsAppSettingsPage() {
         } else {
           setError("Failed to load settings.");
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load settings.");
       } finally {
         setIsLoading(false);
@@ -68,7 +68,7 @@ export default function AdminWhatsAppSettingsPage() {
         const data = await res.json();
         setError(data.error || "Failed to save the message template.");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setIsSaving(false);
@@ -86,7 +86,7 @@ export default function AdminWhatsAppSettingsPage() {
 
       <div className="flex-1 p-3 md:p-6 space-y-6 w-full max-w-none animate-in fade-in">
         <p className="text-sm text-brand-gray max-w-2xl">
-          Customize the message sent to customers when you tap <span className="font-semibold text-brand-black">"Message on WhatsApp"</span> on an order's detail page — used to confirm payment before dispatch.
+          Customize the message sent to customers when you tap <span className="font-semibold text-brand-black">&quot;Message on WhatsApp&quot;</span> on an order&apos;s detail page — used to confirm payment before dispatch.
         </p>
 
         {error && (

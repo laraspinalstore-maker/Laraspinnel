@@ -61,29 +61,42 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // crash every component that maps over it. Prices here are display-only
   // regardless: app/api/orders/route.ts recomputes every amount from the
   // database and ignores what the client sends.
+  // The restore is queued rather than applied in the body of the effect: a
+  // synchronous setState there renders the whole tree again before the browser
+  // paints, and the cart badge is not part of the first paint anyway. Reading
+  // localStorage in the `useState` initializer would be worse — it runs during
+  // hydration and would make the client's first render disagree with the
+  // server-rendered HTML.
+  //
+  // `setIsHydrated(true)` lands in the same batch as `setCart`, which matters:
+  // the persistence effect below only writes once hydration is done, so the
+  // restored cart can never be overwritten by the empty initial value.
   useEffect(() => {
-    const savedCart = localStorage.getItem("lp_cart");
-    if (savedCart) {
-      try {
-        const parsed: unknown = JSON.parse(savedCart);
-        const clean = Array.isArray(parsed)
-          ? (parsed.filter(
-              (item): item is CartItem =>
-                Boolean(item) &&
-                typeof item === "object" &&
-                typeof (item as CartItem).productId === "string" &&
-                typeof (item as CartItem).name === "string" &&
-                Number.isFinite((item as CartItem).price) &&
-                Number.isInteger((item as CartItem).quantity) &&
-                (item as CartItem).quantity > 0
-            ) as CartItem[])
-          : [];
-        setCart(clean);
-      } catch (err) {
-        console.error("Failed to parse cart from localStorage", err);
+    const id = setTimeout(() => {
+      const savedCart = localStorage.getItem("lp_cart");
+      if (savedCart) {
+        try {
+          const parsed: unknown = JSON.parse(savedCart);
+          const clean = Array.isArray(parsed)
+            ? (parsed.filter(
+                (item): item is CartItem =>
+                  Boolean(item) &&
+                  typeof item === "object" &&
+                  typeof (item as CartItem).productId === "string" &&
+                  typeof (item as CartItem).name === "string" &&
+                  Number.isFinite((item as CartItem).price) &&
+                  Number.isInteger((item as CartItem).quantity) &&
+                  (item as CartItem).quantity > 0
+              ) as CartItem[])
+            : [];
+          setCart(clean);
+        } catch (err) {
+          console.error("Failed to parse cart from localStorage", err);
+        }
       }
-    }
-    setIsHydrated(true);
+      setIsHydrated(true);
+    }, 0);
+    return () => clearTimeout(id);
   }, []);
 
   // Sync cart to localStorage whenever it changes

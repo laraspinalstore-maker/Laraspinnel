@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Navbar from "@/components/layout/Navbar";
@@ -7,17 +7,22 @@ import useSWR from "swr";
 import Link from "next/link";
 import Image from "next/image";
 import { Tag } from "lucide-react";
+import type { CategoryDTO } from "@/lib/data/types";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function CategoriesPage() {
-  const { data: categories = [], isLoading, error } = useSWR("/api/categories", fetcher);
+  const {
+    data: categories = [],
+    isLoading,
+    error,
+  } = useSWR<CategoryDTO[]>("/api/categories", fetcher);
 
   return (
     <div className="min-h-screen bg-white flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-12 animate-in fade-in">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-7xl mx-auto px-4 md:px-6 py-7 md:py-12 w-full space-y-12 animate-in fade-in">
         {/* Page Header */}
         <div className="space-y-3 pb-6 text-center mx-auto w-full">
           <span className="flex items-center justify-center gap-2 text-xs font-semibold text-primary-text uppercase tracking-wider">
@@ -36,7 +41,7 @@ export default function CategoriesPage() {
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6">
             {[...Array(6)].map((_, idx) => (
               <div key={idx} className="space-y-3">
-                <div className="w-full aspect-square rounded-2xl md:rounded-[2rem] bg-neutral-200 animate-pulse" />
+                <div className="w-full aspect-square rounded-2xl md:rounded-4xl bg-neutral-200 animate-pulse" />
                 <div className="h-4 bg-neutral-200 rounded animate-pulse w-3/4 mx-auto" />
               </div>
             ))}
@@ -47,14 +52,14 @@ export default function CategoriesPage() {
           </p>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6">
-            {categories.map((category: any) => (
+            {categories.map((category) => (
               <Link
                 key={category._id}
                 href={`/shop?category=${category.slug}`}
                 className="group flex flex-col items-center text-center gap-3 w-full"
               >
                 {/* Rounded Square Card with Off-White Background */}
-                <div className="relative aspect-square w-full rounded-2xl md:rounded-[2rem] overflow-hidden bg-[#F3F4F6] border border-brand-border/40 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+                <div className="relative aspect-square w-full rounded-2xl md:rounded-4xl overflow-hidden bg-[#F3F4F6] border border-brand-border/40 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
                   <Image
                     src={category.image}
                     alt={category.name}

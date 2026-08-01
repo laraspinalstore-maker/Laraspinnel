@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
 
 interface TypeToConfirmDialogProps {
@@ -32,10 +32,16 @@ export default function TypeToConfirmDialog({
 }: TypeToConfirmDialogProps) {
   const [typedValue, setTypedValue] = useState("");
 
-  // Reset the typed value each time the dialog opens for a (potentially new) target.
-  useEffect(() => {
-    if (isOpen) setTypedValue("");
-  }, [isOpen, confirmWord]);
+  // Reset the typed value each time the dialog opens for a (potentially new)
+  // target. Compared during render rather than in an effect: an effect resets
+  // after the dialog has already painted with the previous target's text still in
+  // the box, and it is what `react-hooks/set-state-in-effect` flags.
+  const [openedFor, setOpenedFor] = useState<string | null>(null);
+  const openKey = isOpen ? confirmWord : null;
+  if (openedFor !== openKey) {
+    setOpenedFor(openKey);
+    if (typedValue !== "") setTypedValue("");
+  }
 
   if (!isOpen) return null;
 

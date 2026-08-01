@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { Heart, Star } from "lucide-react";
 import Reveal from "./Reveal";
 import { safeImageUrl } from "@/lib/security/url";
+import type { TestimonialDTO } from "@/lib/data/types";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -24,15 +25,17 @@ type ImageReview = {
  * visual. Section hides itself while there are no image reviews yet.
  */
 export default function AboutReviews() {
-  const { data: testimonials, isLoading } = useSWR(
+  const { data: testimonials, isLoading } = useSWR<TestimonialDTO[]>(
     "/api/testimonials",
     fetcher
   );
 
   const reviews: ImageReview[] = Array.isArray(testimonials)
     ? testimonials
-        .filter((t: any) => typeof t.imageUrl === "string" && t.imageUrl)
-        .map((t: any, i: number) => ({
+        .filter((t): t is TestimonialDTO & { imageUrl: string } =>
+          typeof t.imageUrl === "string" && Boolean(t.imageUrl)
+        )
+        .map((t, i) => ({
           id: String(t._id ?? i),
           imageUrl: t.imageUrl,
           name: t.name || "Customer Review",
@@ -112,7 +115,11 @@ export default function AboutReviews() {
                           <span className="text-xs font-semibold text-brand-black truncate">
                             {rev.name}
                           </span>
-                          <span className="flex gap-px shrink-0" aria-label={`${rev.rating} out of 5 stars`}>
+                          <span
+                            role="img"
+                            aria-label={`${rev.rating} out of 5 stars`}
+                            className="flex gap-px shrink-0"
+                          >
                             {[...Array(5)].map((_, s) => (
                               <Star
                                 key={s}

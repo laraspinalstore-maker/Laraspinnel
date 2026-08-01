@@ -40,7 +40,7 @@ export default function AdminContactEmailSettingsPage() {
         } else {
           setError("Failed to load settings.");
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load settings.");
       } finally {
         setIsLoading(false);
@@ -78,7 +78,7 @@ export default function AdminContactEmailSettingsPage() {
         const data = await res.json();
         setError(data.error || "Failed to save the email template.");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setIsSaving(false);

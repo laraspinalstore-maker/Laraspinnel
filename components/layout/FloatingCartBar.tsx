@@ -24,7 +24,7 @@ export default function FloatingCartBar() {
   const amountRemaining = freeDeliveryThreshold - cartTotal;
 
   return (
-    <div className="fixed left-4 right-4 md:left-auto md:w-[340px] md:right-6 bottom-[calc(3.75rem+16px)] md:bottom-6 z-[60] animate-in slide-in-from-bottom-5 fade-in duration-300">
+    <div className="fixed left-4 right-4 md:left-auto md:w-85 md:right-6 bottom-19 md:bottom-6 z-60 animate-in slide-in-from-bottom-5 fade-in duration-300">
       <Link href="/cart" className="block group">
         <div className="bg-brand-black text-white rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-white/15 backdrop-blur-md transform transition-transform group-hover:scale-[1.02]">
 
@@ -38,7 +38,7 @@ export default function FloatingCartBar() {
               ) : (
                 <>
                   <Sparkles size={12} className="text-emerald-400" />
-                  <span>You've unlocked FREE Delivery!</span>
+                  <span>You&apos;ve unlocked FREE Delivery!</span>
                 </>
               )}
             </div>

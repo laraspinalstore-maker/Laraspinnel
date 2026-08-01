@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Plus, Trash2, ArrowUp, ArrowDown, Loader2, Video, X } from "lucide-react";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { PromoCard, PROMO_CARD_COLORS, CustomGalleryItem } from "@/lib/siteContent";
 import type { AboutReel } from "@/components/about/ReelsSection";
+import { toErrorMessage } from "@/lib/errorMessage";
 
 /* ---------------- Single-value fields ---------------- */
 
@@ -359,9 +360,15 @@ export function ReelListEditor({
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pendingIndex = useRef<number>(-1);
-  /* Latest items, so an upload finishing doesn't clobber fields edited mid-upload */
+  /* Latest items, so an upload finishing doesn't clobber fields edited mid-upload.
+     Synced in an effect rather than assigned during render: a ref write in the
+     render body is what `react-hooks/refs` reports, and under a re-entrant render
+     it can be discarded. Every read of this ref happens in the async upload
+     handler, long after effects have flushed. */
   const itemsRef = useRef(items);
-  itemsRef.current = items;
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
 
   const blankItem = (): AboutReel => ({ title: "", videoUrl: "", posterUrl: "", duration: "" });
 
@@ -446,8 +453,8 @@ export function ReelListEditor({
       const copy = [...current];
       copy[index] = { ...current[index], videoUrl: data.url };
       onChange(copy);
-    } catch (err: any) {
-      setError(err.message || "Failed to upload video. Please try again.");
+    } catch (err) {
+      setError(toErrorMessage(err, "Failed to upload video. Please try again."));
     } finally {
       setUploadingIndex(null);
       pendingIndex.current = -1;

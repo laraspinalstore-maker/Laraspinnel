@@ -6,8 +6,30 @@ import { Plus, Loader2, Edit, Trash2, Image as ImageIcon, Upload, X, Star } from
 import Image from "next/image";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
+/**
+ * A testimonial as this screen edits it.
+ *
+ * `_id` is absent while creating and present when editing, which is exactly what
+ * `handleSave` branches on. The optional image fields are what separate the two
+ * review kinds: an `imageUrl` review is a screenshot shown in the About gallery,
+ * everything else is a text review shown in the Home page chat section.
+ */
+interface AdminTestimonial {
+  _id?: string;
+  name: string;
+  location: string;
+  goal: string;
+  outcome: string;
+  rating: number;
+  imageUrl: string;
+  refId: string;
+  isActive: boolean;
+  avatarUrl?: string;
+  orderImageUrl?: string;
+}
+
 export default function AdminTestimonialsPage() {
-  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<AdminTestimonial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -16,7 +38,7 @@ export default function AdminTestimonialsPage() {
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   /* "text" reviews feed the Home page chat section; "image" reviews feed the About page gallery */
   const [reviewType, setReviewType] = useState<"text" | "image">("text");
-  const [currentTestimonial, setCurrentTestimonial] = useState<any>({
+  const [currentTestimonial, setCurrentTestimonial] = useState<AdminTestimonial>({
     name: "",
     location: "",
     goal: "",
@@ -31,22 +53,42 @@ export default function AdminTestimonialsPage() {
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchTestimonials = async () => {
+  /**
+   * The network half, with no state in it — so the mount effect below can apply
+   * results only after an `await`. Setting state synchronously inside an effect
+   * costs a render pass before first paint (`react-hooks/set-state-in-effect`).
+   */
+  const loadTestimonials = async (): Promise<AdminTestimonial[] | null> => {
     try {
       const res = await fetch("/api/admin/testimonials");
-      if (res.ok) {
-        const data = await res.json();
-        setTestimonials(data);
-      }
+      if (!res.ok) return null;
+      return (await res.json()) as AdminTestimonial[];
     } catch (error) {
       console.error("Failed to load testimonials:", error);
-    } finally {
-      setIsLoading(false);
+      return null;
     }
   };
 
+  /** Refetch after a create, edit or delete. */
+  const fetchTestimonials = async () => {
+    const data = await loadTestimonials();
+    if (data) setTestimonials(data);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    fetchTestimonials();
+    let active = true;
+    (async () => {
+      const data = await loadTestimonials();
+      // The admin can navigate away mid-request; without this the response would
+      // update a component that is no longer mounted.
+      if (!active) return;
+      if (data) setTestimonials(data);
+      setIsLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const handleOpenCreate = () => {
@@ -66,7 +108,7 @@ export default function AdminTestimonialsPage() {
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (t: any) => {
+  const handleOpenEdit = (t: AdminTestimonial) => {
     setModalMode("edit");
     setReviewType(t.imageUrl ? "image" : "text");
     setCurrentTestimonial(t);
@@ -97,11 +139,11 @@ export default function AdminTestimonialsPage() {
 
       const data = await res.json();
       if (res.ok && data.url) {
-        setCurrentTestimonial((prev: any) => ({ ...prev, imageUrl: data.url }));
+        setCurrentTestimonial((prev) => ({ ...prev, imageUrl: data.url }));
       } else {
         setError(data.error || "Failed to upload image");
       }
-    } catch (err) {
+    } catch {
       setError("Error uploading image");
     } finally {
       setIsUploading(false);
@@ -151,7 +193,7 @@ export default function AdminTestimonialsPage() {
         const data = await res.json();
         setError(data.error || "Failed to save testimonial");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setIsSaving(false);
@@ -276,7 +318,7 @@ export default function AdminTestimonialsPage() {
                       <Edit size={15} />
                     </button>
                     <button
-                      onClick={() => setDeleteId(t._id)}
+                      onClick={() => setDeleteId(t._id ?? null)}
                       className="p-2 text-brand-gray hover:text-red-500 transition-colors bg-brand-light-gray rounded-xl hover:bg-white border border-brand-border/40"
                       title="Delete"
                     >

@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Star, BadgeCheck, CheckCheck, ArrowRight, MoreVertical, ShoppingBag, X, Send, Loader2, CheckCircle2, PenLine, Camera } from "lucide-react";
 import useSWR from "swr";
+import { toErrorMessage } from "@/lib/errorMessage";
+import type { TestimonialDTO } from "@/lib/data/types";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -146,8 +148,8 @@ const AddReviewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
       if (formData.avatarUrl) removeAvatar(formData.avatarUrl);
       setFormData((prev) => ({ ...prev, avatarUrl: data.url }));
       if (status === "error") setStatus("idle");
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to upload photo. Please try again.");
+    } catch (err) {
+      setErrorMessage(toErrorMessage(err, "Failed to upload photo. Please try again."));
       setStatus("error");
     } finally {
       setAvatarUploading(false);
@@ -174,8 +176,8 @@ const AddReviewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
       if (formData.orderImageUrl) removeAvatar(formData.orderImageUrl);
       setFormData((prev) => ({ ...prev, orderImageUrl: data.url }));
       if (status === "error") setStatus("idle");
-    } catch (err: any) {
-      setErrorMessage(err.message || "Failed to upload photo. Please try again.");
+    } catch (err) {
+      setErrorMessage(toErrorMessage(err, "Failed to upload photo. Please try again."));
       setStatus("error");
     } finally {
       setOrderPhotoUploading(false);
@@ -523,10 +525,15 @@ const ChatCard = ({ rev }: { rev: ChatReview }) => (
               <Star key={i} size={12} className={i < rev.rating ? "text-[#D99A27] fill-[#D99A27]" : "text-[#9A9188]/40"} />
             ))}
           </div>
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#147A52] whitespace-nowrap">
-            Verified Customer
-            <BadgeCheck size={13} className="fill-[#147A52] text-white shrink-0" />
-          </span>
+          {/* Gated on !isDemo: the placeholder stories are labelled "Sample
+              story" in the footer, so badging them "Verified Customer" would
+              contradict that label and assert something untrue. */}
+          {!rev.isDemo && (
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#147A52] whitespace-nowrap">
+              Verified Customer
+              <BadgeCheck size={13} className="fill-[#147A52] text-white shrink-0" />
+            </span>
+          )}
         </div>
       </div>
       <MoreVertical size={16} className="ml-auto text-[#9A9188] shrink-0" aria-hidden />
@@ -554,10 +561,12 @@ const ChatCard = ({ rev }: { rev: ChatReview }) => (
         <p className="text-sm font-bold text-[#211A16] truncate">
           {rev.product?.name || rev.location}
         </p>
-        <p className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#147A52] whitespace-nowrap">
-          Verified Purchase
-          <BadgeCheck size={13} className="fill-[#147A52] text-white shrink-0" />
-        </p>
+        {!rev.isDemo && (
+          <p className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#147A52] whitespace-nowrap">
+            Verified Purchase
+            <BadgeCheck size={13} className="fill-[#147A52] text-white shrink-0" />
+          </p>
+        )}
       </div>
       <span className="ml-auto text-[10px] font-medium text-[#9A9188] shrink-0 pl-2">
         {rev.isDemo ? "Sample story" : rev.product ? rev.location : ""}
@@ -567,7 +576,7 @@ const ChatCard = ({ rev }: { rev: ChatReview }) => (
 );
 
 export default function CustomerLove() {
-  const { data: testimonials } = useSWR("/api/testimonials", fetcher);
+  const { data: testimonials } = useSWR<TestimonialDTO[]>("/api/testimonials", fetcher);
   /* Section heading is admin-editable under Admin → Content → Customer Reviews */
   const { data: settings = {} } = useSWR("/api/settings", fetcher);
 
@@ -576,10 +585,10 @@ export default function CustomerLove() {
      Image-only reviews (screenshot uploads) belong to the About page section, not here. */
   const real: ChatReview[] = Array.isArray(testimonials)
     ? testimonials
-        .filter((t: any) => t.goal || t.outcome)
-        .map((t: any, i: number) => ({
+        .filter((t) => t.goal || t.outcome)
+        .map((t, i) => ({
         id: String(t._id ?? `${t.name}-${i}`),
-        name: displayName(t.name),
+        name: displayName(t.name ?? ""),
         location: t.location || "",
         rating: t.rating || 5,
         bubbles: (

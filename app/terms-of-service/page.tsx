@@ -4,12 +4,19 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { connectToDatabase } from "@/lib/db";
 import SiteSettings from "@/models/SiteSettings";
+import type { Metadata } from "next";
+import JsonLd from "@/lib/seo/JsonLd";
+import { buildMetadata } from "@/lib/seo/metadata";
+import { breadcrumbNode, webPageNode } from "@/lib/seo/schema";
 
-export const metadata = {
-  title: "Terms of Service | Lara's Pinnal",
-  description: "Terms of Service for Lara's Pinnal.",
-  alternates: { canonical: "/terms-of-service" },
-};
+const DESCRIPTION =
+  "The terms that apply when you order handmade crochet gifts from Lara's Pinnal — order acceptance, pricing, made-to-order timelines, customisation, and your responsibilities as a customer.";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Terms of Service",
+  description: DESCRIPTION,
+  path: "/terms-of-service",
+});
 
 const DEFAULT_CONTENT = `
 <section>
@@ -49,7 +56,7 @@ export default async function TermsOfServicePage() {
   return (
     <div className="min-h-screen bg-white flex flex-col font-body">
       <Navbar />
-      <main className="flex-1 max-w-7xl mx-auto px-4 md:px-6 pt-5 md:pt-12 pb-14 md:pb-24 w-full">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-7xl mx-auto px-4 md:px-6 pt-5 md:pt-12 pb-14 md:pb-24 w-full">
         <h1 className="font-display text-3xl md:text-5xl text-brand-black mb-4 uppercase tracking-wide pb-6">Terms of Service</h1>
         <p className="text-sm text-brand-gray mb-10 italic">Last Updated: {updatedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
 
@@ -59,6 +66,23 @@ export default async function TermsOfServicePage() {
         />
       </main>
       <Footer />
+
+      <JsonLd
+        graph={[
+          webPageNode({
+            path: "/terms-of-service",
+            name: "Terms of Service",
+            description: DESCRIPTION,
+            // Real edit time from the CMS row, already displayed above as
+            // "Last Updated" — never new Date().
+            dateModified: updatedAt,
+          }),
+          breadcrumbNode(
+            [{ name: "Home", path: "/" }, { name: "Terms of Service" }],
+            "/terms-of-service"
+          ),
+        ]}
+      />
     </div>
   );
 }

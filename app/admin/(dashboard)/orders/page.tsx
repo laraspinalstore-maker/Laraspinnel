@@ -42,7 +42,6 @@ interface Order {
 export default function AdminOrdersPage() {
   const { showToast } = useToast();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState(""); // "YYYY-MM-DD" from the date input
   const [searchTerm, setSearchTerm] = useState("");
@@ -56,29 +55,50 @@ export default function AdminOrdersPage() {
   const [orderPendingDelete, setOrderPendingDelete] = useState<Order | null>(null);
   const [isDeletingSingle, setIsDeletingSingle] = useState(false);
 
-  const fetchOrders = async () => {
-    setIsLoading(true);
+  /**
+   * The network half, with no state in it — so the mount effect below can apply
+   * results only after an `await`. Setting state synchronously inside an effect
+   * costs a render pass before first paint (`react-hooks/set-state-in-effect`).
+   */
+  const loadOrders = async (): Promise<Order[] | null> => {
     try {
       const res = await fetch("/api/admin/orders");
-      if (res.ok) {
-        const data = await res.json();
-        setOrders(data);
-        setFilteredOrders(data);
-      } else {
-        setError("Failed to fetch customer orders");
-      }
-    } catch (err) {
-      setError("Failed to fetch customer orders");
-    } finally {
-      setIsLoading(false);
+      if (!res.ok) return null;
+      return (await res.json()) as Order[];
+    } catch {
+      return null;
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  /** Refetch after a mutation — the spinner is wanted here, unlike on mount. */
+  const fetchOrders = async () => {
+    setIsLoading(true);
+    const data = await loadOrders();
+    if (data) setOrders(data);
+    else setError("Failed to fetch customer orders");
+    setIsLoading(false);
+  };
 
   useEffect(() => {
+    let active = true;
+    (async () => {
+      const data = await loadOrders();
+      // The admin can navigate away mid-request; without this the response would
+      // update a component that is no longer mounted.
+      if (!active) return;
+      if (data) setOrders(data);
+      else setError("Failed to fetch customer orders");
+      setIsLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Derived, not stored. This was a second state field kept in sync by an effect,
+  // so every keystroke in the search box rendered twice — once with the stale
+  // list, then again with the filtered one.
+  const filteredOrders = useMemo(() => {
     let results = orders.filter(
       (o) =>
         o.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -100,7 +120,7 @@ export default function AdminOrdersPage() {
       });
     }
 
-    setFilteredOrders(results);
+    return results;
   }, [searchTerm, statusFilter, dateFilter, orders]);
 
   // Bangles orders get their own section at the top, so they're split out of the
@@ -166,7 +186,8 @@ export default function AdminOrdersPage() {
   const toggleOne = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };
@@ -370,7 +391,7 @@ export default function AdminOrdersPage() {
         const data = await res.json().catch(() => ({}));
         showToast(data.error || "Failed to delete order. Please try again.", { variant: "error" });
       }
-    } catch (err) {
+    } catch {
       showToast("Failed to delete order. Please try again.", { variant: "error" });
     } finally {
       setIsDeletingSingle(false);

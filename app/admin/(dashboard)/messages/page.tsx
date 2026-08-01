@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import AdminTopbar from "@/components/admin/AdminTopbar";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
-import { Mail, Trash2, MailOpen, AlertCircle, Phone, Clock, Loader2, ArrowRight } from "lucide-react";
+import { Mail, Trash2, MailOpen, AlertCircle, Phone, Loader2, ArrowRight } from "lucide-react";
 
 interface Message {
   _id: string;
@@ -31,25 +31,35 @@ export default function AdminMessagesPage() {
   const [isSendingReply, setIsSendingReply] = useState(false);
   const [replyStatus, setReplyStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const fetchMessages = async () => {
-    setIsLoading(true);
+  /**
+   * The network half, with no state in it — so the mount effect below can apply
+   * results only after an `await`. Setting state synchronously inside an effect
+   * costs a render pass before first paint (`react-hooks/set-state-in-effect`).
+   */
+  const loadMessages = async (): Promise<Message[] | null> => {
     try {
       const res = await fetch("/api/admin/messages");
-      if (res.ok) {
-        const data = await res.json();
-        setMessages(data);
-      } else {
-        setError("Failed to fetch messages inbox");
-      }
-    } catch (err) {
-      setError("Failed to fetch messages inbox");
-    } finally {
-      setIsLoading(false);
+      if (!res.ok) return null;
+      return (await res.json()) as Message[];
+    } catch {
+      return null;
     }
   };
 
   useEffect(() => {
-    fetchMessages();
+    let active = true;
+    (async () => {
+      const data = await loadMessages();
+      // The admin can navigate away mid-request; without this the response would
+      // update a component that is no longer mounted.
+      if (!active) return;
+      if (data) setMessages(data);
+      else setError("Failed to fetch messages inbox");
+      setIsLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const selectMessage = async (msg: Message) => {
@@ -96,9 +106,9 @@ export default function AdminMessagesPage() {
         const newReply = data.reply;
         
         // Update to responded and append reply
-        const updatedMessage = {
+        const updatedMessage: Message = {
           ...activeMessage,
-          status: "responded" as any,
+          status: "responded",
           replies: [...(activeMessage.replies || []), newReply]
         };
         
@@ -118,7 +128,7 @@ export default function AdminMessagesPage() {
         const data = await res.json();
         setReplyStatus({ type: "error", text: data.error || "Failed to send reply" });
       }
-    } catch (err) {
+    } catch {
       setReplyStatus({ type: "error", text: "Network error while sending reply" });
     } finally {
       setIsSendingReply(false);
@@ -126,7 +136,9 @@ export default function AdminMessagesPage() {
   };
 
   const toggleResponded = async (msg: Message) => {
-    const nextStatus = msg.status === "responded" ? "read" : "responded";
+    // Inferred as the "read" | "responded" union, so the two updates below need no
+    // cast — they used `as any`, which would also have accepted a typo.
+    const nextStatus: Message["status"] = msg.status === "responded" ? "read" : "responded";
     try {
       const res = await fetch(`/api/admin/messages/${msg._id}`, {
         method: "PUT",
@@ -136,13 +148,13 @@ export default function AdminMessagesPage() {
 
       if (res.ok) {
         setMessages(
-          messages.map((m) => (m._id === msg._id ? { ...m, status: nextStatus as any } : m))
+          messages.map((m) => (m._id === msg._id ? { ...m, status: nextStatus } : m))
         );
         if (activeMessage?._id === msg._id) {
-          setActiveMessage({ ...activeMessage, status: nextStatus as any });
+          setActiveMessage({ ...activeMessage, status: nextStatus });
         }
       }
-    } catch (err) {
+    } catch {
       setError("Failed to update message status");
     }
   };
@@ -163,7 +175,7 @@ export default function AdminMessagesPage() {
       } else {
         setError("Failed to delete message");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to delete message");
     }
   };

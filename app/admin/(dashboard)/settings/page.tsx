@@ -7,7 +7,10 @@ import { Save, Loader2, AlertCircle, CheckCircle, Landmark, Briefcase, Globe } f
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState<"branding" | "business" | "seo" | "delivery">("branding");
-  const [settings, setSettings] = useState<any>({
+// Every SiteSettings value is stored as text, so the whole form is a
+  // string-to-string map. `useState<any>` also silently allowed `settings.typo`
+  // to read as `any` at 20-odd call sites in the JSX below.
+  const [settings, setSettings] = useState<Record<string, string>>({
     farm_name: "",
     tagline: "",
     logo_url: "",
@@ -35,11 +38,11 @@ export default function AdminSettingsPage() {
         const res = await fetch("/api/admin/settings");
         if (res.ok) {
           const data = await res.json();
-          setSettings((prev: any) => ({ ...prev, ...data }));
+          setSettings((prev) => ({ ...prev, ...data }));
         } else {
           setError("Failed to load site settings.");
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load site settings.");
       } finally {
         setIsLoading(false);
@@ -50,7 +53,7 @@ export default function AdminSettingsPage() {
   }, []);
 
   const handleChange = (key: string, val: string) => {
-    setSettings((prev: any) => ({ ...prev, [key]: val }));
+    setSettings((prev) => ({ ...prev, [key]: val }));
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -78,7 +81,7 @@ export default function AdminSettingsPage() {
         const data = await res.json();
         setError(data.error || "Failed to update settings.");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setIsSaving(false);
